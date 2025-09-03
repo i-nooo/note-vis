@@ -1,34 +1,53 @@
-import logo from './logo.svg'
+import { useMemo, useState } from 'react'
+import sample from './data/notes.json'
+import Legend from './components/Legend'
+import NetworkGraph from './components/NetworkGraph'
+import SearchBar from './components/SearchBar'
+import Header from './components/Header'
+import type { GraphData, NoteNode } from './types'
 
 function App() {
+  const [query, setQuery] = useState('')
+  const [data] = useState<GraphData>(sample as GraphData)
+
+  const repoBase = 'https://github.com/<org>/<repo>/blob/main/notes/'
+
+  const graphWithUrls = useMemo(() => {
+    const nodes = data.nodes.map((n) =>
+      n.url
+        ? n
+        : {
+            ...n,
+            url: n.id.startsWith('tag:') ? undefined : `${repoBase}${n.id}.md`,
+          },
+    )
+    return { ...data, nodes }
+  }, [data])
+
+  const onNavigate = (n: NoteNode) => {
+    if (n.url) window.open(n.url, '_blank', 'noopener')
+  }
+
   return (
-    <div className="text-center">
-      <header className="min-h-screen flex flex-col items-center justify-center bg-[#282c34] text-white text-[calc(10px+2vmin)]">
-        <img
-          src={logo}
-          className="h-[40vmin] pointer-events-none animate-[spin_20s_linear_infinite]"
-          alt="logo"
+    <div style={{ padding: 16, display: 'grid', gap: 12 }}>
+      <Header />
+      <div className="flex justify-between items-center">
+        <h3 className="text-lg font-bold">Markdown Graph (Network)</h3>
+        <Legend />
+      </div>
+      <SearchBar
+        value={query}
+        onChange={setQuery}
+        placeholder="노트 제목, id, 태그 검색"
+      />
+      <div style={{ border: '1px solid #eee', borderRadius: 8 }}>
+        <NetworkGraph
+          data={graphWithUrls}
+          query={query}
+          onNavigate={onNavigate}
+          height={640}
         />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="text-[#61dafb] hover:underline"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <a
-          className="text-[#61dafb] hover:underline"
-          href="https://tanstack.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn TanStack
-        </a>
-      </header>
+      </div>
     </div>
   )
 }

@@ -9,11 +9,13 @@ export default function Header() {
         </div>
 
         <div className="px-2 font-bold">
-          <Link to="/demo/store">Store</Link>
+          <Link to="/">Store</Link>
         </div>
 
         <div className="px-2 font-bold">
-          <Link to="/demo/table">TanStack Table</Link>
+          <Link to="/node/$id" params={{ id: 'graph-theory' }}>
+            Graph Theory
+          </Link>
         </div>
       </nav>
     </header>
