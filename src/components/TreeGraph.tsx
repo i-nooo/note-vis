@@ -12,15 +12,6 @@ interface Props {
 
 type HNode = d3.HierarchyPointNode<TreeNode>
 
-interface LabelInfo {
-  node: HNode
-  text: string
-  x: number
-  y: number
-  width: number
-  height: number
-}
-
 // 라벨 충돌 감지 및 위치 계산 - 각 노드별 고유 키 사용
 function calculateLabelPositions(
   nodes: Array<HNode>,

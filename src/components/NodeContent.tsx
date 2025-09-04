@@ -29,6 +29,20 @@ export default function NodeContent({
           {current.title}
         </h1>
 
+        {/* 태그 표시 */}
+        {current.tags && current.tags.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-4">
+            {current.tags.map((tag) => (
+              <span
+                key={tag}
+                className="inline-block bg-blue-50 text-blue-700 text-xs px-2 py-1 rounded-md border"
+              >
+                #{tag}
+              </span>
+            ))}
+          </div>
+        )}
+
         <div className="flex items-end gap-4">
           {(current.dateCreated || current.dateUpdated) && (
             <div className="mt-1 bg-gray-50 rounded-lg text-xs text-gray-600">
@@ -84,6 +98,11 @@ export default function NodeContent({
                     link.source === currentId ? link.target : link.source
                   const node = subgraph.nodes.find((n) => n.id === nid)!
 
+                  // 태그 링크는 제외 (이미 상단에 표시됨)
+                  if (link.type === 'tag') {
+                    return groups
+                  }
+
                   // 링크 방향에 따라 올바른 관계 분류
                   let relationshipKey = link.type
                   if (link.type === 'prerequisite') {
@@ -91,7 +110,7 @@ export default function NodeContent({
                       // A→B: 현재 노드(B)가 target이면, source(A)는 선행 문서
                       relationshipKey = 'preceding'
                     } else {
-                      // A→B: 현재 노드(A)가 source이면, target(B)는 후행 문서  
+                      // A→B: 현재 노드(A)가 source이면, target(B)는 후행 문서
                       relationshipKey = 'following'
                     }
                   }
@@ -108,37 +127,39 @@ export default function NodeContent({
           ).map(([linkType, items]) => {
             // 관계 타입에 대한 한국어 표시명
             const relationshipLabels: Record<string, string> = {
-              'preceding': '선행',
-              'following': '후행', 
-              'mention': '언급',
-              'tag': '태그'
+              preceding: '선행',
+              following: '후행',
+              mention: '언급',
             }
-            
+
             return (
-            <div key={linkType} className="space-y-2">
-              <h3 className="text-sm font-medium text-gray-600 border-b border-gray-100 pb-1">
-                {relationshipLabels[linkType] || linkType}
-              </h3>
-              <div className="grid grid-cols-1">
-                {items.map(({ node }, i) => (
-                  <div key={i} className=" hover:bg-gray-50 transition-colors">
-                    {node.id.startsWith('tag:') ? (
-                      <span className="text-gray-600 text-sm">
-                        {node.title}
-                      </span>
-                    ) : (
-                      <button
-                        className="text-blue-600 text-sm hover:text-blue-800 text-left w-full"
-                        onClick={() => onNodeClick(node.id)}
-                      >
-                        {node.title}
-                      </button>
-                    )}
-                  </div>
-                ))}
+              <div key={linkType} className="space-y-2">
+                <h3 className="text-sm font-medium text-gray-600 border-b border-gray-100 pb-1">
+                  {relationshipLabels[linkType] || linkType}
+                </h3>
+                <div className="grid grid-cols-1">
+                  {items.map(({ node }, i) => (
+                    <div
+                      key={i}
+                      className=" hover:bg-gray-50 transition-colors"
+                    >
+                      {node.id.startsWith('tag:') ? (
+                        <span className="text-gray-600 text-sm">
+                          {node.title}
+                        </span>
+                      ) : (
+                        <button
+                          className="text-blue-600 text-sm hover:text-blue-800 text-left w-full"
+                          onClick={() => onNodeClick(node.id)}
+                        >
+                          {node.title}
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          )
+            )
           })}
         </div>
       </section>

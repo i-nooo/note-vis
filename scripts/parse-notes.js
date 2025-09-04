@@ -132,7 +132,7 @@ function parseNotes() {
     })
 
     console.log(
-      `>>> ${file}: ${wikiLinks.length}개 링크, ${hashTags.length}개 태그`,
+      `   - ${file}: ${wikiLinks.length}개 링크, ${hashTags.length}개 태그`,
     )
   })
 
