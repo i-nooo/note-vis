@@ -12,6 +12,85 @@ interface Props {
 
 type HNode = d3.HierarchyPointNode<TreeNode>
 
+interface LabelInfo {
+  node: HNode
+  text: string
+  x: number
+  y: number
+  width: number
+  height: number
+}
+
+// 라벨 충돌 감지 및 위치 계산 - 각 노드별 고유 키 사용
+function calculateLabelPositions(
+  nodes: Array<HNode>,
+): Map<HNode, { x: number; y: number; width: number; height: number }> {
+  const positions = new Map<
+    HNode,
+    { x: number; y: number; width: number; height: number }
+  >()
+
+  // 모든 노드에 대해 기본 위치부터 시작 (각 노드 객체를 키로 사용)
+  nodes.forEach((node) => {
+    const text = node.data.title ?? node.data.id
+    // 텍스트 크기 계산
+    const koreanChar = /[가-힣]/g
+    const koreanCount = (text.match(koreanChar) || []).length
+    const englishCount = text.length - koreanCount
+    const width = Math.max(koreanCount * 12 + englishCount * 7, 30)
+    const height = 16
+
+    // 가능한 위치들 (우선순위 순)
+    const candidatePositions = [
+      { x: node.x + 12, y: node.y - 8 }, // 오른쪽 (기본)
+      { x: node.x + 12, y: node.y - 24 }, // 오른쪽 위
+      { x: node.x + 12, y: node.y + 8 }, // 오른쪽 아래
+      { x: node.x - width - 8, y: node.y - 8 }, // 왼쪽
+      { x: node.x - width - 8, y: node.y - 24 }, // 왼쪽 위
+      { x: node.x - width - 8, y: node.y + 8 }, // 왼쪽 아래
+      { x: node.x - width / 2, y: node.y - 30 }, // 위 중앙
+      { x: node.x - width / 2, y: node.y + 18 }, // 아래 중앙
+    ]
+
+    let finalPosition = candidatePositions[0] // 기본값으로 첫 번째 위치 사용
+
+    // 각 후보 위치를 확인하여 충돌이 가장 적은 곳 선택
+    for (const candidate of candidatePositions) {
+      let hasCollision = false
+
+      // 기존 라벨들과 충돌 검사
+      for (const [, existing] of positions) {
+        const margin = 6 // 여백
+        if (
+          candidate.x < existing.x + existing.width + margin &&
+          candidate.x + width > existing.x - margin &&
+          candidate.y < existing.y + existing.height + margin &&
+          candidate.y + height > existing.y - margin
+        ) {
+          hasCollision = true
+          break
+        }
+      }
+
+      // 충돌이 없으면 이 위치 사용
+      if (!hasCollision) {
+        finalPosition = candidate
+        break
+      }
+    }
+
+    // 위치 저장 - 노드 객체를 키로 사용하여 중복 이름이라도 각각 저장
+    positions.set(node, {
+      x: finalPosition.x,
+      y: finalPosition.y,
+      width: width,
+      height: height,
+    })
+  })
+
+  return positions
+}
+
 export default function TreeGraph({
   roots,
   width = 520,
@@ -78,14 +157,28 @@ export default function TreeGraph({
       .attr('height', H)
       .append('g')
 
+    // 줌 기능 추가
+    const zoom = d3
+      .zoom<SVGSVGElement, unknown>()
+      .scaleExtent([0.1, 4])
+      .on('zoom', (event) => g.attr('transform', event.transform))
+    svg.call(zoom as any)
+
+    // 라벨 위치 계산
+    const labelPositions = calculateLabelPositions(nodes)
+
     // 링크
-    g.append('g')
+    const linkGroup = g
+      .append('g')
       .attr('fill', 'none')
       .attr('stroke', '#c0c0c0')
       .attr('stroke-width', 1.5)
+
+    const link = linkGroup
       .selectAll('path')
       .data(links)
       .join('path')
+      .attr('class', 'tree-link')
       .attr(
         'd',
         d3
@@ -103,12 +196,30 @@ export default function TreeGraph({
       .attr('transform', (d) => `translate(${d.x},${d.y})`)
       .attr('cursor', 'pointer')
 
+    // 라벨 위치에 시각적 가이드라인 추가 (개발용, 나중에 제거 가능)
+    const showLabelBounds = false // 디버깅용 플래그 - 충돌 영역 표시
+
+    if (showLabelBounds) {
+      labelPositions.forEach((pos, nodeObj) => {
+        g.append('rect')
+          .attr('x', pos.x)
+          .attr('y', pos.y)
+          .attr('width', pos.width)
+          .attr('height', pos.height)
+          .attr('fill', 'none')
+          .attr('stroke', 'red')
+          .attr('stroke-width', 0.5)
+          .attr('opacity', 0.3)
+      })
+    }
+
     node
       .append('circle')
       .attr('r', 6)
       .attr('fill', (d) => (d.data.id === currentId ? '#1f77b4' : '#6baed6'))
       .attr('stroke', '#fff')
       .attr('stroke-width', 1.5)
+      .attr('cursor', 'pointer')
       .on('click', (_, d) => {
         // 토글: 자식이 있으면 접기/펼치기, 그리고 라우팅
         if (d.children || (d.data.children && d.data.children.length)) {
@@ -124,11 +235,41 @@ export default function TreeGraph({
 
     node
       .append('text')
-      .attr('x', 10)
-      .attr('y', 4)
+      .attr('x', (d) => {
+        const pos = labelPositions.get(d)
+        return pos ? pos.x - d.x : 12
+      })
+      .attr('y', (d) => {
+        const pos = labelPositions.get(d)
+        return pos ? pos.y - d.y + 12 : 4
+      })
       .attr('font-size', 12)
+      .attr('font-family', 'system-ui, sans-serif')
+      .attr('font-weight', 500)
       .attr('fill', (d) => (d.data.id === currentId ? '#1f77b4' : '#333'))
-      .text((d) => d.data.title ?? d.data.id)
+      .attr('stroke', 'white')
+      .attr('stroke-width', 0.5)
+      .attr('stroke-linejoin', 'round')
+      .attr('paint-order', 'stroke fill')
+      .attr('cursor', 'pointer')
+      .text((d) => {
+        // 텍스트가 비어있지 않도록 보장
+        const text = d.data.title || d.data.id || 'Untitled'
+        return text
+      })
+      .style('pointer-events', 'all') // 클릭 이벤트가 확실히 작동하도록
+      .on('click', (_, d) => {
+        // 텍스트 클릭도 같은 동작
+        if (d.children || (d.data.children && d.data.children.length)) {
+          setCollapsed((prev) => {
+            const next = new Set(prev)
+            if (next.has(d.data.id)) next.delete(d.data.id)
+            else next.add(d.data.id)
+            return next
+          })
+        }
+        onNavigate?.(d.data.id)
+      })
 
     if (nodes.length === 0) {
       svg
@@ -145,7 +286,7 @@ export default function TreeGraph({
       return
     }
 
-    // 현재 노드 1-hop 강조(형제/부모/자식)
+    // 현재 노드 하이라이트 (호버가 아닐 때만 적용)
     if (currentId) {
       const nbr = new Set<string>()
       nodes.forEach((n) => {
@@ -155,13 +296,15 @@ export default function TreeGraph({
           n.parent?.children?.forEach((sib) => nbr.add(sib.data.id))
         }
       })
+
+      // 초기 상태에서만 currentId 기반 하이라이트 적용
       node.attr('opacity', (d) =>
-        d.data.id === currentId || nbr.has(d.data.id) ? 1 : 0.3,
+        d.data.id === currentId || nbr.has(d.data.id) ? 1 : 0.6,
       )
-      g.selectAll<SVGPathElement, any>('path').attr('opacity', (l) =>
+      link.attr('opacity', (l: any) =>
         l.source.data.id === currentId || l.target.data.id === currentId
           ? 1
-          : 0.3,
+          : 0.6,
       )
     }
   }, [layoutData, width, height, currentId, onNavigate])

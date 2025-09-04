@@ -84,8 +84,20 @@ export default function NodeContent({
                     link.source === currentId ? link.target : link.source
                   const node = subgraph.nodes.find((n) => n.id === nid)!
 
-                  groups[link.type] = groups[link.type] || []
-                  groups[link.type].push({ link, node })
+                  // 링크 방향에 따라 올바른 관계 분류
+                  let relationshipKey = link.type
+                  if (link.type === 'prerequisite') {
+                    if (link.target === currentId) {
+                      // A→B: 현재 노드(B)가 target이면, source(A)는 선행 문서
+                      relationshipKey = 'preceding'
+                    } else {
+                      // A→B: 현재 노드(A)가 source이면, target(B)는 후행 문서  
+                      relationshipKey = 'following'
+                    }
+                  }
+
+                  groups[relationshipKey] = groups[relationshipKey] || []
+                  groups[relationshipKey].push({ link, node })
                   return groups
                 },
                 {} as Record<
@@ -93,16 +105,25 @@ export default function NodeContent({
                   Array<{ link: GraphLink; node: NoteNode }>
                 >,
               ),
-          ).map(([linkType, items]) => (
+          ).map(([linkType, items]) => {
+            // 관계 타입에 대한 한국어 표시명
+            const relationshipLabels: Record<string, string> = {
+              'preceding': '선행',
+              'following': '후행', 
+              'mention': '언급',
+              'tag': '태그'
+            }
+            
+            return (
             <div key={linkType} className="space-y-2">
-              <h3 className="text-sm font-medium text-gray-600 capitalize border-b border-gray-100 pb-1">
-                {linkType}
+              <h3 className="text-sm font-medium text-gray-600 border-b border-gray-100 pb-1">
+                {relationshipLabels[linkType] || linkType}
               </h3>
               <div className="grid grid-cols-1">
                 {items.map(({ node }, i) => (
                   <div key={i} className=" hover:bg-gray-50 transition-colors">
                     {node.id.startsWith('tag:') ? (
-                      <span className="text-gray-600 text-sm border-b border-gray-200 px-2 py-1 bg-gray-200 rounded-lg">
+                      <span className="text-gray-600 text-sm">
                         {node.title}
                       </span>
                     ) : (
@@ -117,7 +138,8 @@ export default function NodeContent({
                 ))}
               </div>
             </div>
-          ))}
+          )
+          })}
         </div>
       </section>
     </article>
