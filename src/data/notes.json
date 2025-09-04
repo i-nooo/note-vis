@@ -1,0 +1,752 @@
+{
+  "nodes": [
+    {
+      "id": "algorithms",
+      "title": "Algorithms",
+      "tags": [
+        "computer-science",
+        "problem-solving",
+        "optimization"
+      ],
+      "content": "# Algorithms\n\nAn algorithm is a finite sequence of well-defined instructions for solving a computational problem or performing a calculation.\n\n## Algorithm Analysis\n\n### Time Complexity\n- **O(1)**: Constant time\n- **O(log n)**: Logarithmic time  \n- **O(n)**: Linear time\n- **O(n²)**: Quadratic time\n- **O(2^n)**: Exponential time\n\n### Space Complexity\n- Amount of memory an algorithm uses\n- Trade-offs between time and space\n\n## Common Algorithm Types\n\n### Sorting Algorithms\n- Bubble Sort: O(n²)\n- Merge Sort: O(n log n)\n- Quick Sort: O(n log n) average\n- Heap Sort: O(n log n)\n\n### Search Algorithms\n- Linear Search: O(n)\n- Binary Search: O(log n)\n- Depth-First Search (DFS)\n- Breadth-First Search (BFS)\n\n### Graph Algorithms\n- Dijkstra's shortest path\n- Minimum spanning tree\n- Topological sorting\n\n## Design Paradigms\n\n- **Divide and Conquer**: Break problem into smaller subproblems\n- **Dynamic Programming**: Store solutions to subproblems\n- **Greedy**: Make locally optimal choices\n- **Backtracking**: Try all possibilities systematically\n\n## Applications\n\nAlgorithms are used in:\n- [[data-structures|Data Structures]] implementation\n- [[machine-learning|Machine Learning]] optimization\n- Database query optimization\n- Network routing\n- Image processing\n\n#algorithms #computer-science #optimization",
+      "parent": "programming",
+      "children": [
+        "data-structures",
+        "machine-learning"
+      ],
+      "dateCreated": "2024-01-30"
+    },
+    {
+      "id": "computer-science",
+      "title": "Computer Science",
+      "tags": [
+        "cs",
+        "theory",
+        "computation"
+      ],
+      "content": "# Computer Science\n\nComputer Science is the study of computational systems and the design of computer systems and their uses.\n\n## Core Areas\n\n### Theoretical Computer Science\n- Computational complexity theory\n- Algorithms and data structures\n- Formal methods and verification\n- Theory of computation\n\n### Systems and Architecture\n- Computer architecture\n- Operating systems\n- Networks and distributed systems\n- Database systems\n\n### Software Engineering\n- Software design patterns\n- Testing and quality assurance\n- Project management\n- Version control\n\n### Specialized Fields\n- Artificial Intelligence\n- Human-Computer Interaction\n- Computer Graphics\n- Cybersecurity\n\n## Fundamental Concepts\n\n- Abstraction and modularity\n- Computational thinking\n- Problem decomposition\n- Efficiency and optimization\n\n## Relationship to Other Fields\n\nComputer Science intersects with:\n- [[mathematics|Mathematics]] - Logic, discrete math\n- [[algorithms|Algorithms]] - Problem-solving techniques  \n- [[programming|Programming]] - Implementation skills\n- Engineering - System design\n- Cognitive science - AI and HCI\n\n#computer-science #theory #computation",
+      "children": [
+        "algorithms",
+        "data-structures",
+        "programming"
+      ],
+      "dateCreated": "2024-01-05"
+    },
+    {
+      "id": "data-science",
+      "title": "Data Science",
+      "tags": [
+        "data",
+        "analytics",
+        "science"
+      ],
+      "content": "# Data Science\n\nData science is an interdisciplinary field that uses scientific methods, processes, algorithms, and systems to extract knowledge and insights from structured and unstructured data.\n\n## The Data Science Process\n\n1. **Data Collection**: Gathering relevant data from various sources\n2. **Data Cleaning**: Removing errors and inconsistencies\n3. **Exploratory Data Analysis**: Understanding data patterns\n4. **Modeling**: Building predictive or descriptive models\n5. **Validation**: Testing model performance\n6. **Deployment**: Implementing solutions in production\n\n## Required Skills\n\n### Technical Skills\n- [[programming|Programming]] (Python, R, SQL)\n- [[statistics|Statistics]] and probability\n- [[mathematics|Mathematics]] foundations\n- Database management\n\n### Domain Knowledge\n- Business understanding\n- Subject matter expertise\n- Communication skills\n\n## Tools and Technologies\n\n- **Languages**: Python, R, SQL, Scala\n- **Libraries**: pandas, numpy, scikit-learn, matplotlib\n- **Platforms**: Jupyter, RStudio, Databricks\n- **Databases**: PostgreSQL, MongoDB, BigQuery\n\n## Applications\n\n- Customer segmentation\n- Fraud detection\n- Recommendation systems\n- Predictive maintenance\n- Market analysis\n\n#data-science #analytics #big-data",
+      "children": [
+        "machine-learning",
+        "data-visualization"
+      ],
+      "prerequisites": [
+        "statistics",
+        "programming",
+        "mathematics"
+      ],
+      "dateCreated": "2024-02-15"
+    },
+    {
+      "id": "javascript",
+      "title": "JavaScript",
+      "tags": [
+        "web",
+        "programming",
+        "frontend"
+      ],
+      "content": "# JavaScript\n\nJavaScript is a high-level, interpreted programming language that conforms to the ECMAScript specification.\n\n## Key Features\n\n- **Dynamic typing**: Variables can hold different types\n- **First-class functions**: Functions can be assigned to variables\n- **Prototype-based**: Objects can inherit directly from other objects\n- **Event-driven**: Responds to user interactions\n\n## Core Concepts\n\n### Variables and Scope\n```javascript\nlet variable = \"block-scoped\";\nconst constant = \"immutable\";\nvar legacy = \"function-scoped\";\n```\n\n### Functions\n```javascript\n// Function declaration\nfunction greet(name) {\n    return `Hello, ${name}!`;\n}\n\n// Arrow function\nconst greet = (name) => `Hello, ${name}!`;\n```\n\n## Ecosystem\n\n- [[react|React]] - UI library\n- [[nodejs|Node.js]] - Server-side runtime\n- Vue.js - Progressive framework\n- Angular - Full framework\n\n## Modern Features (ES6+)\n\n- Modules (import/export)\n- Classes\n- Template literals\n- Destructuring\n- Async/await\n\n#javascript #web-development #programming",
+      "parent": "programming",
+      "children": [
+        "react",
+        "nodejs"
+      ],
+      "dateCreated": "2024-01-25",
+      "dateUpdated": "2024-02-10"
+    },
+    {
+      "id": "linear-algebra",
+      "title": "Linear Algebra",
+      "tags": [
+        "math",
+        "vectors",
+        "matrices"
+      ],
+      "content": "# Linear Algebra\n\nLinear algebra is the branch of mathematics concerning linear equations, linear functions, and their representations through matrices and vector spaces.\n\n## Core Concepts\n\n### Vectors\n- Magnitude and direction\n- Vector operations (addition, scalar multiplication)\n- Dot product and cross product\n\n### Matrices\n- Matrix operations\n- Determinants\n- Eigenvalues and eigenvectors\n\n## Applications\n\nLinear algebra is fundamental to:\n- [[machine-learning|Machine Learning]] algorithms\n- [[computer-graphics|Computer Graphics]] transformations\n- Physics simulations\n- Data analysis\n\n#mathematics #linear-algebra",
+      "parent": "mathematics",
+      "children": [
+        "machine-learning",
+        "computer-graphics"
+      ],
+      "dateCreated": "2024-01-20",
+      "dateUpdated": "2024-02-01"
+    },
+    {
+      "id": "machine-learning",
+      "title": "Machine Learning",
+      "tags": [
+        "ai",
+        "data-science",
+        "algorithms"
+      ],
+      "content": "# Machine Learning\n\nMachine learning is a method of data analysis that automates analytical model building using algorithms that iteratively learn from data.\n\n## Types of Learning\n\n### Supervised Learning\n- Uses labeled training data\n- Examples: classification, regression\n\n### Unsupervised Learning\n- Finds hidden patterns in unlabeled data\n- Examples: clustering, dimensionality reduction\n\n### Reinforcement Learning\n- Learns through interaction with environment\n- Uses rewards and penalties\n\n## Prerequisites\n\nTo understand machine learning, you need:\n- [[linear-algebra|Linear Algebra]] for mathematical foundations\n- [[statistics|Statistics]] for probability and inference\n- [[programming|Programming]] skills for implementation\n\n## Applications\n\n- Image recognition\n- Natural language processing  \n- Recommendation systems\n- Autonomous vehicles\n\n#ai #machine-learning #data-science",
+      "children": [
+        "deep-learning",
+        "neural-networks"
+      ],
+      "prerequisites": [
+        "linear-algebra",
+        "statistics",
+        "programming"
+      ],
+      "dateCreated": "2024-02-05"
+    },
+    {
+      "id": "mathematics",
+      "title": "Mathematics",
+      "tags": [
+        "fundamental",
+        "science"
+      ],
+      "content": "# Mathematics\n\nMathematics is the abstract study of topics such as quantity, structure, space, and change.\n\n## Core Areas\n\n- **Pure Mathematics**: Abstract mathematical concepts\n- **Applied Mathematics**: Mathematical methods used in applications\n- **Statistics**: Analysis of numerical data\n\nMathematics forms the foundation for many other disciplines including physics, engineering, computer science, and economics.\n\n## Key Concepts\n\n- Logic and proof\n- Set theory\n- Number theory\n- Abstract algebra",
+      "children": [
+        "linear-algebra",
+        "calculus",
+        "discrete-math"
+      ],
+      "dateCreated": "2024-01-15"
+    },
+    {
+      "id": "programming",
+      "title": "Programming",
+      "tags": [
+        "code",
+        "software",
+        "development"
+      ],
+      "content": "# Programming\n\nProgramming is the process of creating a set of instructions that tell a computer how to perform a task.\n\n## Core Concepts\n\n### Basic Elements\n- Variables and data types\n- Control structures (loops, conditionals)\n- Functions and procedures\n- Data structures\n\n### Programming Paradigms\n- **Procedural**: Step-by-step instructions\n- **Object-oriented**: Based on objects and classes\n- **Functional**: Based on mathematical functions\n- **Declarative**: Describes what should be done\n\n## Popular Languages\n\n- [[javascript|JavaScript]] - Web development\n- [[python|Python]] - Data science, AI, general purpose\n- Java - Enterprise applications\n- C++ - System programming\n\n## Best Practices\n\n- Write clean, readable code\n- Use version control\n- Test your code\n- Document your work\n\n#programming #software-development",
+      "children": [
+        "javascript",
+        "python",
+        "algorithms"
+      ],
+      "dateCreated": "2024-01-10"
+    },
+    {
+      "id": "react",
+      "title": "React",
+      "tags": [
+        "frontend",
+        "ui",
+        "library"
+      ],
+      "content": "# React\n\nReact is a JavaScript library for building user interfaces, maintained by Facebook and the community.\n\n## Core Concepts\n\n### Components\n```jsx\nfunction Welcome(props) {\n    return <h1>Hello, {props.name}</h1>;\n}\n```\n\n### JSX\n- JavaScript XML syntax extension\n- Allows writing HTML-like code in JavaScript\n- Transpiled to `React.createElement()` calls\n\n### State and Props\n- **Props**: Read-only properties passed to components\n- **State**: Mutable data that affects component rendering\n\n### Hooks\n```jsx\nimport { useState, useEffect } from 'react';\n\nfunction Counter() {\n    const [count, setCount] = useState(0);\n    \n    useEffect(() => {\n        document.title = `Count: ${count}`;\n    }, [count]);\n    \n    return (\n        <button onClick={() => setCount(count + 1)}>\n            Count: {count}\n        </button>\n    );\n}\n```\n\n## Prerequisites\n\nUnderstanding these topics helps with React development:\n- [[javascript|JavaScript]] ES6+ features\n- HTML and CSS fundamentals\n- DOM manipulation concepts\n\n## Ecosystem\n\n- React Router - Navigation\n- Redux/Zustand - State management  \n- Next.js - Full-stack framework\n- React Testing Library - Testing\n\n#react #frontend #javascript",
+      "parent": "javascript",
+      "prerequisites": [
+        "javascript",
+        "html",
+        "css"
+      ],
+      "dateCreated": "2024-02-01"
+    },
+    {
+      "id": "readme",
+      "title": "Notes Directory",
+      "tags": [],
+      "content": "# Notes Directory\n\nt \u0014 ��� note-vis \u0004\\\u001d�X �l� x� \f|�D \u0000�X� ���. �0� \u0000�\u001c �l� \f|�@ ��<\\ \f�\u0018� �� ��\u0004\\ �\u0001T)��.\n\n## =� \u0014 �� lp\n\n```\nnotes/\n\u001c\u0000\u0000 README.md                 # t 8\u001c\n\u001c\u0000\u0000 mathematics.md            # \u0018Y 0\b \u001cP\n\u001c\u0000\u0000 linear-algebra.md         #  \u0015\u0000\u0018Y\n\u001c\u0000\u0000 statistics.md            # ��Y\n\u001c\u0000\u0000 programming.md           # \u0004\\��\n 0\b\n\u001c\u0000\u0000 javascript.md            # JavaScript ��\n\u001c\u0000\u0000 react.md                 # React |t\f�\n\u001c\u0000\u0000 algorithms.md            # Lଘ\n\u001c\u0000\u0000 data-science.md          # pt0 �t��\n\u001c\u0000\u0000 machine-learning.md      # 8���\n\u0014\u0000\u0000 computer-science.md      # ��0 �Y\n```\n\n## ( �� 0�\n\n### 1. Wiki-style Links\n\n�x x�| 8p`L`[[|�]]` \u0015�D ��i��:\n\n```markdown\nt 8\u001c� [[linear-algebra]]@ \u0000(t ����.\n\ft\u0004 �l: [[linear-algebra| \u0015\u0000\u0018Y]]� ��i��.\n```\n\n### 2. �� ܤ\\\n\n`#��` \u0015�<\\ 8\u001c| �X` \u0018 ����:\n\n```markdown\nt 8\u001c� #mathematics #theory ��@ \u0000()��.\n```\n\n### 3. YAML Frontmatter\n\n| ��� YAML frontmatter| ��X� T�pt0| �\u0015` \u0018 ����:\n\n```yaml\n---\ntitle: '��\u0004 t`' # \\�  \u001c�\ntags: ['math', 'network'] # �X ���\nparent: 'mathematics' # �| �\u0004 \u001cP\nchildren: ['networks', 'trees'] # X\u0004 \u001cP�\nprerequisites: ['linear-algebra'] #  � Y� \u001cP�\ndate: '2024-02-10' # �1| (YYYY-MM-DD)\nupdated: '2024-02-15' # \u0018\u0015| ( ݬm)\n---\n```\n\n## =\u0017 \u0000� \u0015\n\n### Parent-Child \u0000�\n\n- **parent**: �\u0011\u0001x �\u0004 \u001cP (1:1 \u0000�)\n- **children**: �\u0011\u0001x X\u0004 \u001cP� (1:N \u0000�)\n\n```yaml\n# mathematics.md\nchildren: ['linear-algebra', 'statistics', 'calculus']\n\n# linear-algebra.md\nparent: 'mathematics'\n```\n\n### Prerequisites \u0000�\n\n- **prerequisites**: ttX0 \u0004t D�\\ � \u001cP� (N:1 \u0000�)\n\n```yaml\n# machine-learning.md\nprerequisites: ['linear-algebra', 'statistics', 'programming']\n```\n\n## =� \b� \f|�\n\n\u001c�\u001c \b� \f|�@ �L� \u0019@ Y� �\\| ��\n��:\n\n```\nMathematics\n\u001c\u0000\u0000 Linear Algebra � Machine Learning\n\u0014\u0000\u0000 Statistics � Data Science � Machine Learning\n\nProgramming\n\u001c\u0000\u0000 JavaScript � React\n\u0014\u0000\u0000 Algorithms � Computer Science\n```\n\n## =' L� \u0004\\8�\n\n�l� \f|�D JSON<\\ �XX$t:\n\n```bash\n# x� \f�� �\nnpm run parse-notes\n\n# \f� � \u0004� L�\nnpm run build\n```\n\n� ��� `src/data/notes.json`� \u0000�)��.\n\n## =� �1 \u0000t�\n\n### 1. \f| t�\n\n- \u00018 �8�@ Xt\b ��: `machine-learning.md`\n- �1 \u0000� Xt\b ��\n\n### 2. \u001c� lp\n\n```markdown\n# Tx \u001c�\n\n## �� 9X\n\n### X\u0004 9X\n```\n\n### 3. T� \u0014]\n\n````markdown\n```javascript\nconst example = 'T� \b�'\n```\n````\n\n### 4. \u0018Y �� (�� \b\u0015)\n\n```markdown\n$$E = mc^2$$\n\nx|x \u0018�: $x^2 + y^2 = z^2$\n```\n\n## <� ��� \u0004��\n\n1. **�U\\ \u001c�**: \u0001 x�� �UX� l�\u0001x \u001c�D \u00008| i��\n2. **\u0001\b\\ \u0000�**: parent/children� prerequisites| \u0001\b� $\u0015X8�\n3. **|\u0000\u001c ��**: D�\\ �\u001c�@ �|\\ ��| ��X8�\n4. **�l \\�**: \u0000(\u001c \u001cP�D wiki-link\\ �X8�\n5. **\u0010�\u0001 l1**: 0\b \u001cP�0 � \u001cPL� \u0010�\u0001<\\ l1X8�\n\n## =\n\n�\u0001T�\u001c Ux` \u0018 �� ��\n\n- **x�**: \u0001 �l� \f|\n- **��**: parent-child, prerequisite, mention, tag \u0000�\n- **t�0**: ���\\ ��T\u001c x��\n- \\*\\*�\\*\\*: Y� \u001c\u001c| ���� prerequisite �x\n\n�\\� x�| �\u0000Xt ��<\\ �� ��\u0004� \u0018\u0001)��!\n"
+    },
+    {
+      "id": "statistics",
+      "title": "Statistics",
+      "tags": [
+        "math",
+        "data",
+        "probability"
+      ],
+      "content": "# Statistics\n\nStatistics is the discipline that concerns the collection, organization, analysis, interpretation, and presentation of data.\n\n## Core Areas\n\n### Descriptive Statistics\n- Measures of central tendency (mean, median, mode)\n- Measures of variability (variance, standard deviation)\n- Data visualization (histograms, scatter plots)\n\n### Inferential Statistics\n- Hypothesis testing\n- Confidence intervals\n- Regression analysis\n- ANOVA\n\n### Probability Theory\n- Random variables\n- Probability distributions\n- Bayes' theorem\n- Law of large numbers\n\n## Applications\n\nStatistics is essential for:\n- [[data-science|Data Science]] analysis\n- [[machine-learning|Machine Learning]] evaluation\n- Scientific research\n- Business analytics\n- Quality control\n\n## Key Concepts\n\n- Population vs. Sample\n- Correlation vs. Causation\n- Statistical significance\n- P-values and confidence intervals\n\n#statistics #mathematics #data-analysis",
+      "parent": "mathematics",
+      "children": [
+        "data-science",
+        "machine-learning"
+      ],
+      "dateCreated": "2024-01-18"
+    },
+    {
+      "id": "tag:computer-science",
+      "title": "#computer-science"
+    },
+    {
+      "id": "tag:problem-solving",
+      "title": "#problem-solving"
+    },
+    {
+      "id": "tag:optimization",
+      "title": "#optimization"
+    },
+    {
+      "id": "tag:algorithms",
+      "title": "#algorithms"
+    },
+    {
+      "id": "tag:cs",
+      "title": "#cs"
+    },
+    {
+      "id": "tag:theory",
+      "title": "#theory"
+    },
+    {
+      "id": "tag:computation",
+      "title": "#computation"
+    },
+    {
+      "id": "tag:data",
+      "title": "#data"
+    },
+    {
+      "id": "tag:analytics",
+      "title": "#analytics"
+    },
+    {
+      "id": "tag:science",
+      "title": "#science"
+    },
+    {
+      "id": "tag:data-science",
+      "title": "#data-science"
+    },
+    {
+      "id": "tag:big-data",
+      "title": "#big-data"
+    },
+    {
+      "id": "tag:web",
+      "title": "#web"
+    },
+    {
+      "id": "tag:programming",
+      "title": "#programming"
+    },
+    {
+      "id": "tag:frontend",
+      "title": "#frontend"
+    },
+    {
+      "id": "tag:javascript",
+      "title": "#javascript"
+    },
+    {
+      "id": "tag:web-development",
+      "title": "#web-development"
+    },
+    {
+      "id": "tag:math",
+      "title": "#math"
+    },
+    {
+      "id": "tag:vectors",
+      "title": "#vectors"
+    },
+    {
+      "id": "tag:matrices",
+      "title": "#matrices"
+    },
+    {
+      "id": "tag:mathematics",
+      "title": "#mathematics"
+    },
+    {
+      "id": "tag:linear-algebra",
+      "title": "#linear-algebra"
+    },
+    {
+      "id": "tag:ai",
+      "title": "#ai"
+    },
+    {
+      "id": "tag:machine-learning",
+      "title": "#machine-learning"
+    },
+    {
+      "id": "tag:fundamental",
+      "title": "#fundamental"
+    },
+    {
+      "id": "tag:code",
+      "title": "#code"
+    },
+    {
+      "id": "tag:software",
+      "title": "#software"
+    },
+    {
+      "id": "tag:development",
+      "title": "#development"
+    },
+    {
+      "id": "tag:software-development",
+      "title": "#software-development"
+    },
+    {
+      "id": "tag:ui",
+      "title": "#ui"
+    },
+    {
+      "id": "tag:library",
+      "title": "#library"
+    },
+    {
+      "id": "tag:react",
+      "title": "#react"
+    },
+    {
+      "id": "tag:probability",
+      "title": "#probability"
+    },
+    {
+      "id": "tag:statistics",
+      "title": "#statistics"
+    },
+    {
+      "id": "tag:data-analysis",
+      "title": "#data-analysis"
+    }
+  ],
+  "links": [
+    {
+      "source": "algorithms",
+      "target": "machine-learning",
+      "type": "mention"
+    },
+    {
+      "source": "algorithms",
+      "target": "tag:computer-science",
+      "type": "tag"
+    },
+    {
+      "source": "algorithms",
+      "target": "tag:problem-solving",
+      "type": "tag"
+    },
+    {
+      "source": "algorithms",
+      "target": "tag:optimization",
+      "type": "tag"
+    },
+    {
+      "source": "algorithms",
+      "target": "tag:algorithms",
+      "type": "tag"
+    },
+    {
+      "source": "algorithms",
+      "target": "tag:computer-science",
+      "type": "tag"
+    },
+    {
+      "source": "algorithms",
+      "target": "tag:optimization",
+      "type": "tag"
+    },
+    {
+      "source": "computer-science",
+      "target": "mathematics",
+      "type": "mention"
+    },
+    {
+      "source": "computer-science",
+      "target": "algorithms",
+      "type": "mention"
+    },
+    {
+      "source": "computer-science",
+      "target": "programming",
+      "type": "mention"
+    },
+    {
+      "source": "computer-science",
+      "target": "tag:cs",
+      "type": "tag"
+    },
+    {
+      "source": "computer-science",
+      "target": "tag:theory",
+      "type": "tag"
+    },
+    {
+      "source": "computer-science",
+      "target": "tag:computation",
+      "type": "tag"
+    },
+    {
+      "source": "computer-science",
+      "target": "tag:computer-science",
+      "type": "tag"
+    },
+    {
+      "source": "computer-science",
+      "target": "tag:theory",
+      "type": "tag"
+    },
+    {
+      "source": "computer-science",
+      "target": "tag:computation",
+      "type": "tag"
+    },
+    {
+      "source": "data-science",
+      "target": "programming",
+      "type": "mention"
+    },
+    {
+      "source": "data-science",
+      "target": "statistics",
+      "type": "mention"
+    },
+    {
+      "source": "data-science",
+      "target": "mathematics",
+      "type": "mention"
+    },
+    {
+      "source": "data-science",
+      "target": "tag:data",
+      "type": "tag"
+    },
+    {
+      "source": "data-science",
+      "target": "tag:analytics",
+      "type": "tag"
+    },
+    {
+      "source": "data-science",
+      "target": "tag:science",
+      "type": "tag"
+    },
+    {
+      "source": "data-science",
+      "target": "tag:data-science",
+      "type": "tag"
+    },
+    {
+      "source": "data-science",
+      "target": "tag:analytics",
+      "type": "tag"
+    },
+    {
+      "source": "data-science",
+      "target": "tag:big-data",
+      "type": "tag"
+    },
+    {
+      "source": "javascript",
+      "target": "react",
+      "type": "mention"
+    },
+    {
+      "source": "javascript",
+      "target": "tag:web",
+      "type": "tag"
+    },
+    {
+      "source": "javascript",
+      "target": "tag:programming",
+      "type": "tag"
+    },
+    {
+      "source": "javascript",
+      "target": "tag:frontend",
+      "type": "tag"
+    },
+    {
+      "source": "javascript",
+      "target": "tag:javascript",
+      "type": "tag"
+    },
+    {
+      "source": "javascript",
+      "target": "tag:web-development",
+      "type": "tag"
+    },
+    {
+      "source": "javascript",
+      "target": "tag:programming",
+      "type": "tag"
+    },
+    {
+      "source": "linear-algebra",
+      "target": "machine-learning",
+      "type": "mention"
+    },
+    {
+      "source": "linear-algebra",
+      "target": "tag:math",
+      "type": "tag"
+    },
+    {
+      "source": "linear-algebra",
+      "target": "tag:vectors",
+      "type": "tag"
+    },
+    {
+      "source": "linear-algebra",
+      "target": "tag:matrices",
+      "type": "tag"
+    },
+    {
+      "source": "linear-algebra",
+      "target": "tag:mathematics",
+      "type": "tag"
+    },
+    {
+      "source": "linear-algebra",
+      "target": "tag:linear-algebra",
+      "type": "tag"
+    },
+    {
+      "source": "machine-learning",
+      "target": "linear-algebra",
+      "type": "mention"
+    },
+    {
+      "source": "machine-learning",
+      "target": "statistics",
+      "type": "mention"
+    },
+    {
+      "source": "machine-learning",
+      "target": "programming",
+      "type": "mention"
+    },
+    {
+      "source": "machine-learning",
+      "target": "tag:ai",
+      "type": "tag"
+    },
+    {
+      "source": "machine-learning",
+      "target": "tag:data-science",
+      "type": "tag"
+    },
+    {
+      "source": "machine-learning",
+      "target": "tag:algorithms",
+      "type": "tag"
+    },
+    {
+      "source": "machine-learning",
+      "target": "tag:ai",
+      "type": "tag"
+    },
+    {
+      "source": "machine-learning",
+      "target": "tag:machine-learning",
+      "type": "tag"
+    },
+    {
+      "source": "machine-learning",
+      "target": "tag:data-science",
+      "type": "tag"
+    },
+    {
+      "source": "mathematics",
+      "target": "tag:fundamental",
+      "type": "tag"
+    },
+    {
+      "source": "mathematics",
+      "target": "tag:science",
+      "type": "tag"
+    },
+    {
+      "source": "programming",
+      "target": "javascript",
+      "type": "mention"
+    },
+    {
+      "source": "programming",
+      "target": "tag:code",
+      "type": "tag"
+    },
+    {
+      "source": "programming",
+      "target": "tag:software",
+      "type": "tag"
+    },
+    {
+      "source": "programming",
+      "target": "tag:development",
+      "type": "tag"
+    },
+    {
+      "source": "programming",
+      "target": "tag:programming",
+      "type": "tag"
+    },
+    {
+      "source": "programming",
+      "target": "tag:software-development",
+      "type": "tag"
+    },
+    {
+      "source": "react",
+      "target": "javascript",
+      "type": "mention"
+    },
+    {
+      "source": "react",
+      "target": "tag:frontend",
+      "type": "tag"
+    },
+    {
+      "source": "react",
+      "target": "tag:ui",
+      "type": "tag"
+    },
+    {
+      "source": "react",
+      "target": "tag:library",
+      "type": "tag"
+    },
+    {
+      "source": "react",
+      "target": "tag:react",
+      "type": "tag"
+    },
+    {
+      "source": "react",
+      "target": "tag:frontend",
+      "type": "tag"
+    },
+    {
+      "source": "react",
+      "target": "tag:javascript",
+      "type": "tag"
+    },
+    {
+      "source": "readme",
+      "target": "linear-algebra",
+      "type": "mention"
+    },
+    {
+      "source": "readme",
+      "target": "linear-algebra",
+      "type": "mention"
+    },
+    {
+      "source": "readme",
+      "target": "tag:mathematics",
+      "type": "tag"
+    },
+    {
+      "source": "readme",
+      "target": "tag:theory",
+      "type": "tag"
+    },
+    {
+      "source": "statistics",
+      "target": "data-science",
+      "type": "mention"
+    },
+    {
+      "source": "statistics",
+      "target": "machine-learning",
+      "type": "mention"
+    },
+    {
+      "source": "statistics",
+      "target": "tag:math",
+      "type": "tag"
+    },
+    {
+      "source": "statistics",
+      "target": "tag:data",
+      "type": "tag"
+    },
+    {
+      "source": "statistics",
+      "target": "tag:probability",
+      "type": "tag"
+    },
+    {
+      "source": "statistics",
+      "target": "tag:statistics",
+      "type": "tag"
+    },
+    {
+      "source": "statistics",
+      "target": "tag:mathematics",
+      "type": "tag"
+    },
+    {
+      "source": "statistics",
+      "target": "tag:data-analysis",
+      "type": "tag"
+    },
+    {
+      "source": "programming",
+      "target": "algorithms",
+      "type": "parent"
+    },
+    {
+      "source": "statistics",
+      "target": "data-science",
+      "type": "prerequisite"
+    },
+    {
+      "source": "programming",
+      "target": "data-science",
+      "type": "prerequisite"
+    },
+    {
+      "source": "mathematics",
+      "target": "data-science",
+      "type": "prerequisite"
+    },
+    {
+      "source": "programming",
+      "target": "javascript",
+      "type": "parent"
+    },
+    {
+      "source": "mathematics",
+      "target": "linear-algebra",
+      "type": "parent"
+    },
+    {
+      "source": "linear-algebra",
+      "target": "machine-learning",
+      "type": "prerequisite"
+    },
+    {
+      "source": "statistics",
+      "target": "machine-learning",
+      "type": "prerequisite"
+    },
+    {
+      "source": "programming",
+      "target": "machine-learning",
+      "type": "prerequisite"
+    },
+    {
+      "source": "javascript",
+      "target": "react",
+      "type": "parent"
+    },
+    {
+      "source": "javascript",
+      "target": "react",
+      "type": "prerequisite"
+    },
+    {
+      "source": "mathematics",
+      "target": "statistics",
+      "type": "parent"
+    }
+  ]
+}
