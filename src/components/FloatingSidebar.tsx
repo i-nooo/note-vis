@@ -32,7 +32,7 @@ export default function FloatingSidebar({
 
   return (
     <aside
-      className={`fixed top-[80px] right-5 max-h-[calc(100vh-40px)] bg-white border border-gray-200 rounded-xl shadow-gray-50 z-50 flex flex-col overflow-hidden transition-all duration-200 ${isAnyExpanded ? 'w-80' : 'w-48'}`}
+      className={`fixed bottom-5 right-5 max-h-[calc(100vh-40px)] bg-white border border-gray-200 rounded-xl shadow-gray-50 z-50 flex flex-col overflow-hidden transition-all duration-200 ${isAnyExpanded ? 'w-80' : 'w-48'}`}
     >
       {/* Network */}
       <section className="border-b border-gray-200">
