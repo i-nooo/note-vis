@@ -112,11 +112,6 @@ function IndexPage() {
 
   const clearAllTags = () => setSelectedTags(new Set())
 
-  const showAllNotes = () => {
-    setSelectedTags(new Set())
-    setQuery('')
-    setDateFilter({})
-  }
 
   // 최신 글 리스트 (날짜가 있는 노트들만, 태그 노드 제외)
   const recentNotes = useMemo(() => {
@@ -169,7 +164,7 @@ function IndexPage() {
           />
         </div>
 
-        <RecentNotes notes={recentNotes} onShowAll={showAllNotes} />
+        <RecentNotes notes={recentNotes} />
       </div>
     </>
   )

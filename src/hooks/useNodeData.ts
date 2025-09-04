@@ -32,9 +32,9 @@ export function useNodeData(baseData: GraphData, id: string) {
     while (currentNode) {
       path.unshift(currentNode)
 
-      let parentId = currentNode.parent
+      // prerequisites의 첫 번째 항목을 parent로 사용
+      let parentId = null
       if (
-        !parentId &&
         currentNode.prerequisites &&
         currentNode.prerequisites.length > 0
       ) {
@@ -64,25 +64,6 @@ export function useNodeData(baseData: GraphData, id: string) {
       })
     })
 
-    // parent 관계 구축
-    baseData.nodes.forEach((n) => {
-      if (!n.parent || !map.has(n.id) || !map.has(n.parent)) return
-      map.get(n.parent)!.children!.push(map.get(n.id)!)
-    })
-
-    // frontmatter children 관계 구축
-    baseData.nodes.forEach((n) => {
-      if (!n.children) return
-      n.children.forEach((childId) => {
-        if (!map.has(childId)) return
-        const parent = map.get(n.id)!
-        const child = map.get(childId)!
-        const alreadyConnected = parent.children!.some((c) => c.id === child.id)
-        if (!alreadyConnected) {
-          parent.children!.push(child)
-        }
-      })
-    })
 
     // prerequisites 관계 구축 (여러 선행 개념)
     baseData.nodes.forEach((n) => {
@@ -91,7 +72,7 @@ export function useNodeData(baseData: GraphData, id: string) {
         if (!map.has(prereqId)) return
         const prereq = map.get(prereqId)!
         const child = map.get(n.id)!
-        const alreadyConnected = prereq.children!.some((c) => c.id === child.id)
+        const alreadyConnected = prereq.children?.some((c) => c.id === child.id)
         if (!alreadyConnected) {
           prereq.children!.push(child)
         }
@@ -105,10 +86,9 @@ export function useNodeData(baseData: GraphData, id: string) {
     let ancestor = current
     while (true) {
       const currentNodeData = baseData.nodes.find((n) => n.id === ancestor.id)
-      let parentId = currentNodeData?.parent
-
+      // prerequisites의 첫 번째 항목을 parent로 사용
+      let parentId = null
       if (
-        !parentId &&
         currentNodeData?.prerequisites &&
         currentNodeData.prerequisites.length > 0
       ) {

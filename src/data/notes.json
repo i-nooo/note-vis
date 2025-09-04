@@ -1,6 +1,22 @@
 {
   "nodes": [
     {
+      "id": "[BUGFIX] base router",
+      "title": "[BUGFIX] base router",
+      "tags": [
+        "computer-science",
+        "problem-solving",
+        "optimization"
+      ],
+      "content": "",
+      "prerequisites": [
+        "statistics",
+        "programming",
+        "mathematics"
+      ],
+      "dateCreated": "2024-01-30"
+    },
+    {
       "id": "algorithms",
       "title": "Algorithms",
       "tags": [
@@ -9,10 +25,8 @@
         "optimization"
       ],
       "content": "# Algorithms\n\nAn algorithm is a finite sequence of well-defined instructions for solving a computational problem or performing a calculation.\n\n## Algorithm Analysis\n\n### Time Complexity\n- **O(1)**: Constant time\n- **O(log n)**: Logarithmic time  \n- **O(n)**: Linear time\n- **O(n²)**: Quadratic time\n- **O(2^n)**: Exponential time\n\n### Space Complexity\n- Amount of memory an algorithm uses\n- Trade-offs between time and space\n\n## Common Algorithm Types\n\n### Sorting Algorithms\n- Bubble Sort: O(n²)\n- Merge Sort: O(n log n)\n- Quick Sort: O(n log n) average\n- Heap Sort: O(n log n)\n\n### Search Algorithms\n- Linear Search: O(n)\n- Binary Search: O(log n)\n- Depth-First Search (DFS)\n- Breadth-First Search (BFS)\n\n### Graph Algorithms\n- Dijkstra's shortest path\n- Minimum spanning tree\n- Topological sorting\n\n## Design Paradigms\n\n- **Divide and Conquer**: Break problem into smaller subproblems\n- **Dynamic Programming**: Store solutions to subproblems\n- **Greedy**: Make locally optimal choices\n- **Backtracking**: Try all possibilities systematically\n\n## Applications\n\nAlgorithms are used in:\n- [[data-structures|Data Structures]] implementation\n- [[machine-learning|Machine Learning]] optimization\n- Database query optimization\n- Network routing\n- Image processing\n\n#algorithms #computer-science #optimization",
-      "parent": "programming",
-      "children": [
-        "data-structures",
-        "machine-learning"
+      "prerequisites": [
+        "programming"
       ],
       "dateCreated": "2024-01-30"
     },
@@ -25,11 +39,6 @@
         "computation"
       ],
       "content": "# Computer Science\n\nComputer Science is the study of computational systems and the design of computer systems and their uses.\n\n## Core Areas\n\n### Theoretical Computer Science\n- Computational complexity theory\n- Algorithms and data structures\n- Formal methods and verification\n- Theory of computation\n\n### Systems and Architecture\n- Computer architecture\n- Operating systems\n- Networks and distributed systems\n- Database systems\n\n### Software Engineering\n- Software design patterns\n- Testing and quality assurance\n- Project management\n- Version control\n\n### Specialized Fields\n- Artificial Intelligence\n- Human-Computer Interaction\n- Computer Graphics\n- Cybersecurity\n\n## Fundamental Concepts\n\n- Abstraction and modularity\n- Computational thinking\n- Problem decomposition\n- Efficiency and optimization\n\n## Relationship to Other Fields\n\nComputer Science intersects with:\n- [[mathematics|Mathematics]] - Logic, discrete math\n- [[algorithms|Algorithms]] - Problem-solving techniques  \n- [[programming|Programming]] - Implementation skills\n- Engineering - System design\n- Cognitive science - AI and HCI\n\n#computer-science #theory #computation",
-      "children": [
-        "algorithms",
-        "data-structures",
-        "programming"
-      ],
       "dateCreated": "2024-01-05"
     },
     {
@@ -41,10 +50,6 @@
         "science"
       ],
       "content": "# Data Science\n\nData science is an interdisciplinary field that uses scientific methods, processes, algorithms, and systems to extract knowledge and insights from structured and unstructured data.\n\n## The Data Science Process\n\n1. **Data Collection**: Gathering relevant data from various sources\n2. **Data Cleaning**: Removing errors and inconsistencies\n3. **Exploratory Data Analysis**: Understanding data patterns\n4. **Modeling**: Building predictive or descriptive models\n5. **Validation**: Testing model performance\n6. **Deployment**: Implementing solutions in production\n\n## Required Skills\n\n### Technical Skills\n- [[programming|Programming]] (Python, R, SQL)\n- [[statistics|Statistics]] and probability\n- [[mathematics|Mathematics]] foundations\n- Database management\n\n### Domain Knowledge\n- Business understanding\n- Subject matter expertise\n- Communication skills\n\n## Tools and Technologies\n\n- **Languages**: Python, R, SQL, Scala\n- **Libraries**: pandas, numpy, scikit-learn, matplotlib\n- **Platforms**: Jupyter, RStudio, Databricks\n- **Databases**: PostgreSQL, MongoDB, BigQuery\n\n## Applications\n\n- Customer segmentation\n- Fraud detection\n- Recommendation systems\n- Predictive maintenance\n- Market analysis\n\n#data-science #analytics #big-data",
-      "children": [
-        "machine-learning",
-        "data-visualization"
-      ],
       "prerequisites": [
         "statistics",
         "programming",
@@ -61,10 +66,8 @@
         "frontend"
       ],
       "content": "# JavaScript\n\nJavaScript is a high-level, interpreted programming language that conforms to the ECMAScript specification.\n\n## Key Features\n\n- **Dynamic typing**: Variables can hold different types\n- **First-class functions**: Functions can be assigned to variables\n- **Prototype-based**: Objects can inherit directly from other objects\n- **Event-driven**: Responds to user interactions\n\n## Core Concepts\n\n### Variables and Scope\n```javascript\nlet variable = \"block-scoped\";\nconst constant = \"immutable\";\nvar legacy = \"function-scoped\";\n```\n\n### Functions\n```javascript\n// Function declaration\nfunction greet(name) {\n    return `Hello, ${name}!`;\n}\n\n// Arrow function\nconst greet = (name) => `Hello, ${name}!`;\n```\n\n## Ecosystem\n\n- [[react|React]] - UI library\n- [[nodejs|Node.js]] - Server-side runtime\n- Vue.js - Progressive framework\n- Angular - Full framework\n\n## Modern Features (ES6+)\n\n- Modules (import/export)\n- Classes\n- Template literals\n- Destructuring\n- Async/await\n\n#javascript #web-development #programming",
-      "parent": "programming",
-      "children": [
-        "react",
-        "nodejs"
+      "prerequisites": [
+        "programming"
       ],
       "dateCreated": "2024-01-25",
       "dateUpdated": "2024-02-10"
@@ -78,10 +81,8 @@
         "matrices"
       ],
       "content": "# Linear Algebra\n\nLinear algebra is the branch of mathematics concerning linear equations, linear functions, and their representations through matrices and vector spaces.\n\n## Core Concepts\n\n### Vectors\n- Magnitude and direction\n- Vector operations (addition, scalar multiplication)\n- Dot product and cross product\n\n### Matrices\n- Matrix operations\n- Determinants\n- Eigenvalues and eigenvectors\n\n## Applications\n\nLinear algebra is fundamental to:\n- [[machine-learning|Machine Learning]] algorithms\n- [[computer-graphics|Computer Graphics]] transformations\n- Physics simulations\n- Data analysis\n\n#mathematics #linear-algebra",
-      "parent": "mathematics",
-      "children": [
-        "machine-learning",
-        "computer-graphics"
+      "prerequisites": [
+        "mathematics"
       ],
       "dateCreated": "2024-01-20",
       "dateUpdated": "2024-02-01"
@@ -95,10 +96,6 @@
         "algorithms"
       ],
       "content": "# Machine Learning\n\nMachine learning is a method of data analysis that automates analytical model building using algorithms that iteratively learn from data.\n\n## Types of Learning\n\n### Supervised Learning\n- Uses labeled training data\n- Examples: classification, regression\n\n### Unsupervised Learning\n- Finds hidden patterns in unlabeled data\n- Examples: clustering, dimensionality reduction\n\n### Reinforcement Learning\n- Learns through interaction with environment\n- Uses rewards and penalties\n\n## Prerequisites\n\nTo understand machine learning, you need:\n- [[linear-algebra|Linear Algebra]] for mathematical foundations\n- [[statistics|Statistics]] for probability and inference\n- [[programming|Programming]] skills for implementation\n\n## Applications\n\n- Image recognition\n- Natural language processing  \n- Recommendation systems\n- Autonomous vehicles\n\n#ai #machine-learning #data-science",
-      "children": [
-        "deep-learning",
-        "neural-networks"
-      ],
       "prerequisites": [
         "linear-algebra",
         "statistics",
@@ -114,11 +111,6 @@
         "science"
       ],
       "content": "# Mathematics\n\nMathematics is the abstract study of topics such as quantity, structure, space, and change.\n\n## Core Areas\n\n- **Pure Mathematics**: Abstract mathematical concepts\n- **Applied Mathematics**: Mathematical methods used in applications\n- **Statistics**: Analysis of numerical data\n\nMathematics forms the foundation for many other disciplines including physics, engineering, computer science, and economics.\n\n## Key Concepts\n\n- Logic and proof\n- Set theory\n- Number theory\n- Abstract algebra",
-      "children": [
-        "linear-algebra",
-        "calculus",
-        "discrete-math"
-      ],
       "dateCreated": "2024-01-15"
     },
     {
@@ -130,11 +122,6 @@
         "development"
       ],
       "content": "# Programming\n\nProgramming is the process of creating a set of instructions that tell a computer how to perform a task.\n\n## Core Concepts\n\n### Basic Elements\n- Variables and data types\n- Control structures (loops, conditionals)\n- Functions and procedures\n- Data structures\n\n### Programming Paradigms\n- **Procedural**: Step-by-step instructions\n- **Object-oriented**: Based on objects and classes\n- **Functional**: Based on mathematical functions\n- **Declarative**: Describes what should be done\n\n## Popular Languages\n\n- [[javascript|JavaScript]] - Web development\n- [[python|Python]] - Data science, AI, general purpose\n- Java - Enterprise applications\n- C++ - System programming\n\n## Best Practices\n\n- Write clean, readable code\n- Use version control\n- Test your code\n- Document your work\n\n#programming #software-development",
-      "children": [
-        "javascript",
-        "python",
-        "algorithms"
-      ],
       "dateCreated": "2024-01-10"
     },
     {
@@ -146,7 +133,6 @@
         "library"
       ],
       "content": "# React\n\nReact is a JavaScript library for building user interfaces, maintained by Facebook and the community.\n\n## Core Concepts\n\n### Components\n```jsx\nfunction Welcome(props) {\n    return <h1>Hello, {props.name}</h1>;\n}\n```\n\n### JSX\n- JavaScript XML syntax extension\n- Allows writing HTML-like code in JavaScript\n- Transpiled to `React.createElement()` calls\n\n### State and Props\n- **Props**: Read-only properties passed to components\n- **State**: Mutable data that affects component rendering\n\n### Hooks\n```jsx\nimport { useState, useEffect } from 'react';\n\nfunction Counter() {\n    const [count, setCount] = useState(0);\n    \n    useEffect(() => {\n        document.title = `Count: ${count}`;\n    }, [count]);\n    \n    return (\n        <button onClick={() => setCount(count + 1)}>\n            Count: {count}\n        </button>\n    );\n}\n```\n\n## Prerequisites\n\nUnderstanding these topics helps with React development:\n- [[javascript|JavaScript]] ES6+ features\n- HTML and CSS fundamentals\n- DOM manipulation concepts\n\n## Ecosystem\n\n- React Router - Navigation\n- Redux/Zustand - State management  \n- Next.js - Full-stack framework\n- React Testing Library - Testing\n\n#react #frontend #javascript",
-      "parent": "javascript",
       "prerequisites": [
         "javascript",
         "html",
@@ -169,10 +155,8 @@
         "probability"
       ],
       "content": "# Statistics\n\nStatistics is the discipline that concerns the collection, organization, analysis, interpretation, and presentation of data.\n\n## Core Areas\n\n### Descriptive Statistics\n- Measures of central tendency (mean, median, mode)\n- Measures of variability (variance, standard deviation)\n- Data visualization (histograms, scatter plots)\n\n### Inferential Statistics\n- Hypothesis testing\n- Confidence intervals\n- Regression analysis\n- ANOVA\n\n### Probability Theory\n- Random variables\n- Probability distributions\n- Bayes' theorem\n- Law of large numbers\n\n## Applications\n\nStatistics is essential for:\n- [[data-science|Data Science]] analysis\n- [[machine-learning|Machine Learning]] evaluation\n- Scientific research\n- Business analytics\n- Quality control\n\n## Key Concepts\n\n- Population vs. Sample\n- Correlation vs. Causation\n- Statistical significance\n- P-values and confidence intervals\n\n#statistics #mathematics #data-analysis",
-      "parent": "mathematics",
-      "children": [
-        "data-science",
-        "machine-learning"
+      "prerequisites": [
+        "mathematics"
       ],
       "dateCreated": "2024-01-18"
     },
@@ -318,6 +302,21 @@
     }
   ],
   "links": [
+    {
+      "source": "[BUGFIX] base router",
+      "target": "tag:computer-science",
+      "type": "tag"
+    },
+    {
+      "source": "[BUGFIX] base router",
+      "target": "tag:problem-solving",
+      "type": "tag"
+    },
+    {
+      "source": "[BUGFIX] base router",
+      "target": "tag:optimization",
+      "type": "tag"
+    },
     {
       "source": "algorithms",
       "target": "machine-learning",
@@ -689,9 +688,24 @@
       "type": "tag"
     },
     {
+      "source": "statistics",
+      "target": "[BUGFIX] base router",
+      "type": "prerequisite"
+    },
+    {
+      "source": "programming",
+      "target": "[BUGFIX] base router",
+      "type": "prerequisite"
+    },
+    {
+      "source": "mathematics",
+      "target": "[BUGFIX] base router",
+      "type": "prerequisite"
+    },
+    {
       "source": "programming",
       "target": "algorithms",
-      "type": "parent"
+      "type": "prerequisite"
     },
     {
       "source": "statistics",
@@ -711,12 +725,12 @@
     {
       "source": "programming",
       "target": "javascript",
-      "type": "parent"
+      "type": "prerequisite"
     },
     {
       "source": "mathematics",
       "target": "linear-algebra",
-      "type": "parent"
+      "type": "prerequisite"
     },
     {
       "source": "linear-algebra",
@@ -736,17 +750,12 @@
     {
       "source": "javascript",
       "target": "react",
-      "type": "parent"
-    },
-    {
-      "source": "javascript",
-      "target": "react",
       "type": "prerequisite"
     },
     {
       "source": "mathematics",
       "target": "statistics",
-      "type": "parent"
+      "type": "prerequisite"
     }
   ]
 }

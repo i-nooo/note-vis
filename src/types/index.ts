@@ -1,4 +1,4 @@
-export type LinkType = 'tag' | 'mention' | 'parent' | 'prerequisite'
+export type LinkType = 'tag' | 'mention' | 'prerequisite'
 
 export interface NoteNode {
   id: string
@@ -7,8 +7,6 @@ export interface NoteNode {
   content?: string
   tags?: Array<string>
   degree?: number
-  parent?: string
-  children?: Array<string>
   prerequisites?: Array<string>
   dateCreated?: string
   dateUpdated?: string
@@ -30,5 +28,5 @@ export interface TreeNode {
   title: string
   url?: string
   children?: Array<TreeNode>
-  parent?: string
+  prerequisites?: Array<string>
 }

@@ -29,8 +29,6 @@ function parseNotes() {
     // frontmatter 파싱 (선택적)
     let title = id
     let tags = []
-    let parent = null
-    let childrenList = []
     let prerequisites = []
     let dateCreated = null
     let dateUpdated = null
@@ -40,8 +38,6 @@ function parseNotes() {
       const frontmatter = frontmatterMatch[1]
       const titleMatch = frontmatter.match(/title:\s*["']?([^"'\n]+)["']?/)
       const tagsMatch = frontmatter.match(/tags:\s*\[(.*?)\]/)
-      const parentMatch = frontmatter.match(/parent:\s*["']?([^"'\n]+)["']?/)
-      const childrenMatch = frontmatter.match(/children:\s*\[(.*?)\]/)
       const prerequisitesMatch = frontmatter.match(/prerequisites:\s*\[(.*?)\]/)
       const dateMatch = frontmatter.match(/date:\s*["']?([^"'\n]+)["']?/)
       const createdMatch = frontmatter.match(/created:\s*["']?([^"'\n]+)["']?/)
@@ -50,8 +46,6 @@ function parseNotes() {
       if (titleMatch) title = titleMatch[1].trim()
       if (tagsMatch)
         tags = tagsMatch[1].split(',').map((t) => t.trim().replace(/["']/g, ''))
-      if (parentMatch) parent = parentMatch[1].trim()
-
       // 날짜 필드 처리 (date > created 순서로 우선순위)
       if (dateMatch) {
         dateCreated = dateMatch[1].trim()
@@ -61,13 +55,6 @@ function parseNotes() {
 
       if (updatedMatch) {
         dateUpdated = updatedMatch[1].trim()
-      }
-
-      // children 필드 처리 (후행 개념)
-      if (childrenMatch) {
-        childrenList = childrenMatch[1]
-          .split(',')
-          .map((t) => t.trim().replace(/["']/g, ''))
       }
 
       // prerequisites 필드 처리 (여러 선행 개념)
@@ -95,8 +82,6 @@ function parseNotes() {
       title,
       tags,
       content: contentBody,
-      ...(parent && { parent }),
-      ...(childrenList.length > 0 && { children: childrenList }),
       ...(prerequisites.length > 0 && { prerequisites }),
       ...(dateCreated && { dateCreated }),
       ...(dateUpdated && { dateUpdated }),
@@ -159,16 +144,8 @@ function parseNotes() {
     })
   })
 
-  // parent 관계를 links에 추가 (NetworkGraph용)
+  // prerequisites 관계를 links에 추가 (NetworkGraph용)
   nodes.forEach((node) => {
-    if (node.parent) {
-      links.push({
-        source: node.parent,
-        target: node.id,
-        type: 'parent',
-      })
-    }
-
     // prerequisites 관계를 links에 추가
     if (node.prerequisites) {
       node.prerequisites.forEach((prereqId) => {

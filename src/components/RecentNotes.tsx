@@ -2,10 +2,9 @@ import type { NoteNode } from '../types'
 
 interface RecentNotesProps {
   notes: Array<NoteNode & { sortDate: string }>
-  onShowAll: () => void
 }
 
-export default function RecentNotes({ notes, onShowAll }: RecentNotesProps) {
+export default function RecentNotes({ notes }: RecentNotesProps) {
   const handleNoteClick = (noteId: string) => {
     window.location.href = `/node/${noteId}`
   }
