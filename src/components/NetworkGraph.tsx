@@ -134,17 +134,18 @@ export default function NetworkGraph({
         d3
           .forceLink<SimNode, SimLink>(simLinks)
           .id((d) => d.id)
-          .distance((l) => (l.type === 'tag' ? 40 : 80))
-          .strength((l) => (l.type === 'tag' ? 0.6 : 1.2)),
+          .distance((l) => (l.type === 'tag' ? 20 : 30))
+          .strength((l) => (l.type === 'tag' ? 0.8 : 1.5)),
       )
-      .force('charge', d3.forceManyBody().strength(-400))
-      .force('center', d3.forceCenter(W / 2, H / 2))
+      .force('charge', d3.forceManyBody().strength(-200))
+      .force('center', d3.forceCenter(W / 2, H / 2).strength(1.5))
+      .force('radial', d3.forceRadial(100, W / 2, H / 2).strength(0.3))
       .force(
         'collide',
         d3
           .forceCollide<SimNode>()
-          .radius((d) => (isTag(d) ? 12 : 18))
-          .strength(1.0),
+          .radius((d) => (isTag(d) ? 8 : 12))
+          .strength(1.2),
       )
 
     const link = g
