@@ -262,8 +262,14 @@ export default function TreeGraph({
           : 'pointer',
       )
       .text((d) => {
-        // 텍스트가 비어있지 않도록 보장
-        const text = d.data.title || d.data.id || 'Untitled'
+        // 텍스트가 비어있지 않도록 보장하고 길이 제한
+        let text = d.data.title || d.data.id || 'Untitled'
+        
+        // 긴 텍스트는 줄임표로 처리
+        if (text.length > 20) {
+          text = text.substring(0, 17) + '...'
+        }
+        
         return text
       })
       .on('click', (_, d) => {

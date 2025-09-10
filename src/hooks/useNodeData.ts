@@ -88,42 +88,51 @@ export function useNodeData(baseData: GraphData, id: string) {
     const current = map.get(id)
     if (!current) return null
 
-    // 현재 노드의 모든 prerequisites를 형제 노드로 표시
+    // 선행-현재-후행 계층 구조 생성
     const currentNodeData = baseData.nodes.find((n) => n.id === id)
     if (
       currentNodeData?.prerequisites &&
       currentNodeData.prerequisites.length > 0
     ) {
-      // 가상의 루트 노드 생성
-      const rootNode: TreeNode = {
-        id: `root-of-${id}`,
-        title: `${current.title} 관련`,
-        children: [],
-        broken: false,
-        virtual: true,
-      }
-
-      // 모든 prerequisites를 children으로 추가 (빈 문자열 제외, 깨진 노드 포함)
-      currentNodeData.prerequisites
-        .filter((prereqId) => prereqId && prereqId.trim() !== '') // 빈 문자열 필터링
-        .forEach((prereqId) => {
-          if (map.has(prereqId)) {
-            const prereqNode = map.get(prereqId)!
-            // prerequisites의 children을 비우고 추가 (중복 방지)
-            rootNode.children!.push({
-              ...prereqNode,
-              children: [], // 중복 연결 방지
-            })
+      // prerequisites들을 루트 레벨에 배치
+      const filteredPrereqs = currentNodeData.prerequisites.filter((prereqId) => prereqId && prereqId.trim() !== '')
+      
+      if (filteredPrereqs.length === 1) {
+        // prerequisite가 1개면 간단한 구조
+        const prereqId = filteredPrereqs[0]
+        if (map.has(prereqId)) {
+          const prereqNode = map.get(prereqId)!
+          return {
+            ...prereqNode,
+            children: [{
+              ...current,
+              children: current.children || [],
+            }],
           }
-        })
-
-      // 현재 노드도 children으로 추가
-      rootNode.children!.push({
-        ...current,
-        children: current.children || [],
-      })
-
-      return rootNode
+        }
+      } else if (filteredPrereqs.length > 1) {
+        // prerequisite가 여러 개면 가상 루트 생성
+        const prereqNodes = filteredPrereqs
+          .map(prereqId => map.get(prereqId))
+          .filter(Boolean) as TreeNode[]
+        
+        // 가상 루트에서 각 prerequisite로 연결, 그 아래에 현재 노드
+        const virtualRoot: TreeNode = {
+          id: `virtual-root-${id}`,
+          title: '개념 관계',
+          children: prereqNodes.map(prereqNode => ({
+            ...prereqNode,
+            children: [{
+              ...current,
+              children: current.children || [],
+            }],
+          })),
+          broken: false,
+          virtual: true,
+        }
+        
+        return virtualRoot
+      }
     }
 
     // prerequisites가 없으면 기존 로직 사용

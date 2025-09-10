@@ -114,11 +114,7 @@ export default function NetworkGraph({
       }
       const isHighlighted = matchesQuery(n) || matchesSelectedTags(n)
       if (isTag(n)) {
-        // 태그인데 파일이 없으면 빨간색
-        if (!n.hasFile) {
-          return '#dc2626'
-        }
-        return isHighlighted ? '#ff6b35' : '#969696' // 하이라이트: 주황색
+        return isHighlighted ? '#ff6b35' : '#969696' // 하이라이트: 주황색, 기본: 회색
       } else {
         return isHighlighted ? '#1f77b4' : '#6baed6' // 하이라이트: 진한 파란색
       }
@@ -166,7 +162,7 @@ export default function NetworkGraph({
           .distance((l) => (l.type === 'tag' ? 20 : 30))
           .strength((l) => (l.type === 'tag' ? 0.8 : 1.5)),
       )
-      .force('charge', d3.forceManyBody().strength(-200))
+      .force('charge', d3.forceManyBody().strength(-1100)) // 노드 간 반발력
       .force('center', d3.forceCenter(W / 2, H / 2).strength(1.5))
       .force('radial', d3.forceRadial(100, W / 2, H / 2).strength(0.3))
       .force(
@@ -188,6 +184,11 @@ export default function NetworkGraph({
       .attr('stroke-dasharray', (l) => linkDash(l) ?? null)
       .attr('data-source', (d) => d.source.id)
       .attr('data-target', (d) => d.target.id)
+      .on('mouseover', (_, d) => {
+        // 링크의 양 끝점 중 하나를 중심으로 하이라이트
+        highlight((d.source as SimNode).id)
+      })
+      .on('mouseout', () => clearHighlight())
 
     const node = g
       .append('g')
@@ -252,30 +253,26 @@ export default function NetworkGraph({
 
     simulation.on('tick', () => {
       link
-        .attr('x1', (d) => d.source.x)
-        .attr('y1', (d) => d.source.y)
-        .attr('x2', (d) => d.target.x)
-        .attr('y2', (d) => d.target.y)
+        .attr('x1', (d) => (d.source as SimNode).x)
+        .attr('y1', (d) => (d.source as SimNode).y)
+        .attr('x2', (d) => (d.target as SimNode).x)
+        .attr('y2', (d) => (d.target as SimNode).y)
       node.attr('transform', (d) => `translate(${d.x},${d.y})`)
     })
 
-    // 하이라이트 로직: hovered 노드와 1-hop 이웃만 1.0, 나머지는 0.15
+    // 하이라이트 로직: hovered 노드와 직접 연결된 이웃만 1.0, 나머지는 모두 0.05
     const highlight = (centerId: string) => {
       const neigh = neighbors.get(centerId) ?? new Set<string>()
       const isKeep = (id: string) => id === centerId || neigh.has(id)
 
-      node
-        .selectAll<SVGGElement, SimNode>('g.node, :scope')
-        .attr('opacity', (d) => (isKeep(d.id) ? 1 : 0.15))
+      node.attr('opacity', (d) => (isKeep(d.id) ? 1 : 0.05))
 
       link.attr('opacity', (d) => {
-        const s = d.source.id
-        const t = d.target.id
-        return s === centerId ||
-          t === centerId ||
-          (neighbors.get(centerId)?.has(s) && neighbors.get(centerId)?.has(t))
+        const s = (d.source as SimNode).id
+        const t = (d.target as SimNode).id
+        return s === centerId || t === centerId
           ? 1
-          : 0.15
+          : 0.05
       })
     }
 

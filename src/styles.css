@@ -193,7 +193,8 @@ code {
   padding: 0;
   color: #e6e6e6;
   font-size: 14px;
-  font-family: 'SF Mono', 'Monaco', 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  font-family:
+    'SF Mono', 'Monaco', 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
   line-height: inherit;
   font-weight: 400;
   white-space: pre-wrap;
@@ -242,8 +243,6 @@ code {
 .markdown-content pre code .token.property {
   color: #79c0ff;
 }
-
-
 
 .markdown-content ul,
 .markdown-content ol {
