@@ -3,140 +3,88 @@
     {
       "id": "algorithms",
       "title": "Algorithms",
-      "tags": [
-        "computer-science",
-        "problem-solving",
-        "optimization"
-      ],
+      "tags": ["computer-science", "problem-solving", "optimization"],
       "content": "# Algorithms\n\nAn algorithm is a finite sequence of well-defined instructions for solving a computational problem or performing a calculation.\n\n## Algorithm Analysis\n\n### Time Complexity\n- **O(1)**: Constant time\n- **O(log n)**: Logarithmic time  \n- **O(n)**: Linear time\n- **O(n²)**: Quadratic time\n- **O(2^n)**: Exponential time\n\n### Space Complexity\n- Amount of memory an algorithm uses\n- Trade-offs between time and space\n\n## Common Algorithm Types\n\n### Sorting Algorithms\n- Bubble Sort: O(n²)\n- Merge Sort: O(n log n)\n- Quick Sort: O(n log n) average\n- Heap Sort: O(n log n)\n\n### Search Algorithms\n- Linear Search: O(n)\n- Binary Search: O(log n)\n- Depth-First Search (DFS)\n- Breadth-First Search (BFS)\n\n### Graph Algorithms\n- Dijkstra's shortest path\n- Minimum spanning tree\n- Topological sorting\n\n## Design Paradigms\n\n- **Divide and Conquer**: Break problem into smaller subproblems\n- **Dynamic Programming**: Store solutions to subproblems\n- **Greedy**: Make locally optimal choices\n- **Backtracking**: Try all possibilities systematically\n\n## Applications\n\nAlgorithms are used in:\n- [[data-structures|Data Structures]] implementation\n- [[machine-learning|Machine Learning]] optimization\n- Database query optimization\n- Network routing\n- Image processing\n\n#algorithms #computer-science #optimization",
-      "prerequisites": [
-        "programming"
-      ],
+      "prerequisites": ["programming"],
       "dateCreated": "2024-01-30"
     },
     {
       "id": "base-router-설정",
       "title": "base router 설정",
-      "tags": [
-        "BUGFIX",
-        "tanstack-router",
-        "router"
-      ],
+      "tags": ["BUGFIX", "tanstack-router", "router"],
       "content": "<br/>\n\n> [!NOTE]+ 환경\n>\n> \\- React 19\n> \\- Vite\n> \\- Tanstack Router\n> \\- Vercel\n\n<br/>\n\nSPA 환경에서 TanStack Router를 사용하여 애플리케이션을 개발하던 중, 브라우저 주소창에 /myapp/xxx 와 같은 서브 경로를 직접 입력하면 404 오류가 발생하는 것을 확인하였습니다. 그러나 라우터 링크를 통해 내부 페이지로 이동하는 것은 정상적으로 동작하였습니다. 네트워크 요청을 확인해본 결과, 브라우저가 해당 경로에 실제 정적 파일이 존재하는지 확인하다가 찾지 못해 404를 반환하고 있음을 알게 되었습니다.\n\n<br/>\n\n공식 문서(TanStack Router Docs, Vercel Rewrites)를 참고한 결과, SPA는 최초에 index.html을 로드한 뒤 클라이언트 라우터가 동작하기 때문에, 서버(또는 호스팅 플랫폼)에서 존재하지 않는 경로로의 요청을 index.html로 리라이트해야 함을 알게 되었습니다. 또한 애플리케이션을 루트가 아닌 /myapp 경로에 배포했기 때문에, 라우터 basepath와 빌드 경로 설정도 일관되게 맞추어야 함을 확인하였습니다.\n\n<br/><br/>\n\n이를 해결하기 위해 다음과 같이 수정하였습니다.\n\n<br/>\n\n1. TanStack Router basepath 지정\n\n```\nimport { createRouter } from '@tanstack/react-router'\n\nconst router = createRouter({\nrouteTree,\nbasepath: '/myapp',\n})\n```\n\n→ 라우터가 /myapp을 기준으로 경로를 인식하도록 수정하였습니다.\n\n<br/>\n\n2. Vite 설정 수정\n\n```\n// vite.config.ts\nexport default defineConfig({\nbase: '/myapp/',\n})\n```\n\n→ 빌드된 정적 자산(js, css 등)이 올바른 경로에서 로드되도록 하였습니다.\n\n<br/>\n\n3. Vercel 리라이트 설정 추가\n\n```\n// vercel.json\n{\n\"rewrites\": [\n{\n\"source\": \"/myapp/(.*)\",\n\"destination\": \"/myapp/index.html\"\n}\n]\n}\n```\n\n→ /myapp 이하의 모든 경로를 index.html로 전달하도록 하였습니다.\n\n<br/><br/>\n\n이 과정을 거친 후 브라우저 주소창에 /myapp/xxx 와 같은 경로를 직접 입력해도 Vercel이 index.html을 반환하게 되었고, TanStack Router가 정상적으로 초기화되어 해당 경로를 매칭할 수 있었습니다. 결과적으로 내부 링크 이동과 직접 주소 입력이 동일하게 동작하는 일관된 라우팅 경험을 제공할 수 있었습니다.\n\n<br/>\n\n이번 경험을 통해 CSR 기반 라우팅에서는 배포 환경에 맞는 index.html fallback 설정이 필수적임을 학습하였습니다. 특히 Vercel과 같은 정적 호스팅 환경에서는 vercel.json의 rewrite 규칙을 통해 라우팅 문제를 해결할 수 있음을 확인하였습니다. 또한 애플리케이션을 서브 경로에 배포할 경우 라우터 basepath, 빌드 base 설정, 호스팅 플랫폼의 리라이트 규칙을 반드시 일관되게 구성해야 함을 깨달았습니다.",
-      "prerequisites": [
-        "SPA",
-        "router"
-      ],
+      "prerequisites": ["SPA", "router"],
       "dateCreated": "2025-09-04"
     },
     {
       "id": "computer-science",
       "title": "Computer Science",
-      "tags": [
-        "cs",
-        "theory",
-        "computation"
-      ],
+      "tags": ["cs", "theory", "computation"],
       "content": "# Computer Science\n\nComputer Science is the study of computational systems and the design of computer systems and their uses.\n\n## Core Areas\n\n### Theoretical Computer Science\n- Computational complexity theory\n- Algorithms and data structures\n- Formal methods and verification\n- Theory of computation\n\n### Systems and Architecture\n- Computer architecture\n- Operating systems\n- Networks and distributed systems\n- Database systems\n\n### Software Engineering\n- Software design patterns\n- Testing and quality assurance\n- Project management\n- Version control\n\n### Specialized Fields\n- Artificial Intelligence\n- Human-Computer Interaction\n- Computer Graphics\n- Cybersecurity\n\n## Fundamental Concepts\n\n- Abstraction and modularity\n- Computational thinking\n- Problem decomposition\n- Efficiency and optimization\n\n## Relationship to Other Fields\n\nComputer Science intersects with:\n- [[mathematics|Mathematics]] - Logic, discrete math\n- [[algorithms|Algorithms]] - Problem-solving techniques  \n- [[programming|Programming]] - Implementation skills\n- Engineering - System design\n- Cognitive science - AI and HCI\n\n#computer-science #theory #computation",
       "dateCreated": "2024-01-05"
     },
     {
       "id": "data-science",
       "title": "Data Science",
-      "tags": [
-        "data",
-        "analytics",
-        "science"
-      ],
+      "tags": ["data", "analytics", "science"],
       "content": "# Data Science\n\nData science is an interdisciplinary field that uses scientific methods, processes, algorithms, and systems to extract knowledge and insights from structured and unstructured data.\n\n## The Data Science Process\n\n1. **Data Collection**: Gathering relevant data from various sources\n2. **Data Cleaning**: Removing errors and inconsistencies\n3. **Exploratory Data Analysis**: Understanding data patterns\n4. **Modeling**: Building predictive or descriptive models\n5. **Validation**: Testing model performance\n6. **Deployment**: Implementing solutions in production\n\n## Required Skills\n\n### Technical Skills\n- [[programming|Programming]] (Python, R, SQL)\n- [[statistics|Statistics]] and probability\n- [[mathematics|Mathematics]] foundations\n- Database management\n\n### Domain Knowledge\n- Business understanding\n- Subject matter expertise\n- Communication skills\n\n## Tools and Technologies\n\n- **Languages**: Python, R, SQL, Scala\n- **Libraries**: pandas, numpy, scikit-learn, matplotlib\n- **Platforms**: Jupyter, RStudio, Databricks\n- **Databases**: PostgreSQL, MongoDB, BigQuery\n\n## Applications\n\n- Customer segmentation\n- Fraud detection\n- Recommendation systems\n- Predictive maintenance\n- Market analysis\n\n#data-science #analytics #big-data",
-      "prerequisites": [
-        "statistics",
-        "programming",
-        "mathematics"
-      ],
+      "prerequisites": ["statistics", "programming", "mathematics"],
       "dateCreated": "2024-02-15"
     },
     {
       "id": "javascript",
       "title": "JavaScript",
-      "tags": [
-        "web",
-        "programming",
-        "frontend"
-      ],
+      "tags": ["web", "programming", "frontend"],
       "content": "# JavaScript\n\nJavaScript is a high-level, interpreted programming language that conforms to the ECMAScript specification.\n\n## Key Features\n\n- **Dynamic typing**: Variables can hold different types\n- **First-class functions**: Functions can be assigned to variables\n- **Prototype-based**: Objects can inherit directly from other objects\n- **Event-driven**: Responds to user interactions\n\n## Core Concepts\n\n### Variables and Scope\n```javascript\nlet variable = \"block-scoped\";\nconst constant = \"immutable\";\nvar legacy = \"function-scoped\";\n```\n\n### Functions\n```javascript\n// Function declaration\nfunction greet(name) {\n    return `Hello, ${name}!`;\n}\n\n// Arrow function\nconst greet = (name) => `Hello, ${name}!`;\n```\n\n## Ecosystem\n\n- [[react|React]] - UI library\n- [[nodejs|Node.js]] - Server-side runtime\n- Vue.js - Progressive framework\n- Angular - Full framework\n\n## Modern Features (ES6+)\n\n- Modules (import/export)\n- Classes\n- Template literals\n- Destructuring\n- Async/await\n\n#javascript #web-development #programming",
-      "prerequisites": [
-        "programming"
-      ],
+      "prerequisites": ["programming"],
       "dateCreated": "2024-01-25",
       "dateUpdated": "2024-02-10"
     },
     {
       "id": "linear-algebra",
       "title": "Linear Algebra",
-      "tags": [
-        "math",
-        "vectors",
-        "matrices"
-      ],
+      "tags": ["math", "vectors", "matrices"],
       "content": "# Linear Algebra\n\nLinear algebra is the branch of mathematics concerning linear equations, linear functions, and their representations through matrices and vector spaces.\n\n## Core Concepts\n\n### Vectors\n- Magnitude and direction\n- Vector operations (addition, scalar multiplication)\n- Dot product and cross product\n\n### Matrices\n- Matrix operations\n- Determinants\n- Eigenvalues and eigenvectors\n\n## Applications\n\nLinear algebra is fundamental to:\n- [[machine-learning|Machine Learning]] algorithms\n- [[computer-graphics|Computer Graphics]] transformations\n- Physics simulations\n- Data analysis\n\n#mathematics #linear-algebra",
-      "prerequisites": [
-        "mathematics"
-      ],
+      "prerequisites": ["mathematics"],
       "dateCreated": "2024-01-20",
       "dateUpdated": "2024-02-01"
     },
     {
       "id": "machine-learning",
       "title": "Machine Learning",
-      "tags": [
-        "ai",
-        "data-science",
-        "algorithms"
-      ],
+      "tags": ["ai", "data-science", "algorithms"],
       "content": "# Machine Learning\n\nMachine learning is a method of data analysis that automates analytical model building using algorithms that iteratively learn from data.\n\n## Types of Learning\n\n### Supervised Learning\n- Uses labeled training data\n- Examples: classification, regression\n\n### Unsupervised Learning\n- Finds hidden patterns in unlabeled data\n- Examples: clustering, dimensionality reduction\n\n### Reinforcement Learning\n- Learns through interaction with environment\n- Uses rewards and penalties\n\n## Prerequisites\n\nTo understand machine learning, you need:\n- [[linear-algebra|Linear Algebra]] for mathematical foundations\n- [[statistics|Statistics]] for probability and inference\n- [[programming|Programming]] skills for implementation\n\n## Applications\n\n- Image recognition\n- Natural language processing  \n- Recommendation systems\n- Autonomous vehicles\n\n#ai #machine-learning #data-science",
-      "prerequisites": [
-        "linear-algebra",
-        "statistics",
-        "programming"
-      ],
+      "prerequisites": ["linear-algebra", "statistics", "programming"],
       "dateCreated": "2024-02-05"
     },
     {
       "id": "mathematics",
       "title": "Mathematics",
-      "tags": [
-        "fundamental",
-        "science"
-      ],
+      "tags": ["fundamental", "science"],
       "content": "# Mathematics\n\nMathematics is the abstract study of topics such as quantity, structure, space, and change.\n\n## Core Areas\n\n- **Pure Mathematics**: Abstract mathematical concepts\n- **Applied Mathematics**: Mathematical methods used in applications\n- **Statistics**: Analysis of numerical data\n\nMathematics forms the foundation for many other disciplines including physics, engineering, computer science, and economics.\n\n## Key Concepts\n\n- Logic and proof\n- Set theory\n- Number theory\n- Abstract algebra",
       "dateCreated": "2024-01-15"
     },
     {
       "id": "programming",
       "title": "Programming",
-      "tags": [
-        "code",
-        "software",
-        "development"
-      ],
+      "tags": ["code", "software", "development"],
       "content": "# Programming\n\nProgramming is the process of creating a set of instructions that tell a computer how to perform a task.\n\n## Core Concepts\n\n### Basic Elements\n- Variables and data types\n- Control structures (loops, conditionals)\n- Functions and procedures\n- Data structures\n\n### Programming Paradigms\n- **Procedural**: Step-by-step instructions\n- **Object-oriented**: Based on objects and classes\n- **Functional**: Based on mathematical functions\n- **Declarative**: Describes what should be done\n\n## Popular Languages\n\n- [[javascript|JavaScript]] - Web development\n- [[python|Python]] - Data science, AI, general purpose\n- Java - Enterprise applications\n- C++ - System programming\n\n## Best Practices\n\n- Write clean, readable code\n- Use version control\n- Test your code\n- Document your work\n\n#programming #software-development",
       "dateCreated": "2024-01-10"
     },
     {
+      "id": "react-memo",
+      "title": "React.memo",
+      "tags": ["react", "불변성"],
+      "content": "React.memo는 React에서 함수형 컴포넌트의 불필요한 리렌더링을 방지하기 위한 고차 컴포넌트(HOC)이다.\n\nReact.memo는 얕은 비교(shallow comparison) 를 통해 이전 props와 새 props가 동일하면 리렌더링을 건너뛴다.\n\n즉, 동일한 props가 들어오면 컴포넌트를 **다시 렌더링하지 않고 이전에 렌더링된 결과를 재사용**한다.\n\n다만,\n\n- 얕은 비교 한계: React.memo는 props 객체를 얕게 비교하기 때문에, 객체나 배열 같은 참조 타입이 매번 새로 만들어지면 매번 다르다고 판단한다. 이 경우 useMemo나 useCallback으로 안정된 참조를 제공해야 한다.\n- 모든 경우에 성능 향상 X: React.memo 자체도 비교 연산 비용이 있기 때문에, 단순한 컴포넌트에는 오히려 성능 이득이 없다. 렌더링 비용이 큰 컴포넌트에 적용하는 것이 적절하다.\n\n#React-성능-최적화 #불변성",
+      "prerequisites": ["HOC", "React Rendering", "불변성"],
+      "dateCreated": "2025-09-10"
+    },
+    {
       "id": "react",
       "title": "React",
-      "tags": [
-        "frontend",
-        "ui",
-        "library"
-      ],
+      "tags": ["frontend", "ui", "library"],
       "content": "# React\n\nReact is a JavaScript library for building user interfaces, maintained by Facebook and the community.\n\n## Core Concepts\n\n### Components\n```jsx\nfunction Welcome(props) {\n    return <h1>Hello, {props.name}</h1>;\n}\n```\n\n### JSX\n- JavaScript XML syntax extension\n- Allows writing HTML-like code in JavaScript\n- Transpiled to `React.createElement()` calls\n\n### State and Props\n- **Props**: Read-only properties passed to components\n- **State**: Mutable data that affects component rendering\n\n### Hooks\n```jsx\nimport { useState, useEffect } from 'react';\n\nfunction Counter() {\n    const [count, setCount] = useState(0);\n    \n    useEffect(() => {\n        document.title = `Count: ${count}`;\n    }, [count]);\n    \n    return (\n        <button onClick={() => setCount(count + 1)}>\n            Count: {count}\n        </button>\n    );\n}\n```\n\n## Prerequisites\n\nUnderstanding these topics helps with React development:\n- [[javascript|JavaScript]] ES6+ features\n- HTML and CSS fundamentals\n- DOM manipulation concepts\n\n## Ecosystem\n\n- React Router - Navigation\n- Redux/Zustand - State management  \n- Next.js - Full-stack framework\n- React Testing Library - Testing\n\n#react #frontend #javascript",
-      "prerequisites": [
-        "javascript",
-        "html",
-        "css"
-      ],
+      "prerequisites": ["javascript", "html", "css"],
       "dateCreated": "2024-02-01"
     },
     {
@@ -148,20 +96,22 @@
     {
       "id": "statistics",
       "title": "Statistics",
-      "tags": [
-        "math",
-        "data",
-        "probability"
-      ],
+      "tags": ["math", "data", "probability"],
       "content": "# Statistics\n\nStatistics is the discipline that concerns the collection, organization, analysis, interpretation, and presentation of data.\n\n## Core Areas\n\n### Descriptive Statistics\n- Measures of central tendency (mean, median, mode)\n- Measures of variability (variance, standard deviation)\n- Data visualization (histograms, scatter plots)\n\n### Inferential Statistics\n- Hypothesis testing\n- Confidence intervals\n- Regression analysis\n- ANOVA\n\n### Probability Theory\n- Random variables\n- Probability distributions\n- Bayes' theorem\n- Law of large numbers\n\n## Applications\n\nStatistics is essential for:\n- [[data-science|Data Science]] analysis\n- [[machine-learning|Machine Learning]] evaluation\n- Scientific research\n- Business analytics\n- Quality control\n\n## Key Concepts\n\n- Population vs. Sample\n- Correlation vs. Causation\n- Statistical significance\n- P-values and confidence intervals\n\n#statistics #mathematics #data-analysis",
-      "prerequisites": [
-        "mathematics"
-      ],
+      "prerequisites": ["mathematics"],
       "dateCreated": "2024-01-18"
     },
     {
+      "id": "불변성",
+      "title": "불변성",
+      "tags": ["react", "불변성"],
+      "content": "",
+      "dateCreated": "2025-09-10"
+    },
+    {
       "id": "tag:computer-science",
-      "title": "#computer-science"
+      "title": "#computer-science",
+      "hasFile": true
     },
     {
       "id": "tag:problem-solving",
@@ -170,10 +120,6 @@
     {
       "id": "tag:optimization",
       "title": "#optimization"
-    },
-    {
-      "id": "tag:algorithms",
-      "title": "#algorithms"
     },
     {
       "id": "tag:BUGFIX",
@@ -212,32 +158,17 @@
       "title": "#science"
     },
     {
-      "id": "tag:data-science",
-      "title": "#data-science"
-    },
-    {
-      "id": "tag:big-data",
-      "title": "#big-data"
-    },
-    {
       "id": "tag:web",
       "title": "#web"
     },
     {
       "id": "tag:programming",
-      "title": "#programming"
+      "title": "#programming",
+      "hasFile": true
     },
     {
       "id": "tag:frontend",
       "title": "#frontend"
-    },
-    {
-      "id": "tag:javascript",
-      "title": "#javascript"
-    },
-    {
-      "id": "tag:web-development",
-      "title": "#web-development"
     },
     {
       "id": "tag:math",
@@ -252,20 +183,18 @@
       "title": "#matrices"
     },
     {
-      "id": "tag:mathematics",
-      "title": "#mathematics"
-    },
-    {
-      "id": "tag:linear-algebra",
-      "title": "#linear-algebra"
-    },
-    {
       "id": "tag:ai",
       "title": "#ai"
     },
     {
-      "id": "tag:machine-learning",
-      "title": "#machine-learning"
+      "id": "tag:data-science",
+      "title": "#data-science",
+      "hasFile": true
+    },
+    {
+      "id": "tag:algorithms",
+      "title": "#algorithms",
+      "hasFile": true
     },
     {
       "id": "tag:fundamental",
@@ -284,8 +213,14 @@
       "title": "#development"
     },
     {
-      "id": "tag:software-development",
-      "title": "#software-development"
+      "id": "tag:react",
+      "title": "#react",
+      "hasFile": true
+    },
+    {
+      "id": "tag:불변성",
+      "title": "#불변성",
+      "hasFile": true
     },
     {
       "id": "tag:ui",
@@ -296,23 +231,17 @@
       "title": "#library"
     },
     {
-      "id": "tag:react",
-      "title": "#react"
-    },
-    {
       "id": "tag:probability",
       "title": "#probability"
-    },
-    {
-      "id": "tag:statistics",
-      "title": "#statistics"
-    },
-    {
-      "id": "tag:data-analysis",
-      "title": "#data-analysis"
     }
   ],
   "links": [
+    {
+      "source": "algorithms",
+      "target": "data-structures",
+      "type": "mention",
+      "broken": true
+    },
     {
       "source": "algorithms",
       "target": "machine-learning",
@@ -326,21 +255,6 @@
     {
       "source": "algorithms",
       "target": "tag:problem-solving",
-      "type": "tag"
-    },
-    {
-      "source": "algorithms",
-      "target": "tag:optimization",
-      "type": "tag"
-    },
-    {
-      "source": "algorithms",
-      "target": "tag:algorithms",
-      "type": "tag"
-    },
-    {
-      "source": "algorithms",
-      "target": "tag:computer-science",
       "type": "tag"
     },
     {
@@ -394,21 +308,6 @@
       "type": "tag"
     },
     {
-      "source": "computer-science",
-      "target": "tag:computer-science",
-      "type": "tag"
-    },
-    {
-      "source": "computer-science",
-      "target": "tag:theory",
-      "type": "tag"
-    },
-    {
-      "source": "computer-science",
-      "target": "tag:computation",
-      "type": "tag"
-    },
-    {
       "source": "data-science",
       "target": "programming",
       "type": "mention"
@@ -439,24 +338,15 @@
       "type": "tag"
     },
     {
-      "source": "data-science",
-      "target": "tag:data-science",
-      "type": "tag"
-    },
-    {
-      "source": "data-science",
-      "target": "tag:analytics",
-      "type": "tag"
-    },
-    {
-      "source": "data-science",
-      "target": "tag:big-data",
-      "type": "tag"
-    },
-    {
       "source": "javascript",
       "target": "react",
       "type": "mention"
+    },
+    {
+      "source": "javascript",
+      "target": "nodejs",
+      "type": "mention",
+      "broken": true
     },
     {
       "source": "javascript",
@@ -474,24 +364,15 @@
       "type": "tag"
     },
     {
-      "source": "javascript",
-      "target": "tag:javascript",
-      "type": "tag"
-    },
-    {
-      "source": "javascript",
-      "target": "tag:web-development",
-      "type": "tag"
-    },
-    {
-      "source": "javascript",
-      "target": "tag:programming",
-      "type": "tag"
-    },
-    {
       "source": "linear-algebra",
       "target": "machine-learning",
       "type": "mention"
+    },
+    {
+      "source": "linear-algebra",
+      "target": "computer-graphics",
+      "type": "mention",
+      "broken": true
     },
     {
       "source": "linear-algebra",
@@ -506,16 +387,6 @@
     {
       "source": "linear-algebra",
       "target": "tag:matrices",
-      "type": "tag"
-    },
-    {
-      "source": "linear-algebra",
-      "target": "tag:mathematics",
-      "type": "tag"
-    },
-    {
-      "source": "linear-algebra",
-      "target": "tag:linear-algebra",
       "type": "tag"
     },
     {
@@ -549,21 +420,6 @@
       "type": "tag"
     },
     {
-      "source": "machine-learning",
-      "target": "tag:ai",
-      "type": "tag"
-    },
-    {
-      "source": "machine-learning",
-      "target": "tag:machine-learning",
-      "type": "tag"
-    },
-    {
-      "source": "machine-learning",
-      "target": "tag:data-science",
-      "type": "tag"
-    },
-    {
       "source": "mathematics",
       "target": "tag:fundamental",
       "type": "tag"
@@ -577,6 +433,12 @@
       "source": "programming",
       "target": "javascript",
       "type": "mention"
+    },
+    {
+      "source": "programming",
+      "target": "python",
+      "type": "mention",
+      "broken": true
     },
     {
       "source": "programming",
@@ -594,13 +456,13 @@
       "type": "tag"
     },
     {
-      "source": "programming",
-      "target": "tag:programming",
+      "source": "react-memo",
+      "target": "tag:react",
       "type": "tag"
     },
     {
-      "source": "programming",
-      "target": "tag:software-development",
+      "source": "react-memo",
+      "target": "tag:불변성",
       "type": "tag"
     },
     {
@@ -624,19 +486,10 @@
       "type": "tag"
     },
     {
-      "source": "react",
-      "target": "tag:react",
-      "type": "tag"
-    },
-    {
-      "source": "react",
-      "target": "tag:frontend",
-      "type": "tag"
-    },
-    {
-      "source": "react",
-      "target": "tag:javascript",
-      "type": "tag"
+      "source": "readme",
+      "target": "",
+      "type": "mention",
+      "broken": true
     },
     {
       "source": "readme",
@@ -647,16 +500,6 @@
       "source": "readme",
       "target": "linear-algebra",
       "type": "mention"
-    },
-    {
-      "source": "readme",
-      "target": "tag:mathematics",
-      "type": "tag"
-    },
-    {
-      "source": "readme",
-      "target": "tag:theory",
-      "type": "tag"
     },
     {
       "source": "statistics",
@@ -684,24 +527,31 @@
       "type": "tag"
     },
     {
-      "source": "statistics",
-      "target": "tag:statistics",
+      "source": "불변성",
+      "target": "tag:react",
       "type": "tag"
     },
     {
-      "source": "statistics",
-      "target": "tag:mathematics",
-      "type": "tag"
-    },
-    {
-      "source": "statistics",
-      "target": "tag:data-analysis",
+      "source": "불변성",
+      "target": "tag:불변성",
       "type": "tag"
     },
     {
       "source": "programming",
       "target": "algorithms",
       "type": "prerequisite"
+    },
+    {
+      "source": "SPA",
+      "target": "base-router-설정",
+      "type": "prerequisite",
+      "broken": true
+    },
+    {
+      "source": "router",
+      "target": "base-router-설정",
+      "type": "prerequisite",
+      "broken": true
     },
     {
       "source": "statistics",
@@ -744,9 +594,38 @@
       "type": "prerequisite"
     },
     {
+      "source": "HOC",
+      "target": "react-memo",
+      "type": "prerequisite",
+      "broken": true
+    },
+    {
+      "source": "React Rendering",
+      "target": "react-memo",
+      "type": "prerequisite",
+      "broken": true
+    },
+    {
+      "source": "불변성",
+      "target": "react-memo",
+      "type": "prerequisite"
+    },
+    {
       "source": "javascript",
       "target": "react",
       "type": "prerequisite"
+    },
+    {
+      "source": "html",
+      "target": "react",
+      "type": "prerequisite",
+      "broken": true
+    },
+    {
+      "source": "css",
+      "target": "react",
+      "type": "prerequisite",
+      "broken": true
     },
     {
       "source": "mathematics",

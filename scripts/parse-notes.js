@@ -30,6 +30,7 @@ function parseNotes() {
     let title = id
     let tags = []
     let prerequisites = []
+    let relatedConcepts = []
     let dateCreated = null
     let dateUpdated = null
 
@@ -39,6 +40,7 @@ function parseNotes() {
       const titleMatch = frontmatter.match(/title:\s*["']?([^"'\n]+)["']?/)
       const tagsMatch = frontmatter.match(/tags:\s*\[(.*?)\]/)
       const prerequisitesMatch = frontmatter.match(/prerequisites:\s*\[(.*?)\]/)
+      const relatedConceptsMatch = frontmatter.match(/relatedConcepts:\s*\[(.*?)\]/)
       const dateMatch = frontmatter.match(/date:\s*["']?([^"'\n]+)["']?/)
       const createdMatch = frontmatter.match(/created:\s*["']?([^"'\n]+)["']?/)
       const updatedMatch = frontmatter.match(/updated:\s*["']?([^"'\n]+)["']?/)
@@ -62,6 +64,14 @@ function parseNotes() {
         prerequisites = prerequisitesMatch[1]
           .split(',')
           .map((t) => t.trim().replace(/["']/g, ''))
+          .filter((t) => t && t.length > 0) // 빈 문자열 제거
+      }
+
+      // relatedConcepts 필드 처리
+      if (relatedConceptsMatch) {
+        relatedConcepts = relatedConceptsMatch[1]
+          .split(',')
+          .map((t) => t.trim().replace(/["']/g, ''))
       }
     }
 
@@ -83,6 +93,7 @@ function parseNotes() {
       tags,
       content: contentBody,
       ...(prerequisites.length > 0 && { prerequisites }),
+      ...(relatedConcepts.length > 0 && { relatedConcepts }),
       ...(dateCreated && { dateCreated }),
       ...(dateUpdated && { dateUpdated }),
     })
@@ -117,18 +128,11 @@ function parseNotes() {
       })
     })
 
-    // #태그 패턴 추출 (본문에서)
+    // #해시태그 패턴 추출 (본문에서) - relatedConcepts로 처리
     const hashTags = content.match(/#[a-zA-Z가-힣0-9_-]+/g) || []
     hashTags.forEach((tag) => {
-      const tagName = tag.substring(1) // # 제거
-      const tagId = `tag:${tagName}`
-      tagSet.add(tagName)
-
-      links.push({
-        source: id,
-        target: tagId,
-        type: 'tag',
-      })
+      const conceptName = tag.substring(1) // # 제거
+      relatedConcepts.push(conceptName)
     })
 
     console.log(
@@ -138,9 +142,15 @@ function parseNotes() {
 
   // 태그 노드 추가
   tagSet.forEach((tagName) => {
+    // 태그명이 실제 파일명과 일치하는지 확인
+    const hasCorrespondingFile = files.some(file => 
+      path.basename(file, '.md') === tagName
+    )
+    
     nodes.push({
       id: `tag:${tagName}`,
       title: `#${tagName}`,
+      ...(hasCorrespondingFile && { hasFile: true }),
     })
   })
 
@@ -148,28 +158,40 @@ function parseNotes() {
   nodes.forEach((node) => {
     // prerequisites 관계를 links에 추가
     if (node.prerequisites) {
-      node.prerequisites.forEach((prereqId) => {
-        links.push({
-          source: prereqId,
-          target: node.id,
-          type: 'prerequisite',
+      node.prerequisites
+        .filter((prereqId) => prereqId && prereqId.trim() !== '') // 빈 문자열 제거
+        .forEach((prereqId) => {
+          links.push({
+            source: prereqId,
+            target: node.id,
+            type: 'prerequisite',
+          })
         })
-      })
     }
   })
 
-  // 존재하지 않는 링크 필터링 (선택적)
+  // 깨진 링크 표시를 위해 broken 플래그 추가
   const nodeIds = new Set(nodes.map((n) => n.id))
-  const validLinks = links.filter(
-    (link) => nodeIds.has(link.source) && nodeIds.has(link.target),
-  )
+  const processedLinks = links.map((link) => {
+    const isSourceValid = nodeIds.has(link.source)
+    const isTargetValid = nodeIds.has(link.target)
+    
+    if (!isSourceValid || !isTargetValid) {
+      return {
+        ...link,
+        broken: true,
+      }
+    }
+    
+    return link
+  })
 
-  const invalidLinks = links.length - validLinks.length
-  if (invalidLinks > 0) {
-    console.log(`>>> !! ${invalidLinks}개의 깨진 링크를 제거했습니다.`)
+  const brokenLinks = processedLinks.filter((link) => link.broken).length
+  if (brokenLinks > 0) {
+    console.log(`>>> ${brokenLinks}개의 깨진 링크를 표시합니다.`)
   }
 
-  const result = { nodes, links: validLinks }
+  const result = { nodes, links: processedLinks }
 
   // 출력 디렉토리 생성
   const outputDir = path.dirname(outputFile)
@@ -182,7 +204,7 @@ function parseNotes() {
 
   console.log(`>>> 파싱 완료!`)
   console.log(`   노드: ${nodes.length}개 (태그: ${tagSet.size}개)`)
-  console.log(`   링크: ${validLinks.length}개`)
+  console.log(`   링크: ${processedLinks.length}개`)
   console.log(`   출력: ${outputFile}`)
 }
 

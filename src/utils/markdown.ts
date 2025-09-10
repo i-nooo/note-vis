@@ -64,7 +64,13 @@ const wikiLinkTokenizer: TokenizerExtension = {
 const wikiLinkRenderer: RendererExtension = {
   name: 'wikilink',
   renderer(token: any) {
-    return `<a href="${token.href}">${escapeHtml(token.text)}</a>`
+    const brokenLinks = (globalThis as any).__brokenLinks as Set<string>
+    const targetId = token.href.replace('/node/', '').replace(/%20/g, ' ')
+    const isBroken = brokenLinks && brokenLinks.has(decodeURIComponent(targetId))
+    const className = isBroken ? ' class="broken-link"' : ''
+    const href = isBroken ? '#' : token.href
+    const clickable = isBroken ? ' onclick="return false;"' : ''
+    return `<a href="${href}"${className}${clickable}>${escapeHtml(token.text)}</a>`
   },
 }
 
@@ -173,12 +179,16 @@ function setupMarked() {
 
 setupMarked()
 
-export function renderMarkdown(markdown: string): string {
+export function renderMarkdown(markdown: string, brokenLinks?: Set<string>): string {
   if (!markdown) return ''
+  
+  // 임시로 전역 변수에 brokenLinks 저장 (향후 더 나은 방법으로 개선 가능)
+  ;(globalThis as any).__brokenLinks = brokenLinks || new Set()
+  
   const html = marked.parse(markdown) as string
 
   return DOMPurify.sanitize(html, {
-    ADD_ATTR: ['target', 'rel', 'open'],
+    ADD_ATTR: ['target', 'rel', 'open', 'onclick', 'class'],
     ALLOWED_URI_REGEXP:
       /^(?:(?:https?|mailto|tel|data:image\/(?:png|gif|jpeg|webp));|\/|#)/i,
   })

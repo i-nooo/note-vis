@@ -207,11 +207,21 @@ export default function TreeGraph({
     node
       .append('circle')
       .attr('r', 6)
-      .attr('fill', (d) => (d.data.id === currentId ? '#1f77b4' : '#6baed6'))
+      .attr('fill', (d) => {
+        if ((d.data as any).broken) return '#dc2626' // 깨진 노드: 빨간색
+        if ((d.data as any).virtual) return '#9ca3af' // 가상 노드: 회색
+        return d.data.id === currentId ? '#1f77b4' : '#6baed6'
+      })
       .attr('stroke', '#fff')
       .attr('stroke-width', 1.5)
-      .attr('cursor', 'pointer')
+      .attr('cursor', (d) =>
+        (d.data as any).broken || (d.data as any).virtual
+          ? 'default'
+          : 'pointer',
+      )
       .on('click', (_, d) => {
+        if ((d.data as any).broken || (d.data as any).virtual) return // 깨진 노드와 가상 노드는 클릭 불가
+
         // 토글: 자식이 있으면 접기/펼치기, 그리고 라우팅
         if (d.children || (d.data.children && d.data.children.length)) {
           setCollapsed((prev) => {
@@ -237,20 +247,29 @@ export default function TreeGraph({
       .attr('font-size', 12)
       .attr('font-family', 'system-ui, sans-serif')
       .attr('font-weight', 500)
-      .attr('fill', (d) => (d.data.id === currentId ? '#1f77b4' : '#333'))
+      .attr('fill', (d) => {
+        if ((d.data as any).broken) return '#dc2626' // 깨진 노드: 빨간색
+        if ((d.data as any).virtual) return '#9ca3af' // 가상 노드: 회색
+        return d.data.id === currentId ? '#1f77b4' : '#333'
+      })
       .attr('stroke', 'white')
       .attr('stroke-width', 0.5)
       .attr('stroke-linejoin', 'round')
       .attr('paint-order', 'stroke fill')
-      .attr('cursor', 'pointer')
+      .attr('cursor', (d) =>
+        (d.data as any).broken || (d.data as any).virtual
+          ? 'default'
+          : 'pointer',
+      )
       .text((d) => {
         // 텍스트가 비어있지 않도록 보장
         const text = d.data.title || d.data.id || 'Untitled'
         return text
       })
-      .style('pointer-events', 'all') // 클릭 이벤트가 확실히 작동하도록
       .on('click', (_, d) => {
-        // 텍스트 클릭도 같은 동작
+        if ((d.data as any).broken || (d.data as any).virtual) return // 깨진 노드와 가상 노드는 클릭 불가
+
+        // 토글: 자식이 있으면 접기/펼치기, 그리고 라우팅
         if (d.children || (d.data.children && d.data.children.length)) {
           setCollapsed((prev) => {
             const next = new Set(prev)

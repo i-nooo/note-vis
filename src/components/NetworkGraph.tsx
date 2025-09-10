@@ -108,9 +108,16 @@ export default function NetworkGraph({
       return n.tags && n.tags.some((tag) => selectedTags.has(tag))
     }
 
-    const color = (n: NoteNode) => {
+    const color = (n: NoteNode & { broken?: boolean; hasFile?: boolean }) => {
+      if (n.broken) {
+        return '#dc2626' // 깨진 노드: 빨간색
+      }
       const isHighlighted = matchesQuery(n) || matchesSelectedTags(n)
       if (isTag(n)) {
+        // 태그인데 파일이 없으면 빨간색
+        if (!n.hasFile) {
+          return '#dc2626'
+        }
         return isHighlighted ? '#ff6b35' : '#969696' // 하이라이트: 주황색
       } else {
         return isHighlighted ? '#1f77b4' : '#6baed6' // 하이라이트: 진한 파란색
@@ -120,7 +127,29 @@ export default function NetworkGraph({
     const linkStroke = (l: GraphLink) => (l.type === 'tag' ? '#bbb' : '#999')
     const linkDash = (l: GraphLink) => (l.type === 'tag' ? '3,3' : null)
 
-    const simNodes: Array<SimNode> = nodes.map((n) => ({
+    // 노드 ID 세트 생성
+    const nodeIds = new Set(nodes.map((n) => n.id))
+
+    // 깨진 링크를 위한 가상 노드 생성
+    const brokenNodeIds = new Set<string>()
+    links.forEach((link) => {
+      if (!nodeIds.has(link.source)) {
+        brokenNodeIds.add(link.source)
+      }
+      if (!nodeIds.has(link.target)) {
+        brokenNodeIds.add(link.target)
+      }
+    })
+
+    const brokenNodes = Array.from(brokenNodeIds).map((id) => ({
+      id,
+      title: id,
+      broken: true,
+    }))
+
+    const allNodes = [...nodes, ...brokenNodes]
+
+    const simNodes: Array<SimNode> = allNodes.map((n) => ({
       ...n,
       x: Math.random() * W,
       y: Math.random() * H,
@@ -191,14 +220,20 @@ export default function NetworkGraph({
       .attr('fill', (d) => color(d))
       .attr('stroke', '#fff')
       .attr('stroke-width', 1.5)
+      .style('cursor', (d) => {
+        if (d.id.startsWith('tag:') || (d as any).broken) {
+          return 'default'
+        }
+        return 'pointer'
+      })
       .on('click', (_, d) => {
         // if (routeMode === 'tanstack' && !d.id.startsWith('tag:')) {
         //   navigate({ to: '/node/$id', params: { id: d.id } })
         //   return
         // }
         // onNavigate?.(d)
-        // 태그 노드가 아닌 경우만 라우팅
-        if (!d.id.startsWith('tag:')) {
+        // 태그 노드가 아니고 깨진 노드가 아닌 경우만 라우팅
+        if (!d.id.startsWith('tag:') && !(d as any).broken) {
           navigate({ to: '/node/$id', params: { id: d.id } })
         }
       })
