@@ -38,6 +38,34 @@ function escapeHtml(text: string): string {
   return div.innerHTML
 }
 
+// 간단한 자동 포맷팅 함수
+function formatCode(code: string): string {
+  const lines = code.split('\n')
+  let indentLevel = 0
+  const indentSize = 2
+  
+  const formattedLines = lines.map(line => {
+    const trimmed = line.trim()
+    if (!trimmed) return ''
+    
+    // 닫는 브래킷이나 브레이스면 들여쓰기 감소
+    if (trimmed.startsWith('}') || trimmed.startsWith(']') || trimmed.startsWith(')')) {
+      indentLevel = Math.max(0, indentLevel - 1)
+    }
+    
+    const indentedLine = ' '.repeat(indentLevel * indentSize) + trimmed
+    
+    // 여는 브래킷이나 브레이스면 들여쓰기 증가
+    if (trimmed.endsWith('{') || trimmed.endsWith('[') || trimmed.endsWith('(')) {
+      indentLevel++
+    }
+    
+    return indentedLine
+  })
+  
+  return formattedLines.join('\n')
+}
+
 const wikiLinkTokenizer: TokenizerExtension = {
   name: 'wikilink',
   level: 'inline',
@@ -66,7 +94,8 @@ const wikiLinkRenderer: RendererExtension = {
   renderer(token: any) {
     const brokenLinks = (globalThis as any).__brokenLinks as Set<string>
     const targetId = token.href.replace('/node/', '').replace(/%20/g, ' ')
-    const isBroken = brokenLinks && brokenLinks.has(decodeURIComponent(targetId))
+    const isBroken =
+      brokenLinks && brokenLinks.has(decodeURIComponent(targetId))
     const className = isBroken ? ' class="broken-link"' : ''
     const href = isBroken ? '#' : token.href
     const clickable = isBroken ? ' onclick="return false;"' : ''
@@ -157,6 +186,65 @@ function createRendererWithLinkPolicy() {
 
     return html.replace(/^<a /, '<a target="_blank" rel="noopener noreferrer" ')
   }
+  
+  // 코드 블록 렌더러 추가
+  renderer.code = ({ text: code, lang }) => {
+    // 1. 먼저 코드 포맷팅 (들여쓰기)
+    const formatted = formatCode(code)
+    
+    // 2. HTML 이스케이프
+    let highlighted = escapeHtml(formatted)
+    
+    // 3. 내용 기반 언어 감지
+    const isJSLike = code.includes('import') || code.includes('export') || code.includes('const') || code.includes('function') || code.includes('React') || code.includes('createRouter')
+    const isJSON = code.trim().startsWith('{') && code.includes('"') && (code.includes('rewrites') || code.includes('source'))
+    
+    // 4. Syntax highlighting 적용 (순서가 중요)
+    if (isJSLike || lang === 'ts' || lang === 'js' || lang === 'javascript' || lang === 'typescript' || lang === 'jsx' || lang === 'tsx') {
+      // 임시 플래시홀더를 사용해서 중첩 방지
+      const placeholders = new Map<string, string>()
+      let placeholderIndex = 0
+      
+      // 1. 문자열 먼저 처리 (가장 우선)
+      highlighted = highlighted.replace(/(["'`])([^"'`]*?)\1/g, (match) => {
+        const placeholder = `__STRING_${placeholderIndex++}__`
+        placeholders.set(placeholder, `<span class="token string">${match}</span>`)
+        return placeholder
+      })
+      
+      // 2. 주석 처리
+      highlighted = highlighted.replace(/\/\/.*$/gm, (match) => {
+        const placeholder = `__COMMENT_${placeholderIndex++}__`
+        placeholders.set(placeholder, `<span class="token comment">${match}</span>`)
+        return placeholder
+      })
+      
+      // 3. 키워드 처리 (문자열과 주석이 이미 placeholder로 대체됨)
+      highlighted = highlighted.replace(/\b(const|let|var|function|import|export|from|default|createRouter|defineConfig)\b/g, 
+        '<span class="token keyword">$1</span>')
+      
+      // 4. 숫자 처리
+      highlighted = highlighted.replace(/\b(\d+)\b/g, '<span class="token number">$1</span>')
+      
+      // 5. placeholder 복원
+      placeholders.forEach((replacement, placeholder) => {
+        highlighted = highlighted.replace(placeholder, replacement)
+      })
+    }
+    // JSON 하이라이팅
+    else if (isJSON || lang === 'json') {
+      highlighted = highlighted
+        // JSON 키
+        .replace(/"([^"]+)":/g, '<span class="token string">"$1"</span>:')
+        // JSON 값 문자열
+        .replace(/:\s*"([^"]*)"/g, ': <span class="token string">"$1"</span>')
+        // true/false/null
+        .replace(/\b(true|false|null)\b/g, '<span class="token keyword">$1</span>')
+    }
+    
+    return `<pre><code class="${lang ? `language-${lang}` : ''}">${highlighted}</code></pre>`
+  }
+
   return renderer
 }
 
@@ -179,17 +267,29 @@ function setupMarked() {
 
 setupMarked()
 
-export function renderMarkdown(markdown: string, brokenLinks?: Set<string>): string {
-  if (!markdown) return ''
-  
-  // 임시로 전역 변수에 brokenLinks 저장 (향후 더 나은 방법으로 개선 가능)
+export function renderMarkdown(
+  markdown: string,
+  brokenLinks?: Set<string>,
+): string {
+  if (!markdown)
+    return ''
+
+    // 임시로 전역 변수에 brokenLinks 저장 (향후 더 나은 방법으로 개선 가능)
   ;(globalThis as any).__brokenLinks = brokenLinks || new Set()
-  
+
   const html = marked.parse(markdown) as string
 
-  return DOMPurify.sanitize(html, {
+  // 개발 환경에서는 DOMPurify 건너뜀 (syntax highlighting 보존)
+  if (import.meta.env?.DEV) {
+    return html
+  }
+
+  const sanitized = DOMPurify.sanitize(html, {
     ADD_ATTR: ['target', 'rel', 'open', 'onclick', 'class'],
+    ADD_TAGS: ['span'], // syntax highlighting을 위한 span 태그 허용
     ALLOWED_URI_REGEXP:
       /^(?:(?:https?|mailto|tel|data:image\/(?:png|gif|jpeg|webp));|\/|#)/i,
   })
+
+  return sanitized
 }

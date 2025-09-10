@@ -177,20 +177,73 @@ code {
 }
 
 .markdown-content pre {
-  background-color: #393b3e;
-  border: 1px solid #e9ecef;
-  border-radius: 6px;
-  padding: 12px;
-  margin: 12px 0;
+  background-color: #1e1e1e !important;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 20px 0;
   overflow-x: auto;
+  line-height: 1.6;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  position: relative;
 }
 
 .markdown-content pre code {
-  background-color: transparent;
+  background-color: transparent !important;
   padding: 0;
-  color: #ffffff;
-  font-size: 12px;
+  color: #e6e6e6;
+  font-size: 14px;
+  font-family: 'SF Mono', 'Monaco', 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  line-height: inherit;
+  font-weight: 400;
+  white-space: pre-wrap;
+  tab-size: 2;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  display: block;
 }
+
+/* 기본 syntax highlighting */
+.markdown-content pre code {
+  /* JavaScript/JSX 키워드 */
+  color: #e6e6e6;
+}
+
+.markdown-content pre code .token.keyword {
+  color: #ff7b72;
+  font-weight: 600;
+}
+
+.markdown-content pre code .token.string {
+  color: #a5d6ff;
+}
+
+.markdown-content pre code .token.function {
+  color: #d2a8ff;
+}
+
+.markdown-content pre code .token.number {
+  color: #79c0ff;
+}
+
+.markdown-content pre code .token.comment {
+  color: #8b949e;
+  font-style: italic;
+}
+
+.markdown-content pre code .token.operator {
+  color: #ff7b72;
+}
+
+.markdown-content pre code .token.punctuation {
+  color: #e6e6e6;
+}
+
+.markdown-content pre code .token.property {
+  color: #79c0ff;
+}
+
+
 
 .markdown-content ul,
 .markdown-content ol {
@@ -198,8 +251,17 @@ code {
   padding-left: 20px;
 }
 
+.markdown-content ul {
+  list-style-type: disc;
+}
+
+.markdown-content ol {
+  list-style-type: decimal;
+}
+
 .markdown-content li {
   margin: 2px 0;
+  list-style-position: outside;
 }
 
 .markdown-content blockquote {
