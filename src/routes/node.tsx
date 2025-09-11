@@ -1,11 +1,13 @@
 import { createRoute, useNavigate, useParams } from '@tanstack/react-router'
 import { useMemo } from 'react'
+import { useStore } from '@tanstack/react-store'
 import { rootRoute } from './root'
 import type { GraphData } from '@/types'
 import NodeHeader from '@/components/NodeHeader'
 import NodeContent from '@/components/NodeContent'
 import FloatingSidebar from '@/components/FloatingSidebar'
 import { useNodeData } from '@/hooks/useNodeData'
+import { store } from '@/store'
 import sample from '@/data/notes.json'
 
 export const nodeRoute = createRoute({
@@ -18,6 +20,7 @@ function NodePage() {
   const { id } = useParams({ from: nodeRoute.id })
   const navigate = useNavigate()
   const baseData = sample as GraphData
+  const footnoteVisible = useStore(store, (state) => state.footnoteVisible)
 
   const { subgraph, breadcrumbPath, familyTree } = useNodeData(baseData, id)
 
@@ -38,8 +41,10 @@ function NodePage() {
     navigate({ to: '/node/$id', params: { id: nid } })
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto">
+    <div
+      className={`min-h-screen bg-gray-50 ${!footnoteVisible ? 'footnote-off' : ''}`}
+    >
+      <div className={`mx-auto ${footnoteVisible ? 'max-w-4xl' : 'max-w-3xl'}`}>
         <NodeHeader breadcrumbPath={breadcrumbPath} onNodeClick={goNode} />
 
         <NodeContent

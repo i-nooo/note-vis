@@ -12,6 +12,17 @@ interface CalloutToken extends Tokens.Generic {
   tokens: Array<Tokens.Generic>
 }
 
+interface FootnoteRefToken extends Tokens.Generic {
+  type: 'footnoteRef'
+  label: string
+}
+
+interface FootnoteDefToken extends Tokens.Generic {
+  type: 'footnoteDef'
+  label: string
+  tokens: Array<Tokens.Generic>
+}
+
 const CALLOUTS: Record<
   CalloutKind,
   { className: string; defaultTitle: string; ariaLabel: string }
@@ -183,6 +194,69 @@ ${inner}
   },
 }
 
+const footnoteRefTokenizer: TokenizerExtension = {
+  name: 'footnoteRef',
+  level: 'inline',
+  start(src: string) {
+    const i = src.indexOf('[^')
+    return i === -1 ? undefined : i
+  },
+  tokenizer(src) {
+    const match = /^\[\^([^\]]+)\]/.exec(src)
+    if (!match) return
+    const [, label] = match
+    const token: FootnoteRefToken = {
+      type: 'footnoteRef',
+      raw: match[0],
+      label: label.trim(),
+    }
+    return token
+  },
+}
+
+const footnoteDefTokenizer: TokenizerExtension = {
+  name: 'footnoteDef',
+  level: 'block',
+  start(src: string) {
+    const i = src.indexOf('[^')
+    return i === -1 ? undefined : i
+  },
+  tokenizer(src) {
+    const match = /^\[\^([^\]]+)\]:\s*(.*)$/gm.exec(src)
+    if (!match) return
+    const [full, label, content] = match
+
+    const contentTokens = this.lexer.inlineTokens(content.trim(), [])
+
+    const token: FootnoteDefToken = {
+      type: 'footnoteDef',
+      raw: full,
+      label: label.trim(),
+      tokens: contentTokens,
+    }
+    return token
+  },
+}
+
+const footnoteRefRenderer: RendererExtension = {
+  name: 'footnoteRef',
+  renderer(token: any) {
+    const footnoteToken = token as FootnoteRefToken
+    return `<sup class="footnote-ref"><a href="#footnote-${footnoteToken.label}" id="footnote-ref-${footnoteToken.label}" class="footnote-link">${footnoteToken.label}</a></sup>`
+  },
+}
+
+const footnoteDefRenderer: RendererExtension = {
+  name: 'footnoteDef',
+  renderer(token: any) {
+    const footnoteToken = token as FootnoteDefToken
+    const content = this.parser.parseInline(footnoteToken.tokens)
+    return `<div class="footnote-def" id="footnote-${footnoteToken.label}">
+      <a href="#footnote-ref-${footnoteToken.label}" class="footnote-backref">${footnoteToken.label}</a>: ${content}
+    </div>`
+  },
+}
+
 function createRendererWithLinkPolicy() {
   const renderer = {
     link({ href, title, tokens }) {
@@ -301,6 +375,10 @@ function setupMarked() {
       wikiLinkRenderer,
       calloutTokenizer,
       calloutRenderer,
+      footnoteRefTokenizer,
+      footnoteRefRenderer,
+      footnoteDefTokenizer,
+      footnoteDefRenderer,
     ],
   })
   marked.setOptions({
@@ -314,26 +392,91 @@ setupMarked()
 export function renderMarkdown(
   markdown: string,
   brokenLinks?: Set<string>,
-): string {
-  if (!markdown)
-    return ''
-
-    // 임시로 전역 변수에 brokenLinks 저장 (향후 더 나은 방법으로 개선 가능)
-  ;(globalThis as any).__brokenLinks = brokenLinks || new Set()
-
-  const html = marked.parse(markdown) as string
-
-  // 개발 환경에서는 DOMPurify 건너뜀 (syntax highlighting 보존)
-  if (import.meta.env?.DEV) {
-    return html
+): { content: string; footnotes: string } {
+  console.log('renderMarkdown called with:', markdown.substring(0, 100))
+  if (!markdown) {
+    console.log('No markdown content provided')
+    return { content: '', footnotes: '' }
   }
 
-  const sanitized = DOMPurify.sanitize(html, {
-    ADD_ATTR: ['target', 'rel', 'open', 'onclick', 'class'],
-    ADD_TAGS: ['span'], // syntax highlighting을 위한 span 태그 허용
+  // 임시로 전역 변수에 brokenLinks 저장 (향후 더 나은 방법으로 개선 가능)
+  ;(globalThis as any).__brokenLinks = brokenLinks || new Set()
+
+  // 각주 정의를 별도로 추출
+  const footnotes: Array<{ label: string; content: string }> = []
+
+  // 더 간단한 방법으로 각주 정의 추출
+  const footnoteMatches = markdown.match(/^\[\^([^\]]+)\]:\s*(.*)$/gm)
+  console.log('Found footnote matches:', footnoteMatches?.length || 0)
+
+  if (footnoteMatches) {
+    footnoteMatches.forEach((matchStr) => {
+      const parts = matchStr.match(/^\[\^([^\]]+)\]:\s*(.*)$/)
+      if (parts) {
+        footnotes.push({
+          label: parts[1].trim(),
+          content: parts[2].trim(),
+        })
+      }
+    })
+  }
+
+  // 각주 정의를 본문에서 제거
+  let contentWithoutFootnoteDefs = markdown
+    .replace(/^\[\^([^\]]+)\]:\s*.*$/gm, '')
+    .trim()
+
+  console.log(
+    'Content after footnote def removal:',
+    contentWithoutFootnoteDefs.length,
+  )
+
+  // 각주 참조를 직접 HTML로 변환 (각주가 실제로 있는 경우만)
+  if (footnotes.length > 0) {
+    contentWithoutFootnoteDefs = contentWithoutFootnoteDefs.replace(
+      /\[\^([^\]]+)\]/g,
+      '<sup class="footnote-ref"><a href="#footnote-$1" id="footnote-ref-$1" class="footnote-link">$1</a></sup>',
+    )
+  }
+
+  console.log(
+    'Final content before marked.parse:',
+    contentWithoutFootnoteDefs.length,
+  )
+
+  const html = marked.parse(contentWithoutFootnoteDefs) as string
+
+  // 각주 영역 HTML 생성
+  const footnotesHtml =
+    footnotes.length > 0
+      ? footnotes
+          .map(
+            (fn) =>
+              `<div class="footnote-def" id="footnote-${fn.label}">
+          <a href="#footnote-ref-${fn.label}" class="footnote-backref">${fn.label}</a>: ${marked.parseInline(fn.content)}
+        </div>`,
+          )
+          .join('')
+      : ''
+
+  // 개발 환경에서는 DOMPurify 건너뜀 (syntax highlighting 보존)
+  if (import.meta.env.DEV) {
+    console.log('Returning DEV result:', {
+      contentLength: html.length,
+      footnotesLength: footnotesHtml.length,
+    })
+    return { content: html, footnotes: footnotesHtml }
+  }
+
+  const sanitizeOptions = {
+    ADD_ATTR: ['target', 'rel', 'open', 'onclick', 'class', 'href', 'id'],
+    ADD_TAGS: ['span', 'sup', 'a'], // syntax highlighting과 각주를 위한 태그들 허용
     ALLOWED_URI_REGEXP:
       /^(?:(?:https?|mailto|tel|data:image\/(?:png|gif|jpeg|webp));|\/|#)/i,
-  })
+  }
 
-  return sanitized
+  const sanitizedContent = DOMPurify.sanitize(html, sanitizeOptions)
+  const sanitizedFootnotes = DOMPurify.sanitize(footnotesHtml, sanitizeOptions)
+
+  return { content: sanitizedContent, footnotes: sanitizedFootnotes }
 }

@@ -169,23 +169,23 @@ code {
 }
 
 .markdown-content code {
-  background-color: #454749;
-  padding: 2px 4px;
-  border-radius: 3px;
+  /* background-color: #454749; */
+  /* padding: 2px 4px; */
+  /* border-radius: 3px; */
   font-size: 11px;
   color: #ef4444;
   font-family: 'Consolas', 'Monaco', monospace;
 }
 
 .markdown-content pre {
-  background-color: #1e1e1e !important;
-  border: 1px solid #333;
-  border-radius: 8px;
+  /* background-color: #1e1e1e !important; */
+  /* border: 1px solid #333; */
+  /* border-radius: 8px; */
   padding: 20px;
   margin: 20px 0;
   overflow-x: auto;
   line-height: 1.6;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); */
   position: relative;
 }
 
@@ -379,4 +379,10 @@ code {
 .markdown-content code {
   background-color: color-mix(in oklab, var(--color-muted) 70%, black 0%);
   color: var(--color-destructive-foreground);
+}
+
+/* 각주 영역 width 변수 */
+:root {
+  --footnote-sidebar-width: 170px; /* 170px */
+  --footnote-gap: 2rem; /* gap-8 = 32px = 2rem */
 }

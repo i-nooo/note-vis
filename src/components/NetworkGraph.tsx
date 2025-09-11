@@ -270,9 +270,7 @@ export default function NetworkGraph({
       link.attr('opacity', (d) => {
         const s = (d.source as SimNode).id
         const t = (d.target as SimNode).id
-        return s === centerId || t === centerId
-          ? 1
-          : 0.05
+        return s === centerId || t === centerId ? 1 : 0.05
       })
     }
 

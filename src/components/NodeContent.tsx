@@ -1,3 +1,4 @@
+import FootnoteArea from './FootnoteArea'
 import type { GraphData, GraphLink, NoteNode } from '@/types'
 import { renderMarkdown } from '@/utils/markdown'
 
@@ -90,23 +91,32 @@ export default function NodeContent({
         </div>
       </header>
 
-      {current.content && (
-        <section className="my-20 bg-gray-50 rounded-lg">
-          <div
-            className="markdown-content prose prose-sm max-w-none"
-            dangerouslySetInnerHTML={{
-              __html: renderMarkdown(
-                current.content,
-                new Set(
-                  subgraph.links
-                    .filter((link) => link.broken && link.source === current.id)
-                    .map((link) => link.target),
-                ),
-              ),
-            }}
-          />
-        </section>
-      )}
+      {current.content &&
+        (() => {
+          const { content, footnotes } = renderMarkdown(
+            current.content,
+            new Set(
+              subgraph.links
+                .filter((link) => link.broken && link.source === current.id)
+                .map((link) => link.target),
+            ),
+          )
+
+          return (
+            <div className="my-20">
+              <FootnoteArea footnotes={footnotes}>
+                {(isFootnoteVisible: boolean) => (
+                  <section>
+                    <div
+                      className="markdown-content prose prose-sm max-w-none"
+                      dangerouslySetInnerHTML={{ __html: content }}
+                    />
+                  </section>
+                )}
+              </FootnoteArea>
+            </div>
+          )
+        })()}
 
       <section className="border-t border-gray-200 pt-12">
         <h2 className="text-lg font-semibold text-gray-800 mb-3">관련 문서</h2>
