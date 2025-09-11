@@ -25,15 +25,19 @@ function IndexPage() {
 
   const data = sample as GraphData
 
-  // 모든 태그 추출 (최대 20개)
+  // 모든 태그 추출 (언급량 순으로 정렬)
   const allTags = useMemo(() => {
-    const tagSet = new Set<string>()
+    const tagCount = new Map<string, number>()
     data.nodes.forEach((node) => {
       if (node.tags) {
-        node.tags.forEach((tag) => tagSet.add(tag))
+        node.tags.forEach((tag) => {
+          tagCount.set(tag, (tagCount.get(tag) || 0) + 1)
+        })
       }
     })
-    return Array.from(tagSet).sort().slice(0, 20)
+    return Array.from(tagCount.entries())
+      .sort(([, countA], [, countB]) => countB - countA) // 언급량 내림차순
+      .map(([tag]) => tag)
   }, [data])
 
   // 태그 + 날짜 필터링된 데이터
