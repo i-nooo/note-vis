@@ -42,12 +42,12 @@ function parseNotes() {
       const prerequisitesMatch = frontmatter.match(/prerequisites:\s*\[(.*?)\]/)
       const relatedConceptsMatch = frontmatter.match(/relatedConcepts:\s*\[(.*?)\]/)
       const dateMatch = frontmatter.match(/date:\s*["']?([^"'\n]+)["']?/)
-      const createdMatch = frontmatter.match(/created:\s*["']?([^"'\n]+)["']?/)
-      const updatedMatch = frontmatter.match(/updated:\s*["']?([^"'\n]+)["']?/)
+      const createdMatch = frontmatter.match(/created(?:\s+date)?:\s*["']?([^"'\n]+)["']?/)
+      const updatedMatch = frontmatter.match(/(?:updated|edited)(?:\s+date)?:\s*["']?([^"'\n]+)["']?/)
 
       if (titleMatch) title = titleMatch[1].trim()
       if (tagsMatch)
-        tags = tagsMatch[1].split(',').map((t) => t.trim().replace(/["']/g, ''))
+        tags = tagsMatch[1].split(',').map((t) => t.trim().replace(/^["']|["']$/g, ''))
       // 날짜 필드 처리 (date > created 순서로 우선순위)
       if (dateMatch) {
         dateCreated = dateMatch[1].trim()
@@ -63,7 +63,7 @@ function parseNotes() {
       if (prerequisitesMatch) {
         prerequisites = prerequisitesMatch[1]
           .split(',')
-          .map((t) => t.trim().replace(/["']/g, ''))
+          .map((t) => t.trim().replace(/^["']|["']$/g, ''))
           .filter((t) => t && t.length > 0) // 빈 문자열 제거
       }
 
@@ -71,7 +71,7 @@ function parseNotes() {
       if (relatedConceptsMatch) {
         relatedConcepts = relatedConceptsMatch[1]
           .split(',')
-          .map((t) => t.trim().replace(/["']/g, ''))
+          .map((t) => t.trim().replace(/^["']|["']$/g, ''))
       }
     }
 
@@ -129,7 +129,8 @@ function parseNotes() {
     })
 
     // #해시태그 패턴 추출 (본문에서) - relatedConcepts로 처리
-    const hashTags = content.match(/#[a-zA-Z가-힣0-9_-]+/g) || []
+    // HTML 태그와 구분하기 위해 더 엄격한 패턴 사용
+    const hashTags = content.match(/#[a-zA-Z가-힣][a-zA-Z가-힣0-9_-]*/g) || []
     hashTags.forEach((tag) => {
       const conceptName = tag.substring(1) // # 제거
       relatedConcepts.push(conceptName)
