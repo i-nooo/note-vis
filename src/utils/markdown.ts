@@ -176,15 +176,18 @@ ${inner}
 }
 
 function createRendererWithLinkPolicy() {
-  const renderer = new marked.Renderer()
-  const origLink = renderer.link.bind(renderer)
-  renderer.link = (token) => {
-    const html = origLink(token)
-    if (!token.href) return html
-    const isExternal = /^https?:\/\//i.test(token.href)
-    if (!isExternal) return html
-
-    return html.replace(/^<a /, '<a target="_blank" rel="noopener noreferrer" ')
+  const renderer = {
+    link({ href, title, tokens }) {
+      const text = this.parser.parseInline(tokens)
+      const cleanTitle = title ? ` title="${title}"` : ''
+      
+      if (!href) return `<a${cleanTitle}>${text}</a>`
+      
+      const isExternal = /^https?:\/\//i.test(href)
+      const target = isExternal ? ' target="_blank" rel="noopener noreferrer"' : ''
+      
+      return `<a href="${href}"${cleanTitle}${target}>${text}</a>`
+    }
   }
   
   // 코드 블록 렌더러 추가
