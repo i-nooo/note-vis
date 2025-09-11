@@ -138,6 +138,7 @@ code {
 }
 
 /* 마크다운 콘텐츠 스타일링 */
+
 .markdown-content h1,
 .markdown-content h2,
 .markdown-content h3,
@@ -293,7 +294,7 @@ code {
 
 /* 모던 콜아웃 디자인 */
 .markdown-content .callout {
-  margin: 4px 0;
+  margin: 18px 0;
   border-radius: 8px;
   border: none;
   overflow: hidden;
@@ -350,28 +351,28 @@ code {
 }
 
 /* 심플한 컬러 팔레트 */
-.markdown-content .callout-note {
+.markdown-content .callout-info {
   background: rgba(99, 102, 241, 0.08);
 }
-.markdown-content .callout-note .callout-header {
+.markdown-content .callout-info .callout-header {
   background-color: oklch(97% 0.014 254.604);
   color: oklch(48.8% 0.243 264.376);
   border-bottom: none;
 }
-.markdown-content .callout-note .callout-content {
+.markdown-content .callout-info .callout-content {
   background-color: oklch(97% 0.014 254.604);
   color: oklch(48.8% 0.243 264.376);
 }
 
-.markdown-content .callout-info {
-  background: rgba(34, 211, 238, 0.12);
+.markdown-content .callout-note {
+  background: rgba(220, 221, 226, 0.12);
 }
-.markdown-content .callout-info .callout-header {
+.markdown-content .callout-note .callout-header {
   /* background: rgba(34, 211, 238, 0.12); */
   border-bottom: none;
   color: #164e63;
 }
-.markdown-content .callout-info .callout-content {
+.markdown-content .callout-note .callout-content {
   color: #164e63;
 }
 
