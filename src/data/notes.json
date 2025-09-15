@@ -67,6 +67,31 @@
       "dateCreated": "2024-02-15"
     },
     {
+      "id": "flex",
+      "title": "flex",
+      "tags": [
+        "css"
+      ],
+      "content": "> Flexbox(CSS Flexible Box Layout Module) 에서 아이템 단위에 적용되는 단축 속성\n\n<br/>\n\nFlexbox는 레이아웃 전체 시스템을 의미하며, 컨테이너와 그 안의 아이템들이 공간을 배치·정렬·분배하는 방식에 대한 큰 틀의 규칙과 개념이다.\n\n- 컨테이너 속성\n  - display: flex\n  - flex-direction\n  - justify-content\n  - aling-items\n  - flex-wrap 등\n- 아이템 속성\n  - _flex-grow_\n  - _flex-shrink_\n  - _flex-basis_\n  - align-self\n  - order 등\n\n<br/>\n\n여기서 아이템용 속성 중 flex는 **아이템의 크기를 어떻게 분배하고, 공간이 부족하거나 남을 때 어떻게 행동할지 결정하는 것**으로, 단축 속성으로도 작성할 수 있다.\n\n```css\nflex: <flex-grow> <flex-shrink> <flex-basis>;\n```\n\n<br/>\n\n1. **flex-grow**\n   - 컨테이너 안에 남는 공간이 있으면, 각 아이템의 flex-grow 값에 따라 분배된다.\n   - 기본값: 0 (남는 공간을 차지하지 않음)\n     - 1: 동일한 비율로 남는 공간 분배\n     - n: 값이 1인 요소보다 n 배 더 많이 차지\n\n   ```css\n   .item1 {\n     flex-grow: 1;\n   }\n   .item2 {\n     flex-grow: 2;\n   }\n   ```\n\n   컨테이너 여유 공간이 300px 라면, item1은 100px, item2는 200px 를 추가로 갖는다.\n\n<br/>\n\n2. **flex-shrink**\n\n- 컨테이너가 좁아지면 각 아이템이 flex-shrink 값 비율만큼 줄어든다.\n- 기본값: 1 (줄어든다)\n  - 0: 줄어들지 않는다.\n  - n: 1인 다른 요소보다 n배 더 빨리 줄어든다.\n\n  ```css\n  .item1 {\n    flex-shrink: 1;\n  }\n  .item2 {\n    flex-shrink: 0;\n  }\n  ```\n\n  컨테이너 공간이 부족해지면 item1은 줄어들고, item2는 줄어들지 않는다.\n\n<br/>\n\n3. **flex-basis**\n\n- grow/shrink 연산이 적용되기 전에 아이템의 기준 크기를 설정한다.\n- 기본값: auto (아이템에 정의된 width, height를 따른다)\n  - n px, %: 이 지정 크기에서 출발한다. 이후 grow, shrink 규칙이 적용된다.\n\n```css\n.item {\n  flex-basis: 150px;\n  flex-grow: 1;\n}\n```\n\n기본 크기는 150px, 컨테이너에 여유 공간이 있으면 추가로 확장된다.",
+      "prerequisites": [
+        "flexbox"
+      ],
+      "dateCreated": "2025-09-11",
+      "dateUpdated": "2025-09-15"
+    },
+    {
+      "id": "god-object",
+      "title": "God Object",
+      "tags": [
+        "pattern",
+        "anti",
+        "code-smell"
+      ],
+      "content": "[[단일 책임 원칙(SRP)]]에 반하는 안티패턴으로, 특정 클래스나 객체가 과도하게 많은 책임과 기능을 떠맡아, 마치 모든 것을 통제하는 신처럼 시스템 전반에 관여하는 상황을 가리킨다.\n\n이 경우, 한 객체에 지나치게 많은 데이터와 로직이 몰려 있어, 프로젝트가 커질수록 이 객체는 점점 비대해지고, 수정이나 확장 시 다른 부분까지 연쇄적으로 영향을 미친다. 이는 코드 이해도를 저하시킬 뿐만 아니라, 팀 생산성을 저해하며, 버그 발생 가능성을 높이는 구조적 문제를 야기한다. 또한 복잡한 의존성으로 인해 단위 테스트 및 재사용도 어려워진다.\n\n<br/>\n\n이런 상황을 피하기 위해선 다음과 같은 접근이 필요하다:\n\n- **단일 책임 원칙을 준수**하여, 클래스마다 한 가지 역할만을 담당하도록 하고\n- 데이터 접근, 비즈니스 로직, 프레젠테이션 레이어 분리를 통해 **레이어드 아키텍처를 적용**한다.\n- 혹은 전략 패턴, 옵저버 패턴, 리포지토리 **패턴 등을 적용**해 역할을 분산시킨다.\n\n<br/>\n\n---\n\n<br/>\n\n### 참고\n\n- [Yak Shaving: 야크 털 깎기:티스토리](https://nodiscard.tistory.com/381)",
+      "dateCreated": "2025-09-15",
+      "dateUpdated": "2025-09-15"
+    },
+    {
       "id": "javascript",
       "title": "JavaScript",
       "tags": [
@@ -185,19 +210,56 @@
       "dateCreated": "2024-01-18"
     },
     {
+      "id": "web-browser-engineering",
+      "title": "웹 브라우저 엔지니어링",
+      "tags": [
+        "web",
+        "web-rendering"
+      ],
+      "content": "> [웹 브라우저 엔지니어링](https://browser.engineering/intro.html) 을 읽으며 정리한 문서 모음\n\n<br/>\n\n## INTRO\n\n- [[선언적-웹-아키텍처|선언적 웹 아키텍처]]\n\n<br/>\n\n## PART 1: Loading Pages\n\n- [[웹-페이지-다운로드|웹 페이지 다운로드]]",
+      "dateCreated": "2025-09-11",
+      "dateUpdated": "2025-09-11"
+    },
+    {
+      "id": "마크다운-문법",
+      "title": "마크다운 문법",
+      "tags": [
+        "memo"
+      ],
+      "content": "> 보편적인 문법이 아닌, 해당 노트 시스템 테스트입니다.\n\n<br/>\n\n- 테스트1\n  - 테스트2\n\n<br/>\n\n> [!NOTE] -\n>\n> 콜아웃\n> !NOTE, !INFO\n\n<br/>\n\n각주[^1]\n\n[^1]: 각주 입니다.",
+      "dateCreated": "2025-09-11",
+      "dateUpdated": "2025-09-15"
+    },
+    {
       "id": "선언적-웹-아키텍처",
       "title": "선언적 웹 아키텍쳐",
       "tags": [
         "web",
         "페러다임"
       ],
-      "content": "- 출처: [웹 브라우저 엔지니어링](https://browser.engineering/intro.html)\n\n<br/>\n\n- 웹은 하이퍼링크로 연결된 정보의 네트워크이다.\n- 사용자는 브라우저 라고 하는 사용자 에이전트를 사용하여 웹을 탐색한다.\n- 정보는 HTTP(HyperText Transfer Protocol)를 통해 요청되고 HTML 문서 형식으로 구조화됩니다 .\n- 문서는 내용이 아닌 URL(Uniform Resource Locator)로 식별되며 동적으로 생성될 있다.\n- 웹 페이지는 이미지, 비디오, CSS(Cascading Style Sheets), JavaScript를 포함한 다양한 형식의 보조 자산에 링크할 수 있다.\n- 이러한 모든 구성 요소는 개방적이고 표준화되어 있으며 무료로 사용하거나 재사용할 수 있다.\n\n<br/>\n\n웹 브라우저의 동작을 가능하게 하는 핵심은 **제어의 역전(inversion of control)**, **제약 프로그래밍(constraint programming)**, 그리고 **선언적 프로그래밍(declarative programming)** 의 구현에 있다.\n\n**제어의 역전**\n\n- 일반적으로 전통적 프로그래밍은 개발자가 “순서대로” 동작을 직접 제어하지만, 하지만 웹에서는 브라우저가 중심이 되어 렌더링, 이벤트 처리, 동기화 등을 맡고, 개발자는 선언적으로 지시만 한다. 웹 브라우저는 거대한 프레임워크라고 볼 수 있다.\n\n**제약 프로그래밍**\n\n- 웹 레이아웃은 절대 좌표 기반이 아니라, “이 요소는 저 요소 옆에 있어야 한다”, “이 너비는 부모의 50%여야 한다” 같은 제약식으로 표현된다. (flexbox, grid)\n\n**선언적 프로그래밍**\n\n- 개발자는 무엇을 원한다만 기술한다. 어떻게 실행되는가는 브라우저가 책임진다. DOM 변경, CSS 속성 변경 → 개발자는 “적용된다”고 본다. 하지만 실제 반영 시점은 브라우저의 최적화 루틴에 따라 지연될 수 있다. 선언적 스타일 덕분에 개발자의 관점에서는 변화가 “즉시 적용되는 것처럼” 보이지만, 내부적으로 브라우저는 게으른(lazy) 방식으로 동작하여, 후속 API 호출이나 실제 화면 표시가 필요할 때까지 적용을 지연시킬 수 있다. 이는 성능 최적화(레이아웃 병합, repaint 지연 등)를 가능하게 한다.\n\n<br/>\n\n웹 브라우저를 단순히 “표시 도구”로 보지 않고, 제약 해결기(constraint solver) + 이벤트 루프 + 선언적 실행 환경이라는 큰 소프트웨어 아키텍처로 이해해야 한다.\n\n<br/>\n\nQ. 이 세 가지(제어 역전, 제약 프로그래밍, 선언적 프로그래밍)가 프론트엔드 프레임워크(React, Vue, Svelte 등)에 어떻게 계승·확장되었는지",
+      "content": "> 출처: [웹 브라우저 엔지니어링](https://browser.engineering/intro.html)\n\n<br/>\n\n- 웹은 하이퍼링크로 연결된 정보의 네트워크이다.\n- 사용자는 브라우저 라고 하는 사용자 에이전트를 사용하여 웹을 탐색한다.\n- 정보는 HTTP(HyperText Transfer Protocol)를 통해 요청되고 HTML 문서 형식으로 구조화됩니다 .\n- 문서는 내용이 아닌 URL(Uniform Resource Locator)로 식별되며 동적으로 생성될 있다.\n- 웹 페이지는 이미지, 비디오, CSS(Cascading Style Sheets), JavaScript를 포함한 다양한 형식의 보조 자산에 링크할 수 있다.\n- 이러한 모든 구성 요소는 개방적이고 표준화되어 있으며 무료로 사용하거나 재사용할 수 있다.\n\n<br/>\n\n웹 브라우저의 동작을 가능하게 하는 핵심은 **제어의 역전(inversion of control)**, **제약 프로그래밍(constraint programming)**, 그리고 **선언적 프로그래밍(declarative programming)** 의 구현에 있다.\n\n> [!NOTE] -\n> **제어의 역전**\n>\n> 일반적으로 전통적 프로그래밍은 개발자가 “순서대로” 동작을 직접 제어하지만, 하지만 웹에서는 브라우저가 중심이 되어 렌더링, 이벤트 처리, 동기화 등을 맡고, 개발자는 선언적으로 지시만 한다. 웹 브라우저는 거대한 프레임워크라고 볼 수 있다.\n> \\\n> **제약 프로그래밍**\n>\n> 웹 레이아웃은 절대 좌표 기반이 아니라, “이 요소는 저 요소 옆에 있어야 한다”, “이 너비는 부모의 50%여야 한다” 같은 제약식으로 표현된다. (flexbox, grid)\n> \\\n> **선언적 프로그래밍**\n>\n> 개발자는 무엇을 원한다만 기술한다. 어떻게 실행되는가는 브라우저가 책임진다. DOM 변경, CSS 속성 변경 → 개발자는 “적용된다”고 본다. 하지만 실제 반영 시점은 브라우저의 최적화 루틴에 따라 지연될 수 있다. 선언적 스타일 덕분에 개발자의 관점에서는 변화가 “즉시 적용되는 것처럼” 보이지만, 내부적으로 브라우저는 게으른(lazy) 방식으로 동작하여, 후속 API 호출이나 실제 화면 표시가 필요할 때까지 적용을 지연시킬 수 있다. 이는 성능 최적화(레이아웃 병합, repaint 지연 등)를 가능하게 한다.\n\n<br/>\n\n웹 브라우저를 단순히 “표시 도구”로 보지 않고, 제약 해결기(constraint solver) + 이벤트 루프 + 선언적 실행 환경이라는 큰 소프트웨어 아키텍처로 이해해야 한다.\n\n<br/>\n\nQ. 이 세 가지(제어 역전, 제약 프로그래밍, 선언적 프로그래밍)가 프론트엔드 프레임워크(React, Vue, Svelte 등)에 어떻게 계승·확장되었는지",
       "prerequisites": [
-        "SPA",
-        "router"
+        "web-browser-engineering"
       ],
       "dateCreated": "2025-09-08",
       "dateUpdated": "2025-09-08"
+    },
+    {
+      "id": "전역-상태-관리-라이브러리들",
+      "title": "전역 상태관리 라이브러리 비교 (Redux, Tanstack Store, Zustand, Recoil)",
+      "tags": [
+        "react",
+        "state-managemnet"
+      ],
+      "content": "상태 관리 라이브러리에 처음 입문한 것은 Redux였다. 당시에는 구조가 너무 복잡해 직접 그림을 그려가며 공부했던 기억이 있다. 이후 상태 관리 개념에 어느 정도 익숙해진 뒤부터는 주로 Zustand를 사용해왔다. Redux보다 초기 설정과 사용이 단순했고, 내 프로젝트에서는 무거운 상태를 다룰 일이 많지 않았기 때문에 훨씬 쾌적한 DX를 경험 할 수 있었다. Recoil도 사용했었지만, 내가 접한 시점에는 이미 deprecated 상태였기에 실질적으로는 Zustand를 주로 활용했다.\n\nTanstack Query를 알게 되고 나선, Tanstack 팀 레포지토리를 자주 들여다보고 있는데, Tanstack Store 라이브러리가 출시된 걸 보고 틈틈이 써보고 있다.\n\n리액트는 곧 상태라고 생각한다. 따라서 상태 관리가 핵심적인 주제이며, 그만큼 다양한 선택지가 존재하는 것 같다. 각 라이브러리의 철학, 장단점, 설정 방식, 활용 방법을 살펴보고 어떤 상황에서 어떤 라이브러리가 적합한지 나름의 정리를 해보고자 한다.\n\n<br/>\n\n## Redux(w. RTK)\n\n- 예측 가능하고 유지 관리 가능한 글로벌 상태 관리를 위한 JS 라이브러리\n- 예측 가능한 불변 업데이트, 단방향의 데이터 흐름, 순수 리듀서 함수\n- 상태, 액션, reducer, dispatch, store\n\n  • Flux 아키텍처와 Context API의 한계\n  • 서버 상태와 클라이언트 상태의 구분 (Tanstack Query의 철학적 기반)\n  • 상태 관리의 복잡도와 스케일에 따른 의사결정 기준\n  • React 18 이후 등장한 use 훅, 서버 컴포넌트와 상태 관리의 관계\n\n---\n\n### 참고\n\n- [Redux의 탄생동기와 철학 이해하기](https://jun-choi-4928.medium.com/redux의-탄생동기와-철학-이해하기-60eaa83e0b68)",
+      "prerequisites": [
+        "state-managemnet",
+        "Flux",
+        "CQRS",
+        "이벤트 소싱"
+      ],
+      "dateCreated": "2025-09-15",
+      "dateUpdated": "2025-09-15"
     },
     {
       "id": "tag:react",
@@ -248,6 +310,22 @@
     {
       "id": "tag:science",
       "title": "#science"
+    },
+    {
+      "id": "tag:css",
+      "title": "#css"
+    },
+    {
+      "id": "tag:pattern",
+      "title": "#pattern"
+    },
+    {
+      "id": "tag:anti",
+      "title": "#anti"
+    },
+    {
+      "id": "tag:code-smell",
+      "title": "#code-smell"
     },
     {
       "id": "tag:web",
@@ -321,8 +399,20 @@
       "title": "#probability"
     },
     {
+      "id": "tag:web-rendering",
+      "title": "#web-rendering"
+    },
+    {
+      "id": "tag:memo",
+      "title": "#memo"
+    },
+    {
       "id": "tag:페러다임",
       "title": "#페러다임"
+    },
+    {
+      "id": "tag:state-managemnet",
+      "title": "#state-managemnet"
     }
   ],
   "links": [
@@ -430,6 +520,32 @@
     {
       "source": "data-science",
       "target": "tag:science",
+      "type": "tag"
+    },
+    {
+      "source": "flex",
+      "target": "tag:css",
+      "type": "tag"
+    },
+    {
+      "source": "god-object",
+      "target": "단일 책임 원칙(SRP)",
+      "type": "mention",
+      "broken": true
+    },
+    {
+      "source": "god-object",
+      "target": "tag:pattern",
+      "type": "tag"
+    },
+    {
+      "source": "god-object",
+      "target": "tag:anti",
+      "type": "tag"
+    },
+    {
+      "source": "god-object",
+      "target": "tag:code-smell",
       "type": "tag"
     },
     {
@@ -634,6 +750,32 @@
       "type": "tag"
     },
     {
+      "source": "web-browser-engineering",
+      "target": "선언적-웹-아키텍처",
+      "type": "mention"
+    },
+    {
+      "source": "web-browser-engineering",
+      "target": "웹-페이지-다운로드",
+      "type": "mention",
+      "broken": true
+    },
+    {
+      "source": "web-browser-engineering",
+      "target": "tag:web",
+      "type": "tag"
+    },
+    {
+      "source": "web-browser-engineering",
+      "target": "tag:web-rendering",
+      "type": "tag"
+    },
+    {
+      "source": "마크다운-문법",
+      "target": "tag:memo",
+      "type": "tag"
+    },
+    {
       "source": "선언적-웹-아키텍처",
       "target": "tag:web",
       "type": "tag"
@@ -641,6 +783,16 @@
     {
       "source": "선언적-웹-아키텍처",
       "target": "tag:페러다임",
+      "type": "tag"
+    },
+    {
+      "source": "전역-상태-관리-라이브러리들",
+      "target": "tag:react",
+      "type": "tag"
+    },
+    {
+      "source": "전역-상태-관리-라이브러리들",
+      "target": "tag:state-managemnet",
       "type": "tag"
     },
     {
@@ -674,6 +826,12 @@
       "source": "mathematics",
       "target": "data-science",
       "type": "prerequisite"
+    },
+    {
+      "source": "flexbox",
+      "target": "flex",
+      "type": "prerequisite",
+      "broken": true
     },
     {
       "source": "programming",
@@ -740,14 +898,31 @@
       "type": "prerequisite"
     },
     {
-      "source": "SPA",
+      "source": "web-browser-engineering",
       "target": "선언적-웹-아키텍처",
+      "type": "prerequisite"
+    },
+    {
+      "source": "state-managemnet",
+      "target": "전역-상태-관리-라이브러리들",
       "type": "prerequisite",
       "broken": true
     },
     {
-      "source": "router",
-      "target": "선언적-웹-아키텍처",
+      "source": "Flux",
+      "target": "전역-상태-관리-라이브러리들",
+      "type": "prerequisite",
+      "broken": true
+    },
+    {
+      "source": "CQRS",
+      "target": "전역-상태-관리-라이브러리들",
+      "type": "prerequisite",
+      "broken": true
+    },
+    {
+      "source": "이벤트 소싱",
+      "target": "전역-상태-관리-라이브러리들",
       "type": "prerequisite",
       "broken": true
     }

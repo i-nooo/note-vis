@@ -169,30 +169,23 @@ code {
 }
 
 .markdown-content code {
-  /* background-color: #454749; */
-  /* padding: 2px 4px; */
-  /* border-radius: 3px; */
   font-size: 11px;
   color: #ef4444;
   font-family: 'Consolas', 'Monaco', monospace;
 }
 
 .markdown-content pre {
-  /* background-color: #1e1e1e !important; */
-  /* border: 1px solid #333; */
-  /* border-radius: 8px; */
   padding: 20px;
   margin: 20px 0;
   overflow-x: auto;
   line-height: 1.6;
-  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); */
   position: relative;
 }
 
 .markdown-content pre code {
   background-color: transparent !important;
   padding: 0;
-  color: #e6e6e6;
+  color: #333;
   font-size: 14px;
   font-family:
     'SF Mono', 'Monaco', 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
@@ -203,12 +196,6 @@ code {
   word-wrap: break-word;
   overflow-wrap: break-word;
   display: block;
-}
-
-/* 기본 syntax highlighting */
-.markdown-content pre code {
-  /* JavaScript/JSX 키워드 */
-  color: #e6e6e6;
 }
 
 .markdown-content pre code .token.keyword {
