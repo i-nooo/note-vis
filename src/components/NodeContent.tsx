@@ -36,7 +36,7 @@ export default function NodeContent({
             {current.tags.map((tag) => (
               <span
                 key={tag}
-                className="inline-block bg-blue-50 text-blue-700 text-xs px-2 py-1 rounded-md border"
+                className="inline-block bg-blue-50 text-blue-700 text-xs px-2 py-1 rounded-md border-[0.5px] border-blue-200"
               >
                 #{tag}
               </span>

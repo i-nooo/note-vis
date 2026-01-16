@@ -116,7 +116,6 @@ function IndexPage() {
 
   const clearAllTags = () => setSelectedTags(new Set())
 
-
   // 최신 글 리스트 (날짜가 있는 노트들만, 태그 노드 제외)
   const recentNotes = useMemo(() => {
     const notesWithDates = data.nodes
@@ -138,38 +137,41 @@ function IndexPage() {
   }, [data])
 
   return (
-    <>
-      <header className="flex justify-between items-center mb-4">
-        <h2>HK Notes</h2>
-        <SearchBar
-          value={query}
-          onChange={setQuery}
-          placeholder="노트 제목, id, 태그 검색"
-        />
-      </header>
-
-      <div className="flex flex-col gap-4  p-4 rounded-lg">
-        <TagFilter
-          allTags={allTags}
+    <div className="relative h-screen w-screen overflow-hidden -m-4">
+      {/* 전체 화면 네트워크 그래프 */}
+      <div className="absolute inset-0">
+        <NetworkGraph
+          data={filteredData}
+          query={query}
           selectedTags={selectedTags}
-          onToggleTag={toggleTag}
-          onClearAll={clearAllTags}
         />
-        <DateFilter dateFilter={dateFilter} onDateChange={setDateFilter} />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-4 mt-4">
-        <div className="border border-gray-200 rounded-lg">
-          <NetworkGraph
-            data={filteredData}
-            query={query}
-            selectedTags={selectedTags}
-            height={640}
+      {/* 상단 UI */}
+      <div className="absolute top-4 left-4 right-4 z-10 flex flex-col gap-4">
+        <header className="flex justify-between items-center">
+          <SearchBar
+            value={query}
+            onChange={setQuery}
+            placeholder="노트 제목, id, 태그 검색"
           />
-        </div>
+        </header>
 
+        <div className="flex flex-col gap-4">
+          <TagFilter
+            allTags={allTags}
+            selectedTags={selectedTags}
+            onToggleTag={toggleTag}
+            onClearAll={clearAllTags}
+          />
+          <DateFilter dateFilter={dateFilter} onDateChange={setDateFilter} />
+        </div>
+      </div>
+
+      {/* 우측 하단 최근 노트 */}
+      <div className="absolute bottom-4 right-4 z-10">
         <RecentNotes notes={recentNotes} />
       </div>
-    </>
+    </div>
   )
 }

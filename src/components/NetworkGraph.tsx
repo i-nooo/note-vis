@@ -11,6 +11,7 @@ interface Props {
   selectedTags?: Set<string>
   onNavigate?: (node: NoteNode) => void
   routeMode?: 'tanstack' | 'none'
+  initialScale?: number
 }
 
 type SimNode = d3.SimulationNodeDatum & NoteNode & { x: number; y: number }
@@ -24,6 +25,7 @@ export default function NetworkGraph({
   selectedTags = new Set(),
   onNavigate,
   routeMode = 'none',
+  initialScale = 0.6,
 }: Props) {
   const svgRef = useRef<SVGSVGElement | null>(null)
   const navigate = useNavigate({ from: '/' })
@@ -74,9 +76,10 @@ export default function NetworkGraph({
     const W = width,
       H = height
     const g = svg
+      .attr('width', '100%')
+      .attr('height', '100%')
       .attr('viewBox', [0, 0, W, H].toString())
-      .attr('width', W)
-      .attr('height', H)
+      .attr('preserveAspectRatio', 'xMidYMid slice')
       .append('g')
 
     const zoom = d3
@@ -84,6 +87,12 @@ export default function NetworkGraph({
       .scaleExtent([0.2, 4])
       .on('zoom', (event) => g.attr('transform', event.transform))
     svg.call(zoom as any)
+
+    // 초기 줌 레벨 설정 (0.6배로 축소, 중앙 정렬)
+    const initialTransform = d3.zoomIdentity
+      .translate((W * (1 - initialScale)) / 2, (H * (1 - initialScale)) / 2)
+      .scale(initialScale)
+    svg.call((zoom as any).transform, initialTransform)
 
     const isTag = (n: NoteNode) => n.id.startsWith('tag:')
 
@@ -180,7 +189,7 @@ export default function NetworkGraph({
       .data(simLinks)
       .join('line')
       .attr('stroke', linkStroke)
-      .attr('stroke-width', 1.8)
+      .attr('stroke-width', 1)
       .attr('stroke-dasharray', (l) => linkDash(l) ?? null)
       .attr('data-source', (d) => d.source.id)
       .attr('data-target', (d) => d.target.id)
@@ -217,7 +226,7 @@ export default function NetworkGraph({
 
     node
       .append('circle')
-      .attr('r', (d) => (isTag(d) ? 6 : 10))
+      .attr('r', (d) => (isTag(d) ? 5 : 9))
       .attr('fill', (d) => color(d))
       .attr('stroke', '#fff')
       .attr('stroke-width', 1.5)
@@ -228,12 +237,6 @@ export default function NetworkGraph({
         return 'pointer'
       })
       .on('click', (_, d) => {
-        // if (routeMode === 'tanstack' && !d.id.startsWith('tag:')) {
-        //   navigate({ to: '/node/$id', params: { id: d.id } })
-        //   return
-        // }
-        // onNavigate?.(d)
-        // 태그 노드가 아니고 깨진 노드가 아닌 경우만 라우팅
         if (!d.id.startsWith('tag:') && !(d as any).broken) {
           navigate({ to: '/node/$id', params: { id: d.id } })
         }
@@ -260,17 +263,17 @@ export default function NetworkGraph({
       node.attr('transform', (d) => `translate(${d.x},${d.y})`)
     })
 
-    // 하이라이트 로직: hovered 노드와 직접 연결된 이웃만 1.0, 나머지는 모두 0.05
+    // 하이라이트 로직: hovered 노드와 직접 연결된 이웃만 1.0, 나머지는 모두 0.2
     const highlight = (centerId: string) => {
       const neigh = neighbors.get(centerId) ?? new Set<string>()
       const isKeep = (id: string) => id === centerId || neigh.has(id)
 
-      node.attr('opacity', (d) => (isKeep(d.id) ? 1 : 0.05))
+      node.attr('opacity', (d) => (isKeep(d.id) ? 1 : 0.2))
 
       link.attr('opacity', (d) => {
         const s = (d.source as SimNode).id
         const t = (d.target as SimNode).id
-        return s === centerId || t === centerId ? 1 : 0.05
+        return s === centerId || t === centerId ? 1 : 0.2
       })
     }
 
@@ -282,5 +285,5 @@ export default function NetworkGraph({
     return () => simulation.stop()
   }, [nodes, links, width, height, onNavigate, neighbors, navigate, routeMode])
 
-  return <svg ref={svgRef} className={`w-full h-[${height}] bg-white`} />
+  return <svg ref={svgRef} className="w-full h-full" />
 }

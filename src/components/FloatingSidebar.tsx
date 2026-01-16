@@ -32,6 +32,7 @@ export default function FloatingSidebar({ subgraph }: Props) {
             query=""
             selectedTags={new Set()}
             height={250}
+            initialScale={2}
             routeMode="tanstack"
           />
         </div>
