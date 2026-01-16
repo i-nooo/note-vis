@@ -1,12 +1,12 @@
-import FootnoteArea from './FootnoteArea'
-import type { GraphData, GraphLink, NoteNode } from '@/types'
-import { renderMarkdown } from '@/utils/markdown'
+import FootnoteArea from "./FootnoteArea";
+import type { GraphData, GraphLink, NoteNode } from "@/types";
+import { renderMarkdown } from "@/utils/markdown";
 
 interface Props {
-  current: NoteNode | undefined
-  subgraph: GraphData
-  currentId: string
-  onNodeClick: (id: string) => void
+  current: NoteNode | undefined;
+  subgraph: GraphData;
+  currentId: string;
+  onNodeClick: (id: string) => void;
 }
 
 export default function NodeContent({
@@ -20,7 +20,7 @@ export default function NodeContent({
       <div className="flex items-center justify-center h-64 text-gray-500">
         노드를 찾을 수 없습니다.
       </div>
-    )
+    );
   }
 
   return (
@@ -59,7 +59,7 @@ export default function NodeContent({
               )}
             </div>
           )}
-          {!current.id.startsWith('tag:') && current.url && (
+          {!current.id.startsWith("tag:") && current.url && (
             <a
               href={current.url}
               target="_blank"
@@ -85,12 +85,12 @@ export default function NodeContent({
                 .filter((link) => link.broken && link.source === current.id)
                 .map((link) => link.target),
             ),
-          )
+          );
 
           return (
             <div className="my-20">
               <FootnoteArea footnotes={footnotes}>
-                {(isFootnoteVisible: boolean) => (
+                {(_isFootnoteVisible: boolean) => (
                   <section>
                     <div
                       className="markdown-content prose prose-sm max-w-none"
@@ -100,7 +100,7 @@ export default function NodeContent({
                 )}
               </FootnoteArea>
             </div>
-          )
+          );
         })()}
 
       <section className="border-t border-gray-200 pt-12">
@@ -111,38 +111,18 @@ export default function NodeContent({
               .filter((l) => l.source === currentId || l.target === currentId)
               .reduce(
                 (groups, link) => {
-                  const nid =
-                    link.source === currentId ? link.target : link.source
-                  const node = subgraph.nodes.find((n) => n.id === nid)
-
                   // 태그 링크는 제외 (이미 상단에 표시됨)
-                  if (link.type === 'tag') {
-                    return groups
+                  if (link.type === "tag") {
+                    return groups;
                   }
-
-                  // 링크 방향에 따라 올바른 관계 분류
-                  let relationshipKey = link.type
-                  if (link.type === 'prerequisite') {
-                    if (link.target === currentId) {
-                      // A→B: 현재 노드(B)가 target이면, source(A)는 선행 문서
-                      relationshipKey = 'preceding'
-                    } else {
-                      // A→B: 현재 노드(A)가 source이면, target(B)는 후행 문서
-                      relationshipKey = 'following'
-                    }
-                  }
-
-                  groups[relationshipKey] = groups[relationshipKey] || []
-                  groups[relationshipKey].push({ link, node, targetId: nid })
-
-                  return groups
+                  return groups;
                 },
                 {} as Record<
                   string,
                   Array<{
-                    link: GraphLink
-                    node: NoteNode | undefined
-                    targetId: string
+                    link: GraphLink;
+                    node: NoteNode | undefined;
+                    targetId: string;
                   }>
                 >,
               ),
@@ -155,16 +135,16 @@ export default function NodeContent({
                   array.findIndex(
                     (other) => other.targetId === item.targetId,
                   ) === index,
-              )
+              );
 
-              return [linkType, uniqueItems]
+              return [linkType, uniqueItems] as const;
             })
             .map(([linkType, items]) => {
               return (
-                <div key={linkType as string} className="space-y-2">
+                <div key={linkType} className="space-y-2">
                   <div className="grid grid-cols-1">
                     {items.map(({ node, link }, i) => {
-                      const isBroken = !node || link.broken === true
+                      const isBroken = !node || link.broken === true;
                       return (
                         <div
                           key={i}
@@ -177,20 +157,20 @@ export default function NodeContent({
                           ) : (
                             <button
                               className="text-blue-600 text-sm hover:text-blue-800 text-left w-full"
-                              onClick={() => onNodeClick(node!.id)}
+                              onClick={() => onNodeClick(node.id)}
                             >
                               {node?.title}
                             </button>
                           )}
                         </div>
-                      )
+                      );
                     })}
                   </div>
                 </div>
-              )
+              );
             })}
         </div>
       </section>
     </article>
-  )
+  );
 }

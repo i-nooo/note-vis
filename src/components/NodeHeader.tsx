@@ -1,20 +1,20 @@
-import { useNavigate } from '@tanstack/react-router'
-import type { NoteNode } from '@/types'
+import { useNavigate } from "@tanstack/react-router";
+import type { NoteNode } from "@/types";
 
 interface Props {
-  breadcrumbPath: Array<NoteNode>
-  onNodeClick: (id: string) => void
+  breadcrumbPath: Array<NoteNode>;
+  onNodeClick: (id: string) => void;
 }
 
 export default function NodeHeader({ breadcrumbPath, onNodeClick }: Props) {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
     <div className="flex items-center justify-between mb-6">
       <div className="flex items-center gap-3">
         <button
           className="p-1.5 rounded-lg hover:bg-gray-200 transition-colors"
-          onClick={() => navigate({ to: '/' })}
+          onClick={() => navigate({ to: "/" })}
         >
           🥹
         </button>
@@ -42,5 +42,5 @@ export default function NodeHeader({ breadcrumbPath, onNodeClick }: Props) {
         )}
       </div>
     </div>
-  )
+  );
 }

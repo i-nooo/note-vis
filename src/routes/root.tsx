@@ -1,5 +1,5 @@
 // src/routes/root.tsx
-import { Outlet, createRootRoute } from '@tanstack/react-router'
+import { Outlet, createRootRoute } from "@tanstack/react-router";
 
 export const rootRoute = createRootRoute({
   component: () => (
@@ -7,4 +7,4 @@ export const rootRoute = createRootRoute({
       <Outlet />
     </div>
   ),
-})
+});

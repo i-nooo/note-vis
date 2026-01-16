@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { useState } from "react";
 
 interface TagFilterProps {
-  allTags: Array<string>
-  selectedTags: Set<string>
-  onToggleTag: (tag: string) => void
-  onClearAll: () => void
+  allTags: Array<string>;
+  selectedTags: Set<string>;
+  onToggleTag: (tag: string) => void;
+  onClearAll: () => void;
 }
 
 export default function TagFilter({
@@ -13,8 +13,8 @@ export default function TagFilter({
   onToggleTag,
   onClearAll,
 }: TagFilterProps) {
-  const [isExpanded, setIsExpanded] = useState(false)
-  const displayTags = isExpanded ? allTags : allTags.slice(0, 10)
+  const [isExpanded, setIsExpanded] = useState(false);
+  const displayTags = isExpanded ? allTags : allTags.slice(0, 10);
 
   return (
     <div className="">
@@ -27,7 +27,7 @@ export default function TagFilter({
             onClick={() => setIsExpanded(!isExpanded)}
             className="text-xs text-blue-600 hover:text-blue-800"
           >
-            {isExpanded ? '접기' : `펼치기 (+${allTags.length - 10}개)`}
+            {isExpanded ? "접기" : `펼치기 (+${allTags.length - 10}개)`}
           </button>
         )}
       </div>
@@ -38,8 +38,8 @@ export default function TagFilter({
             onClick={() => onToggleTag(tag)}
             className={`px-2 rounded-lg border border-gray-200 text-xs p-1 transition-colors ${
               selectedTags.has(tag)
-                ? 'bg-blue-400 text-white'
-                : 'bg-white text-gray-800 hover:border-blue-400 hover:text-blue-500'
+                ? "bg-blue-400 text-white"
+                : "bg-white text-gray-800 hover:border-blue-400 hover:text-blue-500"
             }`}
           >
             #{tag}
@@ -55,5 +55,5 @@ export default function TagFilter({
         )}
       </div>
     </div>
-  )
+  );
 }

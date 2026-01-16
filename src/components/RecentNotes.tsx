@@ -1,28 +1,29 @@
-import { useState } from 'react'
-import type { NoteNode } from '../types'
+import { useState } from "react";
+import type { NoteNode } from "../types";
 
 interface RecentNotesProps {
-  notes: Array<NoteNode & { sortDate: string }>
+  notes: Array<NoteNode & { sortDate: string }>;
 }
 
 export default function RecentNotes({ notes }: RecentNotesProps) {
-  const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
   const handleNoteClick = (noteId: string) => {
-    window.location.href = `/node/${noteId}`
-  }
+    window.location.href = `/node/${noteId}`;
+  };
 
   return (
     <div className="border border-gray-200 rounded-lg bg-white overflow-hidden">
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
-        className="w-full p-4 flex justify-between items-center hover:bg-gray-50 transition-colors"
+        className="w-full p-4 flex justify-between items-center hover:bg-gray-50 transition-colors cursor-pointer"
       >
-        <h3 className="m-0 text-base font-semibold">
+        <h3 className="m-0 text-base mr-3">
           최신 글 {notes.length > 0 && `(${notes.length})`}
         </h3>
-        <span className="text-gray-500 transition-transform duration-200"
-          style={{ transform: isCollapsed ? 'rotate(-90deg)' : 'rotate(0deg)' }}
+        <span
+          className="text-gray-500 transition-transform duration-200"
+          style={{ transform: isCollapsed ? "rotate(-90deg)" : "rotate(0deg)" }}
         >
           ▼
         </span>
@@ -55,7 +56,10 @@ export default function RecentNotes({ notes }: RecentNotesProps) {
                   {note.tags && note.tags.length > 0 && (
                     <div className="flex gap-1 flex-wrap">
                       {note.tags.map((tag) => (
-                        <span key={tag} className="text-xs text-gray-600 px-1 py-1">
+                        <span
+                          key={tag}
+                          className="text-xs text-gray-600 px-1 py-1"
+                        >
                           #{tag}
                         </span>
                       ))}
@@ -68,5 +72,5 @@ export default function RecentNotes({ notes }: RecentNotesProps) {
         </div>
       )}
     </div>
-  )
+  );
 }
