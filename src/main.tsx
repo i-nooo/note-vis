@@ -1,7 +1,6 @@
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { rootRoute } from '@/routes/root'
 import { indexRoute } from '@/routes/index'
 import { nodeRoute } from '@/routes/node'

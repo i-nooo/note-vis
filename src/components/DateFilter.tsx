@@ -18,13 +18,16 @@ export default function DateFilter({
 
   return (
     <div>
-      <div className="font-medium  text-gray-800 text-sm">
+      <div className="font-medium text-gray-800 text-sm">
         Date{(dateFilter.start || dateFilter.end) && '(활성)'}
       </div>
       <div className="flex gap-3 items-center flex-wrap">
         <div className="flex items-center gap-2">
-          <label className="text-xs text-gray-600">시작일:</label>
+          <label htmlFor="date-start" className="text-xs text-gray-600">
+            시작일:
+          </label>
           <input
+            id="date-start"
             type="date"
             value={dateFilter.start || ''}
             onChange={(e) => updateDateFilter('start', e.target.value)}
@@ -32,8 +35,11 @@ export default function DateFilter({
           />
         </div>
         <div className="flex items-center gap-2">
-          <label className="text-xs text-gray-600">종료일:</label>
+          <label htmlFor="date-end" className="text-xs text-gray-600">
+            종료일:
+          </label>
           <input
+            id="date-end"
             type="date"
             value={dateFilter.end || ''}
             onChange={(e) => updateDateFilter('end', e.target.value)}

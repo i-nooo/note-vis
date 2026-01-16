@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import type { GraphData, NoteNode, TreeNode } from '@/types'
+import type { GraphData, NoteNode } from '@/types'
 
 export function useNodeData(baseData: GraphData, id: string) {
   // 3뎁스 서브그래프
@@ -45,132 +45,8 @@ export function useNodeData(baseData: GraphData, id: string) {
     return path
   }, [baseData, id])
 
-  // 개념 트리 (parent + prerequisites + children 관계)
-  const familyTree = useMemo<TreeNode | null>(() => {
-    const map = new Map<string, TreeNode>()
-    const repoBase = 'https://github.com/<org>/<repo>/blob/main/notes/'
-
-    // TreeNode 맵 생성 (태그 제외)
-    baseData.nodes.forEach((n) => {
-      if (n.id.startsWith('tag:')) return
-      map.set(n.id, {
-        id: n.id,
-        title: n.title,
-        url: `${repoBase}${n.id}.md`,
-        children: [],
-      })
-    })
-
-    // prerequisites 관계 구축 (여러 선행 개념)
-    baseData.nodes.forEach((n) => {
-      if (!n.prerequisites) return
-      n.prerequisites.forEach((prereqId) => {
-        // 깨진 노드를 위한 가상 노드 생성
-        if (!map.has(prereqId)) {
-          map.set(prereqId, {
-            id: prereqId,
-            title: prereqId,
-            url: `${repoBase}${prereqId}.md`,
-            children: [],
-            broken: true,
-          })
-        }
-
-        const prereq = map.get(prereqId)!
-        const child = map.get(n.id)!
-        const alreadyConnected = prereq.children?.some((c) => c.id === child.id)
-        if (!alreadyConnected) {
-          prereq.children!.push(child)
-        }
-      })
-    })
-
-    const current = map.get(id)
-    if (!current) return null
-
-    // 선행-현재-후행 계층 구조 생성
-    const currentNodeData = baseData.nodes.find((n) => n.id === id)
-    if (
-      currentNodeData?.prerequisites &&
-      currentNodeData.prerequisites.length > 0
-    ) {
-      // prerequisites들을 루트 레벨에 배치
-      const filteredPrereqs = currentNodeData.prerequisites.filter((prereqId) => prereqId && prereqId.trim() !== '')
-      
-      if (filteredPrereqs.length === 1) {
-        // prerequisite가 1개면 간단한 구조
-        const prereqId = filteredPrereqs[0]
-        if (map.has(prereqId)) {
-          const prereqNode = map.get(prereqId)!
-          return {
-            ...prereqNode,
-            children: [{
-              ...current,
-              children: current.children || [],
-            }],
-          }
-        }
-      } else if (filteredPrereqs.length > 1) {
-        // prerequisite가 여러 개면 가상 루트 생성
-        const prereqNodes = filteredPrereqs
-          .map(prereqId => map.get(prereqId))
-          .filter(Boolean) as TreeNode[]
-        
-        // 가상 루트에서 각 prerequisite로 연결, 그 아래에 현재 노드
-        const virtualRoot: TreeNode = {
-          id: `virtual-root-${id}`,
-          title: '개념 관계',
-          children: prereqNodes.map(prereqNode => ({
-            ...prereqNode,
-            children: [{
-              ...current,
-              children: current.children || [],
-            }],
-          })),
-          broken: false,
-          virtual: true,
-        }
-        
-        return virtualRoot
-      }
-    }
-
-    // prerequisites가 없으면 기존 로직 사용
-    let ancestor = current
-    while (true) {
-      const currentNodeData = baseData.nodes.find((n) => n.id === ancestor.id)
-      // prerequisites의 첫 번째 항목을 parent로 사용
-      let parentId = null
-      if (
-        currentNodeData?.prerequisites &&
-        currentNodeData.prerequisites.length > 0
-      ) {
-        parentId = currentNodeData.prerequisites[0]
-      }
-
-      if (!parentId || !map.has(parentId)) break
-      ancestor = map.get(parentId)!
-    }
-
-    // 4뎁스까지 필터링
-    const filterDepth = (node: TreeNode, currentDepth: number): TreeNode => {
-      return {
-        ...node,
-        children:
-          currentDepth < 4
-            ? node.children?.map((child) =>
-                filterDepth(child, currentDepth + 1),
-              ) || []
-            : [],
-      }
-    }
-
-    return filterDepth(ancestor, 0)
-  }, [baseData, id])
-
   return {
     subgraph,
     breadcrumbPath,
-    familyTree,
   }
 }

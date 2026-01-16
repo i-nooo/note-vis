@@ -8,7 +8,7 @@ export interface NoteNode {
   tags?: Array<string>
   degree?: number
   prerequisites?: Array<string>
-  relatedConcepts?: Array<string>
+  related?: Array<string>
   dateCreated?: string
   dateUpdated?: string
 }
@@ -23,14 +23,4 @@ export interface GraphLink {
 export interface GraphData {
   nodes: Array<NoteNode>
   links: Array<GraphLink>
-}
-
-export interface TreeNode {
-  id: string
-  title: string
-  url?: string
-  children?: Array<TreeNode>
-  prerequisites?: Array<string>
-  broken?: boolean
-  virtual?: boolean
 }

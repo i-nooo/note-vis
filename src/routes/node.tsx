@@ -22,7 +22,7 @@ function NodePage() {
   const baseData = sample as GraphData
   const footnoteVisible = useStore(store, (state) => state.footnoteVisible)
 
-  const { subgraph, breadcrumbPath, familyTree } = useNodeData(baseData, id)
+  const { subgraph, breadcrumbPath } = useNodeData(baseData, id)
 
   // URL이 포함된 서브그래프 데이터
   const repoBase = 'https://github.com/<org>/<repo>/blob/main/notes/'
@@ -54,12 +54,7 @@ function NodePage() {
           onNodeClick={goNode}
         />
 
-        <FloatingSidebar
-          subgraph={withUrls}
-          familyTree={familyTree}
-          currentId={id}
-          onNavigate={goNode}
-        />
+        <FloatingSidebar subgraph={withUrls} />
       </div>
     </div>
   )
