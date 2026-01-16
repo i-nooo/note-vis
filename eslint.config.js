@@ -9,4 +9,13 @@ const customConfig = {
   },
 }
 
-export default [...tanstackConfig, customConfig]
+const jsConfig = {
+  files: ['**/*.js'],
+  languageOptions: {
+    parserOptions: {
+      project: false, // JavaScript 파일에는 TypeScript 프로젝트 설정 사용 안함
+    },
+  },
+}
+
+export default [...tanstackConfig, customConfig, jsConfig]
