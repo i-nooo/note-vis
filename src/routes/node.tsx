@@ -22,10 +22,10 @@ function NodePage() {
   const baseData = sample as GraphData;
   const footnoteVisible = useStore(store, (state) => state.footnoteVisible);
 
-  const { subgraph, breadcrumbPath } = useNodeData(baseData, id);
+  const { subgraph } = useNodeData(baseData, id);
 
   // URL이 포함된 서브그래프 데이터
-  const repoBase = "https://github.com/<org>/<repo>/blob/main/notes/";
+  const repoBase = "https://github.com/i-nooo/note-vis/blob/main/notes/";
   const withUrls = useMemo(
     () => ({
       ...subgraph,
@@ -45,7 +45,7 @@ function NodePage() {
       className={`min-h-screen bg-gray-50 ${!footnoteVisible ? "footnote-off" : ""}`}
     >
       <div className={`mx-auto ${footnoteVisible ? "max-w-4xl" : "max-w-3xl"}`}>
-        <NodeHeader breadcrumbPath={breadcrumbPath} onNodeClick={goNode} />
+        <NodeHeader />
 
         <NodeContent
           current={current}

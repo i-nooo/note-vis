@@ -10,6 +10,16 @@
       "dateUpdated": "2025-09-10"
     },
     {
+      "id": "HTML-preview",
+      "title": "HTML preview",
+      "tags": [
+        "note-vis"
+      ],
+      "content": "본 프로젝트 내 마크다운 파일에서 HTML, CSS, JavaScript 코드를 작성하고 실시간으로 렌더링할 수 있다.\n\n## 사용 방법\n\n코드 블록에 `html-preview` 또는 `html-live` 언어를 지정한다.\n\n````markdown\n```html-preview\n<p>Hello World</p>\n```\n````\n\n---\n\n## 예제 1: 기본 HTML + CSS\n\n```html-preview\n<style>\n  .card {\n    padding: 20px;\n    border-radius: 12px;\n    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);\n    color: white;\n    font-family: system-ui, sans-serif;\n    text-align: center;\n  }\n  .card h2 {\n    margin: 0 0 8px 0;\n  }\n  .card p {\n    margin: 0;\n    opacity: 0.9;\n  }\n</style>\n\n<div class=\"card\">\n  <h2>카드 제목</h2>\n  <p>CSS 스타일이 적용된 카드 컴포넌트</p>\n</div>\n```\n\n---\n\n## 예제 2: CSS 애니메이션\n\n```html-preview\n<style>\n  .spinner {\n    width: 50px;\n    height: 50px;\n    border: 4px solid #f3f3f3;\n    border-top: 4px solid #3498db;\n    border-radius: 50%;\n    animation: spin 1s linear infinite;\n    margin: 20px auto;\n  }\n  @keyframes spin {\n    0% { transform: rotate(0deg); }\n    100% { transform: rotate(360deg); }\n  }\n</style>\n\n<div class=\"spinner\"></div>\n```\n\n---\n\n## 예제 3: JavaScript 인터랙션\n\n```html-preview\n<style>\n  .counter {\n    font-family: system-ui, sans-serif;\n    text-align: center;\n    padding: 20px;\n  }\n  .count {\n    font-size: 48px;\n    font-weight: bold;\n    color: #333;\n  }\n  .buttons {\n    margin-top: 16px;\n    display: flex;\n    gap: 8px;\n    justify-content: center;\n  }\n  button {\n    padding: 8px 16px;\n    font-size: 18px;\n    border: none;\n    border-radius: 6px;\n    cursor: pointer;\n    background: #4f46e5;\n    color: white;\n  }\n  button:hover {\n    background: #4338ca;\n  }\n</style>\n\n<div class=\"counter\">\n  <div class=\"count\" id=\"count\">0</div>\n  <div class=\"buttons\">\n    <button onclick=\"decrement()\">-</button>\n    <button onclick=\"increment()\">+</button>\n  </div>\n</div>\n\n<script>\n  let count = 0;\n  const countEl = document.getElementById('count');\n\n  function increment() {\n    count++;\n    countEl.textContent = count;\n  }\n\n  function decrement() {\n    count--;\n    countEl.textContent = count;\n  }\n</script>\n```\n\n---\n\n## 예제 4: Flexbox 레이아웃\n\n```html-preview\n<style>\n  .flex-container {\n    display: flex;\n    gap: 10px;\n    padding: 20px;\n    background: #f5f5f5;\n  }\n  .box {\n    width: 60px;\n    height: 60px;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-weight: bold;\n    color: white;\n    border-radius: 8px;\n  }\n  .box:nth-child(1) { background: #ef4444; }\n  .box:nth-child(2) { background: #f59e0b; }\n  .box:nth-child(3) { background: #10b981; }\n  .box:nth-child(4) { background: #3b82f6; }\n</style>\n\n<div class=\"flex-container\">\n  <div class=\"box\">1</div>\n  <div class=\"box\">2</div>\n  <div class=\"box\">3</div>\n  <div class=\"box\">4</div>\n</div>\n```\n\n---\n\n## 보안\n\niframe의 `sandbox=\"allow-scripts\"` 속성으로 격리되어 있어 메인 페이지에 영향을 주지 않는다.\n\n- 부모 페이지 DOM 접근 불가\n- 쿠키, localStorage 접근 불가\n- 폼 제출 불가\n\n---\n\n## 구현 상세\n\n### 아키텍처 개요\n\n```\n마크다운 → marked 파서 → 커스텀 렌더러 → DOMPurify → 화면 출력\n                              ↓\n                    html-preview 감지\n                              ↓\n                    sandbox iframe 생성\n```\n\n### 1. 커스텀 코드 블록 렌더러\n\n`src/utils/markdown/renderer.ts`에서 코드 블록을 처리할 때 언어가 `html-preview` 또는 `html-live`인 경우를 감지한다.\n\n```ts\ncode({ text: code, lang }: { text: string; lang?: string }) {\n  // HTML 프리뷰 처리\n  if (lang === 'html-preview' || lang === 'html-live') {\n    return createHtmlPreview(code)\n  }\n  // ... 일반 코드 블록 처리\n}\n```\n\n### 2. iframe 생성 함수\n\n`createHtmlPreview` 함수가 sandbox iframe을 포함한 HTML 구조를 생성한다.\n\n```ts\nfunction createHtmlPreview(code: string): string {\n  const id = `html-preview-${previewIdCounter++}`\n\n  return `<div class=\"html-preview-container\">\n    <div class=\"html-preview-header\">\n      <span class=\"html-preview-label\">HTML Preview</span>\n      <button class=\"html-preview-toggle\"\n        onclick=\"this.closest('.html-preview-container').classList.toggle('show-code')\">\n        코드 보기\n      </button>\n    </div>\n    <iframe\n      id=\"${id}\"\n      class=\"html-preview-frame\"\n      sandbox=\"allow-scripts\"\n      srcdoc=\"${escapeHtml(code)}\"\n    ></iframe>\n    <pre class=\"html-preview-source\">\n      <code class=\"language-html\">${escapeHtml(code)}</code>\n    </pre>\n  </div>`\n}\n```\n\n**핵심 포인트:**\n\n| 속성 | 설명 |\n|------|------|\n| `sandbox=\"allow-scripts\"` | JS 실행은 허용하되 부모 페이지 접근 차단 |\n| `srcdoc` | iframe 내용을 인라인으로 지정 (별도 URL 불필요) |\n| `escapeHtml()` | XSS 방지를 위해 HTML 특수문자 이스케이프 |\n\n### 3. DOMPurify 설정\n\n`src/utils/markdown/constants.ts`에서 iframe 관련 태그와 속성을 허용 목록에 추가한다.\n\n```ts\nexport const SANITIZE_OPTIONS = {\n  ADD_ATTR: [\n    // 기존 속성들...\n    \"sandbox\",   // iframe 보안 정책\n    \"srcdoc\",    // iframe 인라인 콘텐츠\n    \"onclick\",   // 토글 버튼용\n  ],\n  ADD_TAGS: [\n    // 기존 태그들...\n    \"iframe\",    // 프리뷰 컨테이너\n    \"button\",    // 코드 보기 토글\n  ],\n}\n```\n\n### 4. CSS 스타일링\n\n`src/styles/markdown.css`에서 프리뷰 컨테이너 스타일을 정의한다.\n\n```css\n/* 컨테이너 */\n.html-preview-container {\n  margin: 20px 0;\n  border: 1px solid var(--border);\n  border-radius: 8px;\n  overflow: hidden;\n}\n\n/* 헤더 (라벨 + 토글 버튼) */\n.html-preview-header {\n  display: flex;\n  justify-content: space-between;\n  padding: 8px 12px;\n  background-color: var(--muted);\n}\n\n/* iframe */\n.html-preview-frame {\n  width: 100%;\n  min-height: 150px;\n  border: none;\n  background: white;\n}\n\n/* 소스 코드 (기본 숨김) */\n.html-preview-source {\n  display: none;\n}\n\n/* 토글 시 소스 코드 표시 */\n.html-preview-container.show-code .html-preview-source {\n  display: block;\n}\n```\n\n### 5. sandbox 속성 상세\n\niframe의 `sandbox` 속성은 보안 정책을 세밀하게 제어한다.\n\n| 값 | 허용 | 차단 |\n|----|------|------|\n| `allow-scripts` | JavaScript 실행 | - |\n| (미지정) | - | 부모 DOM 접근 |\n| (미지정) | - | 쿠키/스토리지 |\n| (미지정) | - | 폼 제출 |\n| (미지정) | - | 팝업/모달 |\n\n`allow-same-origin`을 추가하면 부모 페이지 접근이 가능해지므로 **절대 추가하지 않는다**.\n\n### 파일 구조\n\n```\nsrc/utils/markdown/\n├── index.ts          # renderMarkdown 진입점\n├── renderer.ts       # 커스텀 렌더러 (html-preview 처리)\n├── constants.ts      # DOMPurify 설정\n├── helpers.ts        # escapeHtml 등 유틸\n└── extensions/       # 콜아웃, 위키링크 등\n\nsrc/styles/\n└── markdown.css      # html-preview 스타일\n```",
+      "dateCreated": "2025-01-19",
+      "dateUpdated": "2025-01-19"
+    },
+    {
       "id": "base-router-설정",
       "title": "base router 설정",
       "tags": [
@@ -19,6 +29,16 @@
       ],
       "content": "<br/>\n\n> [!NOTE]+ 환경\n>\n> \\- React 19\n> \\- Vite\n> \\- Tanstack Router\n> \\- Vercel\n\n<br/>\n\nSPA 환경에서 TanStack Router를 사용하여 애플리케이션을 개발하던 중, 브라우저 주소창에 /myapp/xxx 와 같은 서브 경로를 직접 입력하면 404 오류가 발생하는 것을 확인하였습니다. 그러나 라우터 링크를 통해 내부 페이지로 이동하는 것은 정상적으로 동작하였습니다. 네트워크 요청을 확인해본 결과, 브라우저가 해당 경로에 실제 정적 파일이 존재하는지 확인하다가 찾지 못해 404를 반환하고 있음을 알게 되었습니다.\n\n<br/>\n\n공식 문서(TanStack Router Docs, Vercel Rewrites)를 참고한 결과, SPA는 최초에 index.html을 로드한 뒤 클라이언트 라우터가 동작하기 때문에, 서버(또는 호스팅 플랫폼)에서 존재하지 않는 경로로의 요청을 index.html로 리라이트해야 함을 알게 되었습니다. 또한 애플리케이션을 루트가 아닌 /myapp 경로에 배포했기 때문에, 라우터 basepath와 빌드 경로 설정도 일관되게 맞추어야 함을 확인하였습니다.\n\n<br/><br/>\n\n이를 해결하기 위해 다음과 같이 수정하였습니다.\n\n<br/>\n\n1. TanStack Router basepath 지정\n\n```ts\nimport { createRouter } from '@tanstack/react-router'\n\nconst router = createRouter({\n  routeTree,\n  basepath: '/myapp',\n})\n```\n\n→ 라우터가 /myapp을 기준으로 경로를 인식하도록 수정하였습니다.\n\n<br/>\n\n2. Vite 설정 수정\n\n```ts\n// vite.config.ts\nexport default defineConfig({\n  base: '/myapp/',\n})\n```\n\n→ 빌드된 정적 자산(js, css 등)이 올바른 경로에서 로드되도록 하였습니다.\n\n<br/>\n\n3. Vercel 리라이트 설정 추가\n\n```json\n// vercel.json\n{\n  \"rewrites\": [\n    {\n      \"source\": \"/myapp/(.*)\",\n      \"destination\": \"/myapp/index.html\"\n    }\n  ]\n}\n```\n\n→ /myapp 이하의 모든 경로를 index.html로 전달하도록 하였습니다.\n\n<br/><br/>\n\n이 과정을 거친 후 브라우저 주소창에 /myapp/xxx 와 같은 경로를 직접 입력해도 Vercel이 index.html을 반환하게 되었고, TanStack Router가 정상적으로 초기화되어 해당 경로를 매칭할 수 있었습니다. 결과적으로 내부 링크 이동과 직접 주소 입력이 동일하게 동작하는 일관된 라우팅 경험을 제공할 수 있었습니다.\n\n<br/>\n\n이번 경험을 통해 CSR 기반 라우팅에서는 배포 환경에 맞는 index.html fallback 설정이 필수적임을 학습하였습니다. 특히 Vercel과 같은 정적 호스팅 환경에서는 vercel.json의 rewrite 규칙을 통해 라우팅 문제를 해결할 수 있음을 확인하였습니다. 또한 애플리케이션을 서브 경로에 배포할 경우 라우터 basepath, 빌드 base 설정, 호스팅 플랫폼의 리라이트 규칙을 반드시 일관되게 구성해야 함을 깨달았습니다.",
       "dateCreated": "2025-09-04"
+    },
+    {
+      "id": "cv",
+      "title": "CV",
+      "tags": [
+        "about-me"
+      ],
+      "content": "",
+      "dateCreated": "2025-01-19",
+      "dateUpdated": "2025-01-19"
     },
     {
       "id": "flex",
@@ -134,12 +154,20 @@
       "title": "#react"
     },
     {
+      "id": "tag:note-vis",
+      "title": "#note-vis"
+    },
+    {
       "id": "tag:BUGFIX",
       "title": "#BUGFIX"
     },
     {
       "id": "tag:tanstack-router",
       "title": "#tanstack-router"
+    },
+    {
+      "id": "tag:about-me",
+      "title": "#about-me"
     },
     {
       "id": "tag:css",
@@ -168,10 +196,6 @@
     {
       "id": "tag:web-rendering",
       "title": "#web-rendering"
-    },
-    {
-      "id": "tag:note-vis",
-      "title": "#note-vis"
     },
     {
       "id": "tag:markdown",
@@ -205,6 +229,11 @@
       "type": "tag"
     },
     {
+      "source": "HTML-preview",
+      "target": "tag:note-vis",
+      "type": "tag"
+    },
+    {
       "source": "base-router-설정",
       "target": "tag:BUGFIX",
       "type": "tag"
@@ -217,6 +246,11 @@
     {
       "source": "base-router-설정",
       "target": "tag:tanstack-router",
+      "type": "tag"
+    },
+    {
+      "source": "cv",
+      "target": "tag:about-me",
       "type": "tag"
     },
     {

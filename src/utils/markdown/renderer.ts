@@ -1,5 +1,28 @@
 import { escapeHtml, formatCode } from './helpers'
 
+let previewIdCounter = 0
+
+function createHtmlPreview(code: string): string {
+  const id = `html-preview-${previewIdCounter++}`
+
+  return `<div class="html-preview-container">
+    <div class="html-preview-header">
+      <span class="html-preview-label">HTML Preview</span>
+      <button class="html-preview-toggle" onclick="this.closest('.html-preview-container').classList.toggle('show-code')">
+        코드 보기
+      </button>
+    </div>
+    <iframe
+      id="${id}"
+      class="html-preview-frame"
+      sandbox="allow-scripts"
+      srcdoc="${escapeHtml(code)}"
+      loading="lazy"
+    ></iframe>
+    <pre class="html-preview-source"><code class="language-html">${escapeHtml(code)}</code></pre>
+  </div>`
+}
+
 function highlightJavaScript(code: string): string {
   let highlighted = escapeHtml(formatCode(code))
   const placeholders = new Map<string, string>()
@@ -97,6 +120,11 @@ export function createRendererWithLinkPolicy() {
     },
 
     code({ text: code, lang }: { text: string; lang?: string }) {
+      // HTML 프리뷰 처리
+      if (lang === 'html-preview' || lang === 'html-live') {
+        return createHtmlPreview(code)
+      }
+
       let highlighted: string
 
       const jsLangs = ['ts', 'js', 'javascript', 'typescript', 'jsx', 'tsx']

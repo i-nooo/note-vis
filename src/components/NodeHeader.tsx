@@ -1,12 +1,6 @@
 import { useNavigate } from "@tanstack/react-router";
-import type { NoteNode } from "@/types";
 
-interface Props {
-  breadcrumbPath: Array<NoteNode>;
-  onNodeClick: (id: string) => void;
-}
-
-export default function NodeHeader({ breadcrumbPath, onNodeClick }: Props) {
+export default function NodeHeader() {
   const navigate = useNavigate();
 
   return (
@@ -18,28 +12,6 @@ export default function NodeHeader({ breadcrumbPath, onNodeClick }: Props) {
         >
           🥹
         </button>
-
-        {breadcrumbPath.length > 0 && (
-          <nav className="flex items-center text-sm">
-            {breadcrumbPath.map((node, index) => (
-              <span key={node.id} className="flex items-center">
-                {index > 0 && <span className="text-gray-400 mx-2">/</span>}
-                {index === breadcrumbPath.length - 1 ? (
-                  <span className="font-semibold text-gray-900">
-                    {node.title}
-                  </span>
-                ) : (
-                  <button
-                    className="text-blue-600 hover:text-blue-800 hover:underline"
-                    onClick={() => onNodeClick(node.id)}
-                  >
-                    {node.title}
-                  </button>
-                )}
-              </span>
-            ))}
-          </nav>
-        )}
       </div>
     </div>
   );

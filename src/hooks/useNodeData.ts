@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import type { GraphData, NoteNode } from "@/types";
+import type { GraphData } from "@/types";
 
 export function useNodeData(baseData: GraphData, id: string) {
   // 3뎁스 서브그래프
@@ -22,31 +22,7 @@ export function useNodeData(baseData: GraphData, id: string) {
     };
   }, [baseData, id]);
 
-  // Breadcrumb 경로 (prerequisites도 고려)
-  const breadcrumbPath = useMemo<Array<NoteNode>>(() => {
-    const path: Array<NoteNode> = [];
-    let currentNode = baseData.nodes.find(
-      (n) => n.id === id && !n.id.startsWith("tag:"),
-    );
-
-    while (currentNode) {
-      path.unshift(currentNode);
-
-      // prerequisites의 첫 번째 항목을 parent로 사용
-      let parentId = null;
-      if (currentNode.prerequisites && currentNode.prerequisites.length > 0) {
-        parentId = currentNode.prerequisites[0];
-      }
-
-      if (!parentId) break;
-      currentNode = baseData.nodes.find((n) => n.id === parentId);
-    }
-
-    return path;
-  }, [baseData, id]);
-
   return {
     subgraph,
-    breadcrumbPath,
   };
 }

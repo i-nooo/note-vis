@@ -277,3 +277,64 @@
   border: 0.5px solid var(--border);
   margin: 72px 0;
 }
+
+/* HTML 프리뷰 */
+.markdown-content .html-preview-container {
+  margin: 20px 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.markdown-content .html-preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+
+.markdown-content .html-preview-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.markdown-content .html-preview-toggle {
+  font-size: 12px;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--background);
+  color: var(--foreground);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.markdown-content .html-preview-toggle:hover {
+  background: var(--accent);
+}
+
+.markdown-content .html-preview-frame {
+  width: 100%;
+  min-height: 150px;
+  border: none;
+  background: white;
+}
+
+.markdown-content .html-preview-source {
+  display: none;
+  margin: 0;
+  border-radius: 0;
+}
+
+.markdown-content .html-preview-container.show-code .html-preview-source {
+  display: block;
+}
+
+.markdown-content .html-preview-container.show-code .html-preview-frame {
+  border-bottom: 1px solid var(--border);
+}
