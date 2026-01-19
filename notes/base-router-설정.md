@@ -1,8 +1,8 @@
 ---
-title: 'base router 설정'
-tags: ['BUGFIX', 'react', 'tanstack-router']
-created date: '2025-09-04'
-edited data: '2025-09-04'
+title: "base router 설정"
+tags: ["BUGFIX", "tanstack-router"]
+created date: "2025-09-04"
+edited data: "2025-09-04"
 ---
 
 <br/>
@@ -31,12 +31,12 @@ SPA 환경에서 TanStack Router를 사용하여 애플리케이션을 개발하
 1. TanStack Router basepath 지정
 
 ```ts
-import { createRouter } from '@tanstack/react-router'
+import { createRouter } from "@tanstack/react-router";
 
 const router = createRouter({
   routeTree,
-  basepath: '/myapp',
-})
+  basepath: "/myapp",
+});
 ```
 
 → 라우터가 /myapp을 기준으로 경로를 인식하도록 수정하였습니다.
@@ -48,8 +48,8 @@ const router = createRouter({
 ```ts
 // vite.config.ts
 export default defineConfig({
-  base: '/myapp/',
-})
+  base: "/myapp/",
+});
 ```
 
 → 빌드된 정적 자산(js, css 등)이 올바른 경로에서 로드되도록 하였습니다.

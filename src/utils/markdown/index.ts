@@ -38,25 +38,51 @@ setupMarked();
 
 function extractFootnotes(markdown: string): Array<Footnote> {
   const footnotes: Array<Footnote> = [];
-  const footnoteMatches = markdown.match(/^\[\^([^\]]+)\]:\s*(.*)$/gm);
+  const lines = markdown.split("\n");
+  let currentFootnote: Footnote | null = null;
 
-  if (footnoteMatches) {
-    footnoteMatches.forEach((matchStr) => {
-      const parts = matchStr.match(/^\[\^([^\]]+)\]:\s*(.*)$/);
-      if (parts) {
-        footnotes.push({
-          label: parts[1].trim(),
-          content: parts[2].trim(),
-        });
+  for (const line of lines) {
+    const footnoteDef = line.match(/^\[\^([^\]]+)\]:\s*(.*)$/);
+    if (footnoteDef) {
+      if (currentFootnote) {
+        footnotes.push(currentFootnote);
       }
-    });
+      currentFootnote = {
+        label: footnoteDef[1].trim(),
+        content: footnoteDef[2].trim(),
+      };
+    } else if (currentFootnote && line.startsWith("  ")) {
+      currentFootnote.content += "\n" + line.trim();
+    } else if (currentFootnote) {
+      footnotes.push(currentFootnote);
+      currentFootnote = null;
+    }
+  }
+
+  if (currentFootnote) {
+    footnotes.push(currentFootnote);
   }
 
   return footnotes;
 }
 
 function removeFootnoteDefinitions(markdown: string): string {
-  return markdown.replace(/^\[\^([^\]]+)\]:\s*.*$/gm, "").trim();
+  const lines = markdown.split("\n");
+  const result: Array<string> = [];
+  let inFootnote = false;
+
+  for (const line of lines) {
+    if (/^\[\^([^\]]+)\]:/.test(line)) {
+      inFootnote = true;
+    } else if (inFootnote && line.startsWith("  ")) {
+      continue;
+    } else {
+      inFootnote = false;
+      result.push(line);
+    }
+  }
+
+  return result.join("\n").trim();
 }
 
 function replaceFootnoteReferences(content: string): string {
@@ -70,12 +96,12 @@ function renderFootnotesHtml(footnotes: Array<Footnote>): string {
   if (footnotes.length === 0) return "";
 
   return footnotes
-    .map(
-      (fn) =>
-        `<div class="footnote-def" id="footnote-${fn.label}">
-          <a href="#footnote-ref-${fn.label}" class="footnote-backref">${fn.label}</a>: ${marked.parseInline(fn.content)}
-        </div>`,
-    )
+    .map((fn) => {
+      const contentWithBreaks = fn.content.replace(/\n/g, "<br>");
+      return `<div class="footnote-def" id="footnote-${fn.label}">
+          <a href="#footnote-ref-${fn.label}" class="footnote-backref">${fn.label}</a>: ${marked.parseInline(contentWithBreaks)}
+        </div>`;
+    })
     .join("");
 }
 

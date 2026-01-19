@@ -79,12 +79,12 @@ export default function NodeContent({
       </header>
 
       {renderResult && (
-        <div className="my-20">
+        <div>
           <FootnoteArea footnotes={renderResult.footnotes}>
             {(_isFootnoteVisible: boolean) => (
               <section>
                 <div
-                  className="markdown-content prose prose-sm max-w-none"
+                  className="markdown-content prose prose-sm max-w-none my-14"
                   dangerouslySetInnerHTML={{ __html: renderResult.content }}
                 />
               </section>

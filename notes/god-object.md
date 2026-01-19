@@ -1,8 +1,8 @@
 ---
-title: 'God Object'
-tags: ['pattern', 'anti', 'code-smell']
-created date: '2025-09-15'
-edited date: '2025-09-15'
+title: "God Object"
+tags: ["dev-term"]
+created date: "2025-09-15"
+edited date: "2025-09-15"
 ---
 
 [[단일 책임 원칙(SRP)]]에 반하는 안티패턴으로, 특정 클래스나 객체가 과도하게 많은 책임과 기능을 떠맡아, 마치 모든 것을 통제하는 신처럼 시스템 전반에 관여하는 상황을 가리킨다.

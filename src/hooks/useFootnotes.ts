@@ -91,7 +91,24 @@ export function useFootnotes(footnotes: string) {
       setPositionedFootnotes(positions);
     };
 
-    setTimeout(updatePositions, 500);
+    // 초기 위치 계산
+    const initialTimeout = setTimeout(updatePositions, 100);
+
+    // 콘텐츠 크기 변화 감지
+    const contentElement = document.querySelector(".markdown-content");
+    let resizeObserver: ResizeObserver | null = null;
+
+    if (contentElement) {
+      resizeObserver = new ResizeObserver(() => {
+        updatePositions();
+      });
+      resizeObserver.observe(contentElement);
+    }
+
+    return () => {
+      clearTimeout(initialTimeout);
+      resizeObserver?.disconnect();
+    };
   }, [footnotes]);
 
   return {

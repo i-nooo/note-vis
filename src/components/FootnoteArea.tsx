@@ -48,7 +48,7 @@ export default function FootnoteArea({ footnotes, children }: Props) {
               {positionedFootnotes.map((footnote) => (
                 <div
                   key={footnote.id}
-                  className="footnote-positioned absolute w-full my-2 px-3 text-sm"
+                  className="footnote-positioned absolute w-full my-2 px-3 text-sm break-words"
                   style={{ top: `${footnote.adjustedTop}px` }}
                   dangerouslySetInnerHTML={{ __html: footnote.content }}
                 />
@@ -60,7 +60,7 @@ export default function FootnoteArea({ footnotes, children }: Props) {
       {/* 실제 툴팁 */}
       {!isVisible && hoveredFootnote && hoveredFootnoteContent && (
         <div
-          className="fixed z-50 bg-white border border-gray-200 rounded-sm shadow-sm p-3 max-w-xs text-sm"
+          className="fixed z-50 bg-white border border-gray-200 rounded-sm shadow-sm p-3 max-w-xs text-sm break-words"
           style={{
             left: `${tooltipPosition.x}px`,
             top: `${tooltipPosition.y}px`,
