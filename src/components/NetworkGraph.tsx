@@ -37,7 +37,8 @@ export default function NetworkGraph({
     const match = (n: NoteNode) =>
       n.id.toLowerCase().includes(q) ||
       n.title.toLowerCase().includes(q) ||
-      (n.tags ?? []).some((t) => t.toLowerCase().includes(q));
+      (n.tags ?? []).some((t) => t.toLowerCase().includes(q)) ||
+      (n.content?.toLowerCase().includes(q) ?? false);
     const keepIds = new Set<string>();
     data.nodes.forEach((n) => {
       if (match(n)) keepIds.add(n.id);
@@ -103,7 +104,8 @@ export default function NetworkGraph({
       return (
         n.id.toLowerCase().includes(q) ||
         n.title.toLowerCase().includes(q) ||
-        (n.tags ?? []).some((t) => t.toLowerCase().includes(q))
+        (n.tags ?? []).some((t) => t.toLowerCase().includes(q)) ||
+        (n.content?.toLowerCase().includes(q) ?? false)
       );
     };
 

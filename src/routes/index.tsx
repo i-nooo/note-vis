@@ -165,7 +165,7 @@ function IndexPage() {
           <SearchBar
             value={query}
             onChange={setQuery}
-            placeholder="노트 제목, 태그 검색"
+            placeholder="노트 제목, 태그, 내용 검색"
           />
         </header>
 
