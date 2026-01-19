@@ -27,9 +27,16 @@ export interface Footnote {
   content: string
 }
 
+export interface HeadingItem {
+  id: string
+  text: string
+  level: number
+}
+
 export interface RenderResult {
   content: string
   footnotes: string
+  headings: Array<HeadingItem>
 }
 
 export interface BrokenLinksContext {

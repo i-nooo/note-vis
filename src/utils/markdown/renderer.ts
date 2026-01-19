@@ -1,6 +1,16 @@
-import { escapeHtml, formatCode } from './helpers'
+import { escapeHtml, formatCode, slugifyHeading } from './helpers'
+import type { HeadingItem } from './types'
 
 let previewIdCounter = 0
+let headingsCollector: Array<HeadingItem> = []
+
+export function resetHeadingsCollector(): void {
+  headingsCollector = []
+}
+
+export function getCollectedHeadings(): Array<HeadingItem> {
+  return headingsCollector
+}
 
 function createHtmlPreview(code: string): string {
   const id = `html-preview-${previewIdCounter++}`
@@ -142,6 +152,19 @@ export function createRendererWithLinkPolicy() {
     // 구분선 렌더러
     hr(): string {
       return '<hr class="markdown-hr" />'
+    },
+
+    // 헤딩 렌더러 (목차용 ID 부여)
+    heading({
+      text,
+      depth,
+    }: {
+      text: string
+      depth: number
+    }): string {
+      const id = slugifyHeading(text)
+      headingsCollector.push({ id, text, level: depth })
+      return `<h${depth} id="${id}">${text}</h${depth}>`
     },
   }
 

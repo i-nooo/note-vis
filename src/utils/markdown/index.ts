@@ -8,7 +8,12 @@ import {
   wikiLinkRenderer,
   wikiLinkTokenizer,
 } from "./extensions";
-import { createRendererWithLinkPolicy } from "./renderer";
+import { resetSlugCounter } from "./helpers";
+import {
+  createRendererWithLinkPolicy,
+  getCollectedHeadings,
+  resetHeadingsCollector,
+} from "./renderer";
 import { setBrokenLinks } from "./types";
 import type { Footnote, RenderResult } from "./types";
 
@@ -79,10 +84,12 @@ export function renderMarkdown(
   brokenLinks?: Set<string>,
 ): RenderResult {
   if (!markdown) {
-    return { content: "", footnotes: "" };
+    return { content: "", footnotes: "", headings: [] };
   }
 
   setBrokenLinks(brokenLinks || new Set());
+  resetSlugCounter();
+  resetHeadingsCollector();
 
   const footnotes = extractFootnotes(markdown);
   let contentWithoutFootnoteDefs = removeFootnoteDefinitions(markdown);
@@ -95,9 +102,10 @@ export function renderMarkdown(
 
   const html = marked.parse(contentWithoutFootnoteDefs) as string;
   const footnotesHtml = renderFootnotesHtml(footnotes);
+  const headings = getCollectedHeadings();
 
   if (import.meta.env.DEV) {
-    return { content: html, footnotes: footnotesHtml };
+    return { content: html, footnotes: footnotesHtml, headings };
   }
 
   const sanitizedContent = DOMPurify.sanitize(html, SANITIZE_OPTIONS);
@@ -106,5 +114,5 @@ export function renderMarkdown(
     SANITIZE_OPTIONS,
   );
 
-  return { content: sanitizedContent, footnotes: sanitizedFootnotes };
+  return { content: sanitizedContent, footnotes: sanitizedFootnotes, headings };
 }

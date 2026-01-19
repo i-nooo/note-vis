@@ -36,9 +36,9 @@
       "tags": [
         "about-me"
       ],
-      "content": "",
-      "dateCreated": "2025-01-19",
-      "dateUpdated": "2025-01-19"
+      "content": "김혜경 입니다.\n</br>\n아주대학교에서 미디어학과 소프트웨어공학을 전공하고, 동대학원에서 이경원 교수님 지도하에 데이터시각화에 대해 연구하고 있습니다.\n24년 9월부터 NSHC MSSP팀에 소속되어\n\n- 팀원이 보다 편하게 업무를 수행할 수 있도록 돕는 소프트웨어 어플리케이션을 개발하고\n- 민감 유출 데이터에 대한 분석 및 시각화를 연구하고 있습니다.\n\n---\n\n- 2024년 9월 ~ : NSHC MSSP팀\n- 2024년 3월: 아주대학교 디지털미디어학 석사과정 입학 (지도교수: 이경원 교수님)\n- 2024년 2월: 아주대학교 졸업 (미디어학, 소프트웨어공학)\n- 2022~2023년 : 아주대학교 미디어학과 IDLAbs 학부 연구생",
+      "dateCreated": "2026-01-19",
+      "dateUpdated": "2026-01-19"
     },
     {
       "id": "flex",
@@ -84,6 +84,17 @@
       "dateUpdated": "2025-09-11"
     },
     {
+      "id": "마크다운-문법",
+      "title": "마크다운 문법",
+      "tags": [
+        "note-vis",
+        "markdown"
+      ],
+      "content": "# header1\n\n## header2\n\n### header3\n\n<br/>\n\n- 테스트1\n  - 테스트2\n\n<br/>\n\n**볼드**\n_이텔릭_\n---취소선---\n`코드`\n\n<br/>\n\n> [!NOTE] -\n>\n> 콜아웃\n> !NOTE, !INFO\n\n<br/>\n\n```\n코드 블럭\nconst test = \"hello world!\"\n```\n\n<br/>\n\n각주[^1]\n\n<br/>\n\n| 표   | 설명 |\n| ---- | ---- |\n| 내용 | 내용 |\n\n[^1]: 각주 입니다.",
+      "dateCreated": "2025-09-11",
+      "dateUpdated": "2026-01-19"
+    },
+    {
       "id": "마크다운-파싱-시스템",
       "title": "마크다운 파싱 시스템",
       "tags": [
@@ -92,8 +103,8 @@
         "parsing"
       ],
       "content": "이 프로젝트의 마크다운 파싱 시스템은 **빌드 타임**과 **런타임** 두 단계로 구성된다.\n\n## 1. 빌드 타임 파싱\n\n`scripts/parse-notes.js`가 `notes/` 폴더의 마크다운 파일들을 파싱하여 그래프 데이터를 생성한다.\n\n### 실행 시점\n\n- `npm run build` 실행 시 자동으로 실행\n- `npm run parse-notes`로 수동 실행 가능\n\n### 파싱 과정\n\n```\nnotes/*.md → parse-notes.js → src/data/notes.json\n```\n\n### Frontmatter 파싱\n\n각 마크다운 파일 상단의 YAML frontmatter에서 메타데이터를 추출한다.\n\n| 필드    | 정규식                                                    | 설명      |\n| ------- | --------------------------------------------------------- | --------- |\n| title   | `title:\\s*[\"']?([^\"'\\n]+)[\"']?`                           | 노트 제목 |\n| tags    | `tags:\\s*\\[(.*?)\\]`                                       | 태그 배열 |\n| related | `related:\\s*\\[(.*?)\\]`                                    | 관련 노트 |\n| created | `created(?:\\s+date)?:\\s*[\"']?([^\"'\\n]+)[\"']?`             | 생성일    |\n| updated | `(?:updated\\|edited)(?:\\s+date)?:\\s*[\"']?([^\"'\\n]+)[\"']?` | 수정일    |\n\n### Wiki Link 추출\n\n본문에서 `[[링크]]` 패턴을 찾아 노트 간 연결 관계를 추출한다.\n\n```javascript\nconst REGEX = {\n  wikiLink: /\\[\\[([^\\]]+)\\]\\]/g,\n};\n```\n\n파이프 링크 `[[target|display]]`도 지원하며, target 부분만 링크 대상으로 사용한다.\n\n### 출력 데이터 구조\n\n```json\n{\n  \"nodes\": [\n    {\n      \"id\": \"파일명\",\n      \"title\": \"노트 제목\",\n      \"tags\": [\"태그1\", \"태그2\"],\n      \"content\": \"frontmatter 제외한 본문\",\n      \"dateCreated\": \"2025-01-01\",\n      \"dateUpdated\": \"2025-01-15\"\n    },\n    {\n      \"id\": \"tag:태그명\",\n      \"title\": \"#태그명\"\n    }\n  ],\n  \"links\": [\n    { \"source\": \"노트A\", \"target\": \"노트B\", \"type\": \"mention\" },\n    { \"source\": \"노트A\", \"target\": \"tag:태그\", \"type\": \"tag\" }\n  ]\n}\n```\n\n### 깨진 링크 처리\n\n존재하지 않는 노트를 참조하는 링크는 `broken: true` 플래그가 추가된다.\n\n---\n\n## 2. 런타임 렌더링\n\n`src/utils/markdown/` 모듈이 노트 상세 페이지에서 마크다운을 HTML로 렌더링한다. 사용자가 노트를 클릭하면 저장된 마크다운 본문(`content`)이 이 모듈을 통해 실시간으로 HTML로 변환된다.\n\n### 모듈 구조\n\n```\nsrc/utils/markdown/\n├── index.ts          # renderMarkdown() 메인 함수\n├── extensions/\n│   ├── index.ts      # extension export\n│   ├── wikilink.ts   # [[wiki link]] 커스텀 토크나이저/렌더러\n│   └── callout.ts    # > [!NOTE] 콜아웃 처리\n├── renderer.ts       # 코드 하이라이팅, 링크 정책\n├── helpers.ts        # 유틸리티 함수\n├── constants.ts      # 설정값\n└── types.ts          # TypeScript 타입 정의\n```\n\n### 메인 함수: renderMarkdown()\n\n`index.ts`의 `renderMarkdown()` 함수가 전체 렌더링 파이프라인을 관리한다.\n\n```typescript\nexport function renderMarkdown(\n  markdown: string,\n  brokenLinks?: Set<string>,\n): RenderResult {\n  // 1. 깨진 링크 컨텍스트 설정\n  setBrokenLinks(brokenLinks || new Set());\n\n  // 2. 각주 추출 및 처리\n  const footnotes = extractFootnotes(markdown);\n  let contentWithoutFootnoteDefs = removeFootnoteDefinitions(markdown);\n  if (footnotes.length > 0) {\n    contentWithoutFootnoteDefs = replaceFootnoteReferences(\n      contentWithoutFootnoteDefs,\n    );\n  }\n\n  // 3. marked로 HTML 변환\n  const html = marked.parse(contentWithoutFootnoteDefs) as string;\n  const footnotesHtml = renderFootnotesHtml(footnotes);\n\n  // 4. 프로덕션에서 DOMPurify 적용\n  if (import.meta.env.DEV) {\n    return { content: html, footnotes: footnotesHtml };\n  }\n  return {\n    content: DOMPurify.sanitize(html, SANITIZE_OPTIONS),\n    footnotes: DOMPurify.sanitize(footnotesHtml, SANITIZE_OPTIONS),\n  };\n}\n```\n\n### marked 라이브러리 확장\n\n[marked](https://marked.js.org/)는 마크다운을 HTML로 변환하는 라이브러리다. 이 프로젝트에서는 커스텀 extension을 통해 Obsidian 스타일 문법을 지원한다.\n\n**초기화 (setupMarked)**:\n\n```typescript\nfunction setupMarked(): void {\n  const renderer = createRendererWithLinkPolicy();\n  marked.use({ renderer });\n  marked.use({\n    extensions: [\n      wikiLinkTokenizer, // [[link]] 토큰화\n      wikiLinkRenderer, // [[link]] HTML 변환\n      calloutTokenizer, // > [!NOTE] 토큰화\n      calloutRenderer, // > [!NOTE] HTML 변환\n    ],\n  });\n  marked.setOptions({\n    gfm: true, // GitHub Flavored Markdown\n    breaks: true, // 줄바꿈을 <br>로 변환\n  });\n}\n\nsetupMarked(); // 모듈 로드 시 한 번 실행\n```\n\n---\n\n### Wiki Link Extension 상세\n\nObsidian의 `[[wiki link]]` 문법을 지원한다.\n\n#### Tokenizer (토큰화)\n\n마크다운 파싱 단계에서 `[[...]]` 패턴을 찾아 커스텀 토큰으로 변환한다.\n\n```typescript\nexport const wikiLinkTokenizer: TokenizerExtension = {\n  name: \"wikilink\",\n  level: \"inline\", // 인라인 요소로 처리\n\n  // 패턴 시작 위치 탐색 (성능 최적화)\n  start(src: string) {\n    const i = src.indexOf(\"[[\");\n    return i === -1 ? undefined : i;\n  },\n\n  // 실제 토큰화\n  tokenizer(src): WikiLinkToken | undefined {\n    // [[target]] 또는 [[target|별칭]] 패턴 매칭\n    const match = /^\\[\\[([^\\]|]+?)(?:\\|([^\\]]+?))?\\]\\]/.exec(src);\n    if (!match) return undefined;\n\n    const [, rawName, alias] = match;\n    const text = alias ? alias.trim() : rawName.trim();\n    const href = `/node/${slugifyNode(rawName)}`;\n\n    return {\n      type: \"wikilink\",\n      raw: match[0], // 원본 문자열 (marked가 소비)\n      href,\n      text,\n    };\n  },\n};\n```\n\n**예시**:\n\n- `[[React.memo]]` → `{ href: '/node/React.memo', text: 'React.memo' }`\n- `[[React.memo|메모]]` → `{ href: '/node/React.memo', text: '메모' }`\n\n#### Renderer (HTML 변환)\n\n토큰을 HTML `<a>` 태그로 변환한다.\n\n```typescript\nexport const wikiLinkRenderer: RendererExtension = {\n  name: \"wikilink\",\n  renderer(token: Tokens.Generic) {\n    const wikiToken = token as WikiLinkToken;\n    const brokenLinks = getBrokenLinks();\n\n    // URL에서 노트 ID 추출\n    const targetId = wikiToken.href.replace(\"/node/\", \"\").replace(/%20/g, \" \");\n    const isBroken = brokenLinks.has(decodeURIComponent(targetId));\n\n    // 깨진 링크는 class 추가 + href를 #으로\n    const className = isBroken ? ' class=\"broken-link\"' : \"\";\n    const href = isBroken ? \"#\" : wikiToken.href;\n\n    return `<a href=\"${href}\"${className}>${escapeHtml(wikiToken.text)}</a>`;\n  },\n};\n```\n\n**깨진 링크 처리**:\n\n- 존재하지 않는 노트를 참조하면 `class=\"broken-link\"` 추가\n- CSS로 취소선, 빨간색 등 스타일링 가능\n\n---\n\n### Callout Extension 상세\n\nObsidian 스타일의 콜아웃(인용 블록 확장) 문법을 지원한다.\n\n#### 문법\n\n```markdown\n> [!NOTE] 커스텀 제목\n> 콜아웃 내용\n> 여러 줄 가능\n```\n\n#### Tokenizer\n\n```typescript\nexport const calloutTokenizer: TokenizerExtension = {\n  name: \"callout\",\n  level: \"block\", // 블록 요소로 처리\n\n  start(src: string) {\n    const i = src.indexOf(\"> [!\");\n    return i === -1 ? undefined : i;\n  },\n\n  tokenizer(src): CalloutToken | undefined {\n    // 인용 블록 전체 매칭\n    const cap = /^(?:> ?(.*)\\n?)+/.exec(src);\n    if (!cap) return undefined;\n\n    // 각 줄에서 '> ' 제거\n    const lines = cap[0]\n      .trimEnd()\n      .split(\"\\n\")\n      .map((l) => l.replace(/^>\\s?/, \"\"));\n\n    // 첫 줄에서 [!TYPE] 패턴 확인\n    const head = lines[0];\n    const headMatch = /^\\[!(NOTE|INFO)\\]([+-])?(?:\\s+(.*))?$/i.exec(head);\n    if (!headMatch) return undefined;\n\n    const [, typeRaw, collapseFlag, customTitle] = headMatch;\n    const calloutType = typeRaw.toUpperCase() as CalloutKind;\n\n    // 접기 상태: '-'면 접힘, '+'면 펼침, 없으면 undefined\n    const collapsed =\n      collapseFlag === \"-\" ? true : collapseFlag === \"+\" ? false : undefined;\n\n    // 본문 (첫 줄 제외)을 재귀적으로 파싱\n    const body = lines.slice(1).join(\"\\n\");\n    const bodyTokens = this.lexer.blockTokens(body, []);\n\n    return {\n      type: \"callout\",\n      raw: cap[0],\n      calloutType,\n      title: customTitle?.trim(),\n      collapsed,\n      tokens: bodyTokens,\n    };\n  },\n};\n```\n\n#### Renderer\n\n```typescript\nexport const calloutRenderer: RendererExtension = {\n  name: \"callout\",\n  renderer(token: Tokens.Generic) {\n    const calloutToken = token as CalloutToken;\n    const cfg = CALLOUTS[calloutToken.calloutType]; // 설정 조회\n    const title = calloutToken.title || cfg.defaultTitle;\n\n    // 접기 상태에 따라 open 속성 결정\n    const detailsOpen =\n      calloutToken.collapsed === undefined\n        ? \" open\"\n        : calloutToken.collapsed\n          ? \"\"\n          : \" open\";\n\n    // 본문 토큰을 재귀적으로 렌더링\n    const inner = this.parser.parse(calloutToken.tokens);\n\n    return `\n<aside class=\"callout ${cfg.className}\" role=\"note\" aria-label=\"${cfg.ariaLabel}\">\n  <details class=\"callout-details\"${detailsOpen}>\n    <summary class=\"callout-header\">\n      <span class=\"callout-title\">${title}</span>\n    </summary>\n    <div class=\"callout-content\">\n${inner}\n    </div>\n  </details>\n</aside>`.trim();\n  },\n};\n```\n\n**Callout 설정** (`constants.ts`):\n\n```typescript\nexport const CALLOUTS: Record<CalloutKind, CalloutConfig> = {\n  NOTE: {\n    className: \"callout-note\",\n    defaultTitle: \"노트\",\n    ariaLabel: \"Note\",\n  },\n  INFO: {\n    className: \"callout-info\",\n    defaultTitle: \"정보\",\n    ariaLabel: \"Info\",\n  },\n};\n```\n\n---\n\n### 각주(Footnotes) 처리 상세\n\n마크다운 각주를 클릭 가능한 링크로 변환한다.\n\n#### 처리 단계\n\n**1. 각주 정의 추출**:\n\n```typescript\nfunction extractFootnotes(markdown: string): Array<Footnote> {\n  const footnotes: Array<Footnote> = [];\n  // 각주 정의 패턴: [^label]: content\n  const footnoteMatches = markdown.match(/^\\[\\^([^\\]]+)\\]:\\s*(.*)$/gm);\n\n  if (footnoteMatches) {\n    footnoteMatches.forEach((matchStr) => {\n      const parts = matchStr.match(/^\\[\\^([^\\]]+)\\]:\\s*(.*)$/);\n      if (parts) {\n        footnotes.push({\n          label: parts[1].trim(),\n          content: parts[2].trim(),\n        });\n      }\n    });\n  }\n  return footnotes;\n}\n```\n\n**2. 본문에서 각주 정의 제거**:\n\n```typescript\nfunction removeFootnoteDefinitions(markdown: string): string {\n  return markdown.replace(/^\\[\\^([^\\]]+)\\]:\\s*.*$/gm, \"\").trim();\n}\n```\n\n**3. 참조를 링크로 변환**:\n\n```typescript\nfunction replaceFootnoteReferences(content: string): string {\n  return content.replace(\n    /\\[\\^([^\\]]+)\\]/g,\n    '<sup class=\"footnote-ref\"><a href=\"#footnote-$1\" id=\"footnote-ref-$1\" class=\"footnote-link\">$1</a></sup>',\n  );\n}\n```\n\n**4. 각주 목록 HTML 생성**:\n\n```typescript\nfunction renderFootnotesHtml(footnotes: Array<Footnote>): string {\n  if (footnotes.length === 0) return \"\";\n\n  return footnotes\n    .map(\n      (fn) =>\n        `<div class=\"footnote-def\" id=\"footnote-${fn.label}\">\n      <a href=\"#footnote-ref-${fn.label}\" class=\"footnote-backref\">${fn.label}</a>: ${marked.parseInline(fn.content)}\n    </div>`,\n    )\n    .join(\"\");\n}\n```\n\n**결과**:\n\n- 본문의 `[^1]` → `<sup><a href=\"#footnote-1\">1</a></sup>`\n- 페이지 하단에 각주 목록 표시\n- 양방향 링크로 이동 가능\n\n---\n\n### 코드 하이라이팅 상세\n\n`renderer.ts`에서 코드 블록에 간단한 구문 하이라이팅을 적용한다.\n\n#### JavaScript/TypeScript 하이라이팅\n\n```typescript\nfunction highlightJavaScript(code: string): string {\n  let highlighted = escapeHtml(formatCode(code));\n  const placeholders = new Map<string, string>();\n  let placeholderIndex = 0;\n\n  // 1. 문자열 먼저 처리 (키워드 오탐 방지)\n  highlighted = highlighted.replace(/([\"'`])([^\"'`]*?)\\1/g, (match) => {\n    const placeholder = `__STRING_${placeholderIndex++}__`;\n    placeholders.set(placeholder, `<span class=\"token string\">${match}</span>`);\n    return placeholder;\n  });\n\n  // 2. 주석 처리\n  highlighted = highlighted.replace(/\\/\\/.*$/gm, (match) => {\n    const placeholder = `__COMMENT_${placeholderIndex++}__`;\n    placeholders.set(\n      placeholder,\n      `<span class=\"token comment\">${match}</span>`,\n    );\n    return placeholder;\n  });\n\n  // 3. 키워드 처리\n  highlighted = highlighted.replace(\n    /\\b(const|let|var|function|import|export|from|default|createRouter|defineConfig)\\b/g,\n    '<span class=\"token keyword\">$1</span>',\n  );\n\n  // 4. 숫자 처리\n  highlighted = highlighted.replace(\n    /\\b(\\d+)\\b/g,\n    '<span class=\"token number\">$1</span>',\n  );\n\n  // 5. placeholder 복원\n  placeholders.forEach((replacement, placeholder) => {\n    highlighted = highlighted.replace(placeholder, replacement);\n  });\n\n  return highlighted;\n}\n```\n\n**placeholder 패턴의 이유**: 문자열 안의 키워드(`\"const\"`)가 하이라이팅되지 않도록 문자열을 먼저 치환 후 복원한다.\n\n#### 코드 렌더러\n\n```typescript\ncode({ text: code, lang }: { text: string; lang?: string }) {\n  let highlighted: string;\n\n  const jsLangs = ['ts', 'js', 'javascript', 'typescript', 'jsx', 'tsx'];\n\n  if (isJavaScriptLike(code) || (lang && jsLangs.includes(lang))) {\n    highlighted = highlightJavaScript(code);\n  } else if (isJSONLike(code) || lang === 'json') {\n    highlighted = highlightJSON(code);\n  } else {\n    highlighted = escapeHtml(formatCode(code));\n  }\n\n  return `<pre><code class=\"${lang ? `language-${lang}` : ''}\">${highlighted}</code></pre>`;\n}\n```\n\n---\n\n### 링크 정책\n\n외부 링크와 내부 링크를 다르게 처리한다.\n\n```typescript\nlink({ href, title, text }: { href: string; title?: string | null; text: string }): string {\n  const cleanTitle = title ? ` title=\"${title}\"` : '';\n  if (!href) return `<a${cleanTitle}>${text}</a>`;\n\n  const isExternal = /^https?:\\/\\//i.test(href);\n  const target = isExternal ? ' target=\"_blank\" rel=\"noopener noreferrer\"' : '';\n\n  return `<a href=\"${href}\"${cleanTitle}${target}>${text}</a>`;\n}\n```\n\n- **외부 링크** (`https://...`): 새 탭에서 열림 + `noopener noreferrer`로 보안 강화\n- **내부 링크**: 같은 탭에서 열림\n\n---\n\n### 보안: DOMPurify 상세\n\n프로덕션 환경에서는 XSS 공격 방지를 위해 DOMPurify로 HTML을 정화한다.\n\n```typescript\nexport const SANITIZE_OPTIONS = {\n  ADD_ATTR: [\"target\", \"rel\", \"open\", \"class\", \"href\", \"id\"],\n  ADD_TAGS: [\"span\", \"sup\", \"a\"],\n  ALLOWED_URI_REGEXP:\n    /^(?:(?:https?|mailto|tel|data:image\\/(?:png|gif|jpeg|webp));|\\/|#)/i,\n};\n```\n\n| 옵션                 | 설명                               |\n| -------------------- | ---------------------------------- |\n| `ADD_ATTR`           | 허용할 HTML 속성                   |\n| `ADD_TAGS`           | 허용할 HTML 태그                   |\n| `ALLOWED_URI_REGEXP` | 허용할 URI 패턴 (javascript: 차단) |\n\n**개발 환경에서 비활성화하는 이유**:\n\n- 빠른 렌더링 (DOMPurify 오버헤드 제거)\n- 개발 중 XSS 테스트 가능\n\n---\n\n### 표(Table) 렌더링\n\nGFM(GitHub Flavored Markdown) 표 문법을 지원한다. marked의 `gfm: true` 옵션으로 기본 지원되며, CSS로 스타일링한다.\n\n#### 문법\n\n```markdown\n| 필드  | 설명      |\n| ----- | --------- |\n| title | 노트 제목 |\n| tags  | 태그 배열 |\n```\n\n#### 정렬 지원\n\n```markdown\n| 왼쪽 | 가운데 | 오른쪽 |\n| :--- | :----: | -----: |\n| L    |   C    |      R |\n```\n\n- `:---` : 왼쪽 정렬\n- `:---:` : 가운데 정렬\n- `---:` : 오른쪽 정렬\n\n#### 스타일링 (CSS)\n\n```css\n.markdown-content table {\n  width: 100%;\n  border-collapse: collapse;\n  font-size: 14px;\n  margin: 16px 0;\n  border: 1px solid var(--border);\n  border-radius: 8px;\n  overflow: hidden;\n}\n\n.markdown-content table thead {\n  background-color: var(--muted);\n}\n\n.markdown-content table th {\n  padding: 10px 14px;\n  font-weight: 600;\n  border-bottom: 2px solid var(--border);\n}\n\n.markdown-content table td {\n  padding: 10px 14px;\n  border-bottom: 1px solid var(--border);\n}\n\n.markdown-content table tbody tr:hover {\n  background-color: color-mix(in oklab, var(--muted) 50%, transparent);\n}\n```\n\n**설계 결정**: marked의 table 렌더러 API가 토큰 객체를 전달하므로, 커스텀 렌더러 대신 기본 렌더러를 사용하고 CSS로 스타일링한다.\n\n---\n\n### 구분선(Horizontal Rule) 렌더링\n\n마크다운 구분선을 커스텀 스타일로 렌더링한다.\n\n#### 문법\n\n```markdown\n---\n```\n\n또는 `***`, `___`도 가능하다.\n\n#### 커스텀 렌더러\n\n```typescript\nhr(): string {\n  return '<hr class=\"markdown-hr\" />'\n}\n```\n\n#### 스타일링 (CSS)\n\n```css\n.markdown-content .markdown-hr {\n  border: 0.5px solid var(--border);\n  margin: 72px 0;\n}\n```\n\n넓은 여백(72px)으로 섹션 구분을 명확하게 한다.\n\n---\n\n## 데이터 흐름 요약\n\n```\n[빌드 타임]\nnotes/*.md\n    ↓ parse-notes.js\nsrc/data/notes.json (그래프 데이터)\n    ↓\nNetworkGraph 컴포넌트 (시각화)\n\n[런타임]\n노트 클릭\n    ↓\nNodeContent 컴포넌트\n    ↓ renderMarkdown()\nHTML 렌더링 (wiki link, callout, footnotes 처리)\n```",
-      "dateCreated": "2025-01-19",
-      "dateUpdated": "2025-01-19"
+      "dateCreated": "2026-01-19",
+      "dateUpdated": "2026-01-19"
     },
     {
       "id": "배열-튜플-딕셔너리",
@@ -104,18 +115,6 @@
       "content": "**배열**\n\n- arr=[]\n- arr=[1, 2, 3, 4]\n- arr[0]\n\n<br/>\n\n**튜플**\n\n- tup=()\n- tup=(1,2,3,4)\n- tup=[0]\n- 생성 후 값 삭제, 변경 불가\n\n<br/>\n\n**딕셔너리**\n\n- dic={}\n- dic{\"a\":1, \"b\":2, \"c\":3}\n- dic[\"1\"]\n- key값 사용하여 값 접근\n- 중복 key 불가",
       "dateCreated": "2025-09-23",
       "dateUpdated": "2025-09-23"
-    },
-    {
-      "id": "블로그-마크다운-문법",
-      "title": "블로그 마크다운 문법",
-      "tags": [
-        "memo",
-        "note-vis",
-        "markdown"
-      ],
-      "content": "# 문법\n\n<br/>\n\n- 테스트1\n  - 테스트2\n\n<br/>\n\n> [!NOTE] -\n>\n> 콜아웃\n> !NOTE, !INFO\n\n<br/>\n\n각주[^1]\n\n[^1]: 각주 입니다.",
-      "dateCreated": "2025-09-11",
-      "dateUpdated": "2026-01-16"
     },
     {
       "id": "선언적-웹-아키텍처",
@@ -138,6 +137,14 @@
       "content": "상태 관리 라이브러리에 처음 입문한 것은 Redux였다. 당시에는 구조가 너무 복잡해 직접 그림을 그려가며 공부했던 기억이 있다. 이후 상태 관리 개념에 어느 정도 익숙해진 뒤부터는 주로 Zustand를 사용해왔다. Redux보다 초기 설정과 사용이 단순했고, 내 프로젝트에서는 무거운 상태를 다룰 일이 많지 않았기 때문에 훨씬 쾌적한 DX를 경험 할 수 있었다. Recoil도 사용했었지만, 내가 접한 시점에는 이미 deprecated 상태였기에 실질적으로는 Zustand를 주로 활용했다.\n\nTanstack Query를 알게 되고 나선, Tanstack 팀 레포지토리를 자주 들여다보고 있는데, Tanstack Store 라이브러리가 출시된 걸 보고 틈틈이 써보고 있다.\n\n리액트는 곧 상태라고 생각한다. 따라서 상태 관리가 핵심적인 주제이며, 그만큼 다양한 선택지가 존재하는 것 같다. 각 라이브러리의 철학, 장단점, 설정 방식, 활용 방법을 살펴보고 어떤 상황에서 어떤 라이브러리가 적합한지 나름의 정리를 해보고자 한다.\n\n<br/>\n\n## Redux(w. RTK)\n\n- 예측 가능하고 유지 관리 가능한 글로벌 상태 관리를 위한 JS 라이브러리\n- 예측 가능한 불변 업데이트, 단방향의 데이터 흐름, 순수 리듀서 함수\n- 상태, 액션, reducer, dispatch, store\n\n  • Flux 아키텍처와 Context API의 한계\n  • 서버 상태와 클라이언트 상태의 구분 (Tanstack Query의 철학적 기반)\n  • 상태 관리의 복잡도와 스케일에 따른 의사결정 기준\n  • React 18 이후 등장한 use 훅, 서버 컴포넌트와 상태 관리의 관계\n\n---\n\n### 참고\n\n- [Redux의 탄생동기와 철학 이해하기](https://jun-choi-4928.medium.com/redux의-탄생동기와-철학-이해하기-60eaa83e0b68)",
       "dateCreated": "2025-09-15",
       "dateUpdated": "2025-09-15"
+    },
+    {
+      "id": "정규식",
+      "title": "정규식",
+      "tags": [],
+      "content": "| 문법   | 의미                     |\n| ------ | ------------------------ |\n| .      | 임의의 문자 1개          |\n| \\d     | 숫자 (0-9)               |\n| \\w     | 영문, 숫자, 언더스코어   |\n| +      | 1개 이상 반복            |\n| ?      | 있거나 없음 (0 또는 1개) |\n| {n, m} | n개 이상 m 이하 반복     |\n| ^ $    | 문자열의 시작/끝         |\n| ( )    | 그룹 (캡처 및 재사용)    |\n\n- 간단한 패턴 매칭과 추출에 집중하고, 복잡한 로직은 일반 코드로 처리합니다.\n\n### 예시\n\n- 이메일\n  - `local parts` + @ + `domain` [^1]\n  - ID + at + 해당 ID를 발급한 메일 서버\n\n```javascript\n\n```\n\n[^1]: https://datatracker.ietf.org/doc/html/rfc5321",
+      "dateCreated": "2026-01-19",
+      "dateUpdated": "2026-01-19"
     },
     {
       "id": "튜플을-사용하는-이유",
@@ -208,10 +215,6 @@
     {
       "id": "tag:python",
       "title": "#python"
-    },
-    {
-      "id": "tag:memo",
-      "title": "#memo"
     },
     {
       "id": "tag:페러다임",
@@ -323,6 +326,16 @@
       "type": "tag"
     },
     {
+      "source": "마크다운-문법",
+      "target": "tag:note-vis",
+      "type": "tag"
+    },
+    {
+      "source": "마크다운-문법",
+      "target": "tag:markdown",
+      "type": "tag"
+    },
+    {
       "source": "마크다운-파싱-시스템",
       "target": "링크",
       "type": "mention",
@@ -382,21 +395,6 @@
     {
       "source": "배열-튜플-딕셔너리",
       "target": "tag:python",
-      "type": "tag"
-    },
-    {
-      "source": "블로그-마크다운-문법",
-      "target": "tag:memo",
-      "type": "tag"
-    },
-    {
-      "source": "블로그-마크다운-문법",
-      "target": "tag:note-vis",
-      "type": "tag"
-    },
-    {
-      "source": "블로그-마크다운-문법",
-      "target": "tag:markdown",
       "type": "tag"
     },
     {

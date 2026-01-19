@@ -9,6 +9,7 @@ import FloatingSidebar from "@/components/FloatingSidebar";
 import { useNodeData } from "@/hooks/useNodeData";
 import { store } from "@/store";
 import sample from "@/data/notes.json";
+import { renderMarkdown } from "@/utils/markdown";
 
 export const nodeRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -40,6 +41,16 @@ function NodePage() {
   const goNode = (nid: string) =>
     navigate({ to: "/node/$id", params: { id: nid } });
 
+  const renderResult = useMemo(() => {
+    if (!current?.content) return null;
+    const brokenLinks = new Set(
+      withUrls.links
+        .filter((link) => link.broken && link.source === current.id)
+        .map((link) => link.target),
+    );
+    return renderMarkdown(current.content, brokenLinks);
+  }, [current, withUrls.links]);
+
   return (
     <div
       className={`min-h-screen bg-gray-50 ${!footnoteVisible ? "footnote-off" : ""}`}
@@ -52,9 +63,13 @@ function NodePage() {
           subgraph={withUrls}
           currentId={id}
           onNodeClick={goNode}
+          renderResult={renderResult}
         />
 
-        <FloatingSidebar subgraph={withUrls} />
+        <FloatingSidebar
+          subgraph={withUrls}
+          headings={renderResult?.headings ?? []}
+        />
       </div>
     </div>
   );

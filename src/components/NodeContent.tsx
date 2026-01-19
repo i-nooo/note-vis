@@ -1,12 +1,13 @@
 import FootnoteArea from "./FootnoteArea";
 import type { GraphData, GraphLink, NoteNode } from "@/types";
-import { renderMarkdown } from "@/utils/markdown";
+import type { RenderResult } from "@/utils/markdown/types";
 
 interface Props {
   current: NoteNode | undefined;
   subgraph: GraphData;
   currentId: string;
   onNodeClick: (id: string) => void;
+  renderResult: RenderResult | null;
 }
 
 export default function NodeContent({
@@ -14,6 +15,7 @@ export default function NodeContent({
   subgraph,
   currentId,
   onNodeClick,
+  renderResult,
 }: Props) {
   if (!current) {
     return (
@@ -76,32 +78,20 @@ export default function NodeContent({
         </div>
       </header>
 
-      {current.content &&
-        (() => {
-          const { content, footnotes } = renderMarkdown(
-            current.content,
-            new Set(
-              subgraph.links
-                .filter((link) => link.broken && link.source === current.id)
-                .map((link) => link.target),
-            ),
-          );
-
-          return (
-            <div className="my-20">
-              <FootnoteArea footnotes={footnotes}>
-                {(_isFootnoteVisible: boolean) => (
-                  <section>
-                    <div
-                      className="markdown-content prose prose-sm max-w-none"
-                      dangerouslySetInnerHTML={{ __html: content }}
-                    />
-                  </section>
-                )}
-              </FootnoteArea>
-            </div>
-          );
-        })()}
+      {renderResult && (
+        <div className="my-20">
+          <FootnoteArea footnotes={renderResult.footnotes}>
+            {(_isFootnoteVisible: boolean) => (
+              <section>
+                <div
+                  className="markdown-content prose prose-sm max-w-none"
+                  dangerouslySetInnerHTML={{ __html: renderResult.content }}
+                />
+              </section>
+            )}
+          </FootnoteArea>
+        </div>
+      )}
 
       <section className="border-t border-gray-200 pt-12">
         <h2 className="text-lg font-semibold text-gray-800 mb-3">관련 문서</h2>
