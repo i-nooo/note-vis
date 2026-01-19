@@ -110,6 +110,11 @@ export function createRendererWithLinkPolicy() {
 
       return `<pre><code class="${lang ? `language-${lang}` : ''}">${highlighted}</code></pre>`
     },
+
+    // 구분선 렌더러
+    hr(): string {
+      return '<hr class="markdown-hr" />'
+    },
   }
 
   return renderer
