@@ -7,13 +7,14 @@ const outputFile = path.join(__dirname, '../src/data/notes.json')
 
 const NOTION_API_KEY = process.env.NOTION_API_KEY
 const NOTION_DATABASE_ID = process.env.NOTION_DATABASE_ID
-const NOTION_API_BASE = 'https://api.notion.com/v1'
-const NOTION_VERSION = '2022-06-28'
 
 if (!NOTION_API_KEY || !NOTION_DATABASE_ID) {
   console.error('>>> NOTION_API_KEY와 NOTION_DATABASE_ID 환경변수가 필요합니다.')
   process.exit(1)
 }
+
+const NOTION_API_BASE = 'https://api.notion.com/v1'
+const NOTION_VERSION = '2022-06-28'
 
 const headers = {
   Authorization: `Bearer ${NOTION_API_KEY}`,
@@ -75,7 +76,7 @@ async function getPageBlocks(pageId) {
 
 // --- Rich Text → Markdown 변환 ---
 
-// 페이지 ID → 타이틀 매핑 (mention 변환에 사용)
+// 페이지 ID → slug 매핑 (mention 변환에 사용)
 let pageIdToSlug = new Map()
 
 function richTextToMarkdown(richTexts, mentionedPageIds) {
@@ -181,7 +182,11 @@ function blocksToMarkdown(blocks, mentionedPageIds, indent = '') {
         lines.push(`${indent}- ${text}`)
         if (block.children) {
           lines.push(
-            ...blocksToMarkdown(block.children, mentionedPageIds, indent + '  '),
+            ...blocksToMarkdown(
+              block.children,
+              mentionedPageIds,
+              indent + '  ',
+            ),
           )
         }
         break
@@ -196,7 +201,11 @@ function blocksToMarkdown(blocks, mentionedPageIds, indent = '') {
         lines.push(`${indent}${numberedIndex}. ${text}`)
         if (block.children) {
           lines.push(
-            ...blocksToMarkdown(block.children, mentionedPageIds, indent + '   '),
+            ...blocksToMarkdown(
+              block.children,
+              mentionedPageIds,
+              indent + '   ',
+            ),
           )
         }
         break
