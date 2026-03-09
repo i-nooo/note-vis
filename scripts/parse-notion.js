@@ -143,7 +143,7 @@ function blocksToMarkdown(blocks, mentionedPageIds, indent = '') {
         lines.push('')
         if (block.children) {
           lines.push(
-            ...blocksToMarkdown(block.children, mentionedPageIds, indent + '  '),
+            ...blocksToMarkdown(block.children, mentionedPageIds, indent),
           )
         }
         break
@@ -158,7 +158,7 @@ function blocksToMarkdown(blocks, mentionedPageIds, indent = '') {
         lines.push('')
         if (block.children) {
           lines.push(
-            ...blocksToMarkdown(block.children, mentionedPageIds, indent + '  '),
+            ...blocksToMarkdown(block.children, mentionedPageIds, indent),
           )
         }
         break
@@ -173,7 +173,7 @@ function blocksToMarkdown(blocks, mentionedPageIds, indent = '') {
         lines.push('')
         if (block.children) {
           lines.push(
-            ...blocksToMarkdown(block.children, mentionedPageIds, indent + '  '),
+            ...blocksToMarkdown(block.children, mentionedPageIds, indent),
           )
         }
         break
@@ -188,7 +188,7 @@ function blocksToMarkdown(blocks, mentionedPageIds, indent = '') {
         lines.push('')
         if (block.children) {
           lines.push(
-            ...blocksToMarkdown(block.children, mentionedPageIds, indent + '  '),
+            ...blocksToMarkdown(block.children, mentionedPageIds, indent),
           )
         }
         break
