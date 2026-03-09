@@ -12,6 +12,7 @@ const routeTree = rootRoute.addChildren([indexRoute, nodeRoute]);
 
 const router = createRouter({
   routeTree,
+  basepath: import.meta.env.BASE_URL,
   context: {},
   defaultPreload: "intent",
   scrollRestoration: true,
