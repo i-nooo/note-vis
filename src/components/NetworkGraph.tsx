@@ -156,6 +156,13 @@ export default function NetworkGraph({
 
     const allNodes = [...nodes, ...brokenNodes];
 
+    // 간선 수 기반 노드 반지름 계산
+    const nodeRadius = (n: NoteNode) => {
+      if (isTag(n)) return 5;
+      const degree = neighbors.get(n.id)?.size ?? 0;
+      return Math.max(6, Math.min(20, 6 + degree * 2));
+    };
+
     const simNodes: Array<SimNode> = allNodes.map((n) => ({
       ...n,
       x: Math.random() * W,
@@ -180,7 +187,7 @@ export default function NetworkGraph({
         "collide",
         d3
           .forceCollide<SimNode>()
-          .radius((d) => (isTag(d) ? 8 : 12))
+          .radius((d) => nodeRadius(d) + 3)
           .strength(1.2),
       );
 
@@ -228,7 +235,7 @@ export default function NetworkGraph({
 
     node
       .append("circle")
-      .attr("r", (d) => (isTag(d) ? 5 : 9))
+      .attr("r", (d) => nodeRadius(d))
       .attr("fill", (d) => color(d))
       .attr("stroke", "#fff")
       .attr("stroke-width", 1.5)

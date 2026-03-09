@@ -9,7 +9,8 @@ export default function RecentNotes({ notes }: RecentNotesProps) {
   const [isCollapsed, setIsCollapsed] = useState(true);
 
   const handleNoteClick = (noteId: string) => {
-    window.location.href = `/node/${noteId}`;
+    const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+    window.location.href = `${base}/node/${noteId}`;
   };
 
   return (
