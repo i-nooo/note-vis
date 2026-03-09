@@ -15,7 +15,8 @@ export const wikiLinkTokenizer: TokenizerExtension = {
     if (!match) return undefined
     const [, rawName, alias] = match
     const text = alias ? alias.trim() : rawName.trim()
-    const href = `/node/${slugifyNode(rawName)}`
+    const base = import.meta.env.BASE_URL.replace(/\/$/, '')
+    const href = `${base}/node/${slugifyNode(rawName)}`
     const token: WikiLinkToken = {
       type: 'wikilink',
       raw: match[0],
@@ -31,7 +32,7 @@ export const wikiLinkRenderer: RendererExtension = {
   renderer(token: Tokens.Generic) {
     const wikiToken = token as WikiLinkToken
     const brokenLinks = getBrokenLinks()
-    const targetId = wikiToken.href.replace('/node/', '').replace(/%20/g, ' ')
+    const targetId = wikiToken.href.replace(/^.*\/node\//, '').replace(/%20/g, ' ')
     const isBroken = brokenLinks.has(decodeURIComponent(targetId))
     const className = isBroken ? ' class="broken-link"' : ''
     const href = isBroken ? '#' : wikiToken.href
