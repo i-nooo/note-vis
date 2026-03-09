@@ -141,6 +141,11 @@ function blocksToMarkdown(blocks, mentionedPageIds, indent = '') {
         )
         lines.push(`${indent}${text}`)
         lines.push('')
+        if (block.children) {
+          lines.push(
+            ...blocksToMarkdown(block.children, mentionedPageIds, indent + '  '),
+          )
+        }
         break
       }
 
@@ -151,6 +156,11 @@ function blocksToMarkdown(blocks, mentionedPageIds, indent = '') {
         )
         lines.push(`${indent}# ${text}`)
         lines.push('')
+        if (block.children) {
+          lines.push(
+            ...blocksToMarkdown(block.children, mentionedPageIds, indent + '  '),
+          )
+        }
         break
       }
 
@@ -161,6 +171,11 @@ function blocksToMarkdown(blocks, mentionedPageIds, indent = '') {
         )
         lines.push(`${indent}## ${text}`)
         lines.push('')
+        if (block.children) {
+          lines.push(
+            ...blocksToMarkdown(block.children, mentionedPageIds, indent + '  '),
+          )
+        }
         break
       }
 
@@ -171,6 +186,11 @@ function blocksToMarkdown(blocks, mentionedPageIds, indent = '') {
         )
         lines.push(`${indent}### ${text}`)
         lines.push('')
+        if (block.children) {
+          lines.push(
+            ...blocksToMarkdown(block.children, mentionedPageIds, indent + '  '),
+          )
+        }
         break
       }
 
@@ -218,6 +238,11 @@ function blocksToMarkdown(blocks, mentionedPageIds, indent = '') {
           mentionedPageIds,
         )
         lines.push(`${indent}- [${checked}] ${text}`)
+        if (block.children) {
+          lines.push(
+            ...blocksToMarkdown(block.children, mentionedPageIds, indent + '  '),
+          )
+        }
         break
       }
 
