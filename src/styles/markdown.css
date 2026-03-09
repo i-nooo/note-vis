@@ -11,6 +11,7 @@
   margin-bottom: 8px;
   font-weight: 600;
   line-height: 1.25;
+  scroll-margin-top: 80px; /* 헤딩 앵커 스크롤 오프셋 */
 }
 
 .markdown-content h1 {
@@ -19,11 +20,9 @@
 }
 .markdown-content h2 {
   font-size: 24px;
-  color: #374151;
 }
 .markdown-content h3 {
   font-size: 20px;
-  color: #4b5563;
 }
 
 /* 문단 */
@@ -277,16 +276,6 @@
 .markdown-content .markdown-hr {
   border: 0.5px solid var(--border);
   margin: 72px 0;
-}
-
-/* 헤딩 앵커 스크롤 오프셋 */
-.markdown-content h1,
-.markdown-content h2,
-.markdown-content h3,
-.markdown-content h4,
-.markdown-content h5,
-.markdown-content h6 {
-  scroll-margin-top: 80px;
 }
 
 /* 목차 스타일 */

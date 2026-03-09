@@ -23,7 +23,7 @@ export default function FootnoteArea({ footnotes, children }: Props) {
   return (
     <>
       {/* 토글 버튼 */}
-      <div className="mb-4 flex justify-end">
+      <div className="flex justify-end">
         <button
           onClick={toggleVisibility}
           className="text-xs px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded transition-colors"
@@ -41,7 +41,7 @@ export default function FootnoteArea({ footnotes, children }: Props) {
         {/* 사이드바 형태의 각주 영역 */}
         {isVisible && footnotes && (
           <aside
-            className="footnote-area flex-shrink-0"
+            className="footnote-area flex-shrink-0 my-14"
             style={{ width: "170px" }}
           >
             <div className="relative" style={{ minHeight: "500px" }}>

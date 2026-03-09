@@ -86,28 +86,63 @@ export function useFootnotes(footnotes: string) {
   useEffect(() => {
     if (!footnotes) return;
 
+    let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+
     const updatePositions = () => {
-      const positions = collectFootnotePositions(footnotes);
-      setPositionedFootnotes(positions);
+      if (debounceTimer) clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        const positions = collectFootnotePositions(footnotes);
+        setPositionedFootnotes(positions);
+      }, 50);
     };
 
     // 초기 위치 계산
     const initialTimeout = setTimeout(updatePositions, 100);
 
-    // 콘텐츠 크기 변화 감지
     const contentElement = document.querySelector(".markdown-content");
     let resizeObserver: ResizeObserver | null = null;
+    let mutationObserver: MutationObserver | null = null;
 
     if (contentElement) {
+      // 콘텐츠 크기 변화 감지
       resizeObserver = new ResizeObserver(() => {
         updatePositions();
       });
       resizeObserver.observe(contentElement);
+
+      // DOM 변화 감지 (코드 블록, 테이블 등)
+      mutationObserver = new MutationObserver(() => {
+        updatePositions();
+      });
+      mutationObserver.observe(contentElement, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ["style", "class"],
+      });
+
+      // 이미지 로드 이벤트 감지
+      const images = contentElement.querySelectorAll("img");
+      images.forEach((img) => {
+        if (!img.complete) {
+          img.addEventListener("load", updatePositions);
+          img.addEventListener("error", updatePositions);
+        }
+      });
     }
 
     return () => {
       clearTimeout(initialTimeout);
+      if (debounceTimer) clearTimeout(debounceTimer);
       resizeObserver?.disconnect();
+      mutationObserver?.disconnect();
+
+      // 이미지 이벤트 리스너 정리
+      const images = contentElement?.querySelectorAll("img");
+      images?.forEach((img) => {
+        img.removeEventListener("load", updatePositions);
+        img.removeEventListener("error", updatePositions);
+      });
     };
   }, [footnotes]);
 

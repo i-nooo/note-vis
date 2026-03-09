@@ -3,12 +3,12 @@ import type { CalloutConfig, CalloutKind } from "./types";
 export const CALLOUTS: Record<CalloutKind, CalloutConfig> = {
   NOTE: {
     className: "callout-note",
-    defaultTitle: "노트",
+    defaultTitle: "✏️",
     ariaLabel: "Note",
   },
   INFO: {
     className: "callout-info",
-    defaultTitle: "정보",
+    defaultTitle: "ℹ️",
     ariaLabel: "Info",
   },
 };
@@ -27,6 +27,7 @@ export const SANITIZE_OPTIONS = {
     "td",
     "hr",
     "div",
+    "del",
   ],
   ALLOWED_URI_REGEXP:
     /^(?:(?:https?|mailto|tel|data:image\/(?:png|gif|jpeg|webp));|\/|#)/i,
