@@ -5,6 +5,20 @@ import { fileURLToPath } from 'url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const outputFile = path.join(__dirname, '../src/data/notes.json')
 
+// .env 파일 로드
+const envPath = path.join(__dirname, '../.env')
+try {
+  const envContent = await fs.readFile(envPath, 'utf8')
+  for (const line of envContent.split('\n')) {
+    const trimmed = line.trim()
+    if (!trimmed || trimmed.startsWith('#')) continue
+    const [key, ...rest] = trimmed.split('=')
+    if (key && rest.length > 0) {
+      process.env[key.trim()] = rest.join('=').trim().replace(/^["']|["']$/g, '')
+    }
+  }
+} catch {}
+
 const NOTION_API_KEY = process.env.NOTION_API_KEY
 const NOTION_DATABASE_ID = process.env.NOTION_DATABASE_ID
 
@@ -120,7 +134,7 @@ function richTextToMarkdown(richTexts, mentionedPageIds) {
 
 // --- Block → Markdown 변환 ---
 
-function blocksToMarkdown(blocks, mentionedPageIds, indent = '') {
+function blocksToMarkdown(blocks, mentionedPageIds, indent = '', inList = false) {
   const lines = []
   let numberedIndex = 0
 
@@ -140,10 +154,10 @@ function blocksToMarkdown(blocks, mentionedPageIds, indent = '') {
           mentionedPageIds,
         )
         lines.push(`${indent}${text}`)
-        lines.push('')
+        if (!inList) lines.push('')
         if (block.children) {
           lines.push(
-            ...blocksToMarkdown(block.children, mentionedPageIds, indent),
+            ...blocksToMarkdown(block.children, mentionedPageIds, indent, inList),
           )
         }
         break
@@ -155,10 +169,10 @@ function blocksToMarkdown(blocks, mentionedPageIds, indent = '') {
           mentionedPageIds,
         )
         lines.push(`${indent}# ${text}`)
-        lines.push('')
+        if (!inList) lines.push('')
         if (block.children) {
           lines.push(
-            ...blocksToMarkdown(block.children, mentionedPageIds, indent),
+            ...blocksToMarkdown(block.children, mentionedPageIds, indent, inList),
           )
         }
         break
@@ -170,10 +184,10 @@ function blocksToMarkdown(blocks, mentionedPageIds, indent = '') {
           mentionedPageIds,
         )
         lines.push(`${indent}## ${text}`)
-        lines.push('')
+        if (!inList) lines.push('')
         if (block.children) {
           lines.push(
-            ...blocksToMarkdown(block.children, mentionedPageIds, indent),
+            ...blocksToMarkdown(block.children, mentionedPageIds, indent, inList),
           )
         }
         break
@@ -185,10 +199,10 @@ function blocksToMarkdown(blocks, mentionedPageIds, indent = '') {
           mentionedPageIds,
         )
         lines.push(`${indent}### ${text}`)
-        lines.push('')
+        if (!inList) lines.push('')
         if (block.children) {
           lines.push(
-            ...blocksToMarkdown(block.children, mentionedPageIds, indent),
+            ...blocksToMarkdown(block.children, mentionedPageIds, indent, inList),
           )
         }
         break
@@ -206,6 +220,7 @@ function blocksToMarkdown(blocks, mentionedPageIds, indent = '') {
               block.children,
               mentionedPageIds,
               indent + '  ',
+              true,
             ),
           )
         }
@@ -225,6 +240,7 @@ function blocksToMarkdown(blocks, mentionedPageIds, indent = '') {
               block.children,
               mentionedPageIds,
               indent + '   ',
+              true,
             ),
           )
         }
@@ -240,7 +256,7 @@ function blocksToMarkdown(blocks, mentionedPageIds, indent = '') {
         lines.push(`${indent}- [${checked}] ${text}`)
         if (block.children) {
           lines.push(
-            ...blocksToMarkdown(block.children, mentionedPageIds, indent + '  '),
+            ...blocksToMarkdown(block.children, mentionedPageIds, indent + '  ', true),
           )
         }
         break
@@ -532,6 +548,16 @@ async function parseNotion() {
 
   const result = { nodes, links: processedLinks }
 
+  console.log(`>>> 파싱 완료!`)
+  console.log(`   노드: ${nodes.length}개 (태그: ${tagSet.size}개)`)
+  console.log(`   링크: ${processedLinks.length}개`)
+
+  return result
+}
+
+async function parseNotionAndSave() {
+  const result = await parseNotion()
+
   // 출력 디렉토리 생성
   const outputDir = path.dirname(outputFile)
   try {
@@ -541,15 +567,11 @@ async function parseNotion() {
   }
 
   await fs.writeFile(outputFile, JSON.stringify(result, null, 2), 'utf8')
-
-  console.log(`>>> 파싱 완료!`)
-  console.log(`   노드: ${nodes.length}개 (태그: ${tagSet.size}개)`)
-  console.log(`   링크: ${processedLinks.length}개`)
   console.log(`   출력: ${outputFile}`)
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
-  parseNotion()
+  parseNotionAndSave()
 }
 
-export { parseNotion }
+export { parseNotion, parseNotionAndSave }

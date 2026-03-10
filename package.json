@@ -5,14 +5,15 @@
   "scripts": {
     "dev": "vite --port 3000",
     "start": "vite --port 3000",
-    "build": "npm run parse-notion && vite build",
+    "build": "vite build",
     "serve": "vite preview",
     "test": "vitest run",
     "lint": "eslint",
     "format": "prettier",
     "check": "prettier --write . && eslint --fix",
     "parse-notes": "node scripts/parse-notes.js",
-    "parse-notion": "node scripts/parse-notion.js"
+    "parse-notion": "node scripts/parse-notion.js",
+    "deploy": "node scripts/parse-notion.js && vercel --prod"
   },
   "dependencies": {
     "@faker-js/faker": "^9.6.0",

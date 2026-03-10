@@ -61,20 +61,6 @@ export default function NodeContent({
               )}
             </div>
           )}
-          {!current.id.startsWith("tag:") && current.url && (
-            <a
-              href={current.url}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800"
-            >
-              <img
-                src="/image/icon-github.png"
-                alt="GitHub Icon"
-                className="size-4"
-              />
-            </a>
-          )}
         </div>
       </header>
 
