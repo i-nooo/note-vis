@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import FootnoteArea from "./FootnoteArea";
 import type { GraphData, GraphLink, NoteNode } from "@/types";
 import type { RenderResult } from "@/utils/markdown/types";
@@ -17,6 +18,25 @@ export default function NodeContent({
   onNodeClick,
   renderResult,
 }: Props) {
+  const handleContentClick = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      const target = e.target as HTMLElement;
+      const anchor = target.closest("a");
+      if (!anchor) return;
+
+      const href = anchor.getAttribute("href");
+      if (!href) return;
+
+      // 위키링크 (내부 링크): SPA 네비게이션 사용
+      const nodeMatch = href.match(/\/node\/(.+)$/);
+      if (nodeMatch) {
+        e.preventDefault();
+        onNodeClick(decodeURIComponent(nodeMatch[1]));
+      }
+    },
+    [onNodeClick],
+  );
+
   if (!current) {
     return (
       <div className="flex items-center justify-center h-64 text-gray-500">
@@ -72,6 +92,7 @@ export default function NodeContent({
                 <div
                   className="markdown-content prose prose-sm max-w-none my-14"
                   dangerouslySetInnerHTML={{ __html: renderResult.content }}
+                  onClick={handleContentClick}
                 />
               </section>
             )}
@@ -91,6 +112,15 @@ export default function NodeContent({
                   if (link.type === "tag") {
                     return groups;
                   }
+                  const targetId =
+                    link.source === currentId ? link.target : link.source;
+                  const linkType = link.type || "mention";
+                  if (!groups[linkType]) groups[linkType] = [];
+                  groups[linkType].push({
+                    link,
+                    node: subgraph.nodes.find((n) => n.id === targetId),
+                    targetId,
+                  });
                   return groups;
                 },
                 {} as Record<

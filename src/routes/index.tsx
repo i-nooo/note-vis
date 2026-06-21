@@ -1,5 +1,5 @@
 import { createRoute } from "@tanstack/react-router";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { rootRoute } from "./root";
 import type { GraphData } from "@/types";
 import SearchBar from "@/components/SearchBar";
@@ -7,7 +7,6 @@ import NetworkGraph from "@/components/NetworkGraph";
 import TagFilter from "@/components/TagFilter";
 import DateFilter from "@/components/DateFilter";
 import RecentNotes from "@/components/RecentNotes";
-import RefreshButton from "@/components/RefreshButton";
 import sample from "@/data/notes.json";
 
 export const indexRoute = createRoute({
@@ -23,29 +22,7 @@ function IndexPage() {
     start?: string;
     end?: string;
   }>({});
-  const [liveData, setLiveData] = useState<GraphData | null>(null);
-  const [syncing, setSyncing] = useState(false);
-  const [syncError, setSyncError] = useState<string | null>(null);
-
-  const data = (liveData ?? sample) as GraphData;
-
-  const handleRefresh = useCallback(async () => {
-    setSyncing(true);
-    setSyncError(null);
-    try {
-      const res = await fetch("/api/sync-notion", { method: "POST" });
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({ error: "동기화 실패" }));
-        throw new Error(body.error || `HTTP ${res.status}`);
-      }
-      const newData = await res.json();
-      setLiveData(newData);
-    } catch (err) {
-      setSyncError(err instanceof Error ? err.message : "동기화 실패");
-    } finally {
-      setSyncing(false);
-    }
-  }, []);
+  const data = sample as GraphData;
 
   // 모든 태그 추출 (언급량 순으로 정렬)
   const allTags = useMemo(() => {
@@ -214,14 +191,6 @@ function IndexPage() {
         <RecentNotes notes={recentNotes} />
       </div>
 
-      {/* 좌측 하단 새로고침 버튼 */}
-      <div className="absolute bottom-4 left-4 z-10">
-        <RefreshButton
-          onRefresh={handleRefresh}
-          syncing={syncing}
-          error={syncError}
-        />
-      </div>
     </div>
   );
 }

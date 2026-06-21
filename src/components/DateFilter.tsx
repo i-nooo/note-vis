@@ -70,7 +70,7 @@ export default function DateFilter({
   return (
     <div className="w-80">
       <div className="mb-2">
-        <span className="font-medium text-gray-800 text-sm">Date</span>
+        <span className="font-medium text-gray-800 text-sm">Date (최종 수정일 기반)</span>
       </div>
 
       <div className="relative h-6 mb-1">

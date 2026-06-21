@@ -160,7 +160,7 @@ export default function NetworkGraph({
     const nodeRadius = (n: NoteNode) => {
       if (isTag(n)) return 5;
       const degree = neighbors.get(n.id)?.size ?? 0;
-      return Math.max(6, Math.min(20, 6 + degree * 2));
+      return Math.max(6, Math.min(20, 2 + degree * 2));
     };
 
     const simNodes: Array<SimNode> = allNodes.map((n) => ({

@@ -138,28 +138,44 @@ function blocksToMarkdown(blocks, mentionedPageIds, indent = '', inList = false)
         const text = richTextToMarkdown(block.paragraph.rich_text, mentionedPageIds)
         lines.push(`${indent}${text}`)
         if (!inList) lines.push('')
-        if (block.children) lines.push(...blocksToMarkdown(block.children, mentionedPageIds, indent, inList))
+        if (block.children) {
+          lines.push('<div style="padding-left:1.5em">', '')
+          lines.push(...blocksToMarkdown(block.children, mentionedPageIds, '', false))
+          lines.push('', '</div>', '')
+        }
         break
       }
       case 'heading_1': {
         const text = richTextToMarkdown(block.heading_1.rich_text, mentionedPageIds)
         lines.push(`${indent}# ${text}`)
         if (!inList) lines.push('')
-        if (block.children) lines.push(...blocksToMarkdown(block.children, mentionedPageIds, indent, inList))
+        if (block.children) {
+          lines.push('<div style="padding-left:1.5em">', '')
+          lines.push(...blocksToMarkdown(block.children, mentionedPageIds, '', false))
+          lines.push('', '</div>', '')
+        }
         break
       }
       case 'heading_2': {
         const text = richTextToMarkdown(block.heading_2.rich_text, mentionedPageIds)
         lines.push(`${indent}## ${text}`)
         if (!inList) lines.push('')
-        if (block.children) lines.push(...blocksToMarkdown(block.children, mentionedPageIds, indent, inList))
+        if (block.children) {
+          lines.push('<div style="padding-left:1.5em">', '')
+          lines.push(...blocksToMarkdown(block.children, mentionedPageIds, '', false))
+          lines.push('', '</div>', '')
+        }
         break
       }
       case 'heading_3': {
         const text = richTextToMarkdown(block.heading_3.rich_text, mentionedPageIds)
         lines.push(`${indent}### ${text}`)
         if (!inList) lines.push('')
-        if (block.children) lines.push(...blocksToMarkdown(block.children, mentionedPageIds, indent, inList))
+        if (block.children) {
+          lines.push('<div style="padding-left:1.5em">', '')
+          lines.push(...blocksToMarkdown(block.children, mentionedPageIds, '', false))
+          lines.push('', '</div>', '')
+        }
         break
       }
       case 'bulleted_list_item': {

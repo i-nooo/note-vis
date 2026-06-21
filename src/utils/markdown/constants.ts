@@ -14,7 +14,7 @@ export const CALLOUTS: Record<CalloutKind, CalloutConfig> = {
 };
 
 export const SANITIZE_OPTIONS = {
-  ADD_ATTR: ["target", "rel", "open", "class", "href", "id", "style"],
+  ADD_ATTR: ["target", "rel", "open", "class", "href", "id", "style", "data-depth"],
   ADD_TAGS: [
     "span",
     "sup",
@@ -30,5 +30,5 @@ export const SANITIZE_OPTIONS = {
     "del",
   ],
   ALLOWED_URI_REGEXP:
-    /^(?:(?:https?|mailto|tel|data:image\/(?:png|gif|jpeg|webp));|\/|#)/i,
+    /^(?:(?:https?|mailto|tel):|data:image\/(?:png|gif|jpeg|webp);|\/|#)/i,
 };
