@@ -5,10 +5,13 @@ import { SANITIZE_OPTIONS } from "./constants";
 import {
   calloutRenderer,
   calloutTokenizer,
+  notionCalloutRenderer,
+  notionCalloutTokenizer,
   wikiLinkRenderer,
   wikiLinkTokenizer,
 } from "./extensions";
 import { resetSlugCounter } from "./helpers";
+import { preprocessNotion } from "./notion";
 import {
   createRendererWithLinkPolicy,
   getCollectedHeadings,
@@ -26,6 +29,8 @@ function setupMarked(): void {
       wikiLinkRenderer,
       calloutTokenizer,
       calloutRenderer,
+      notionCalloutTokenizer,
+      notionCalloutRenderer,
     ],
   });
   marked.setOptions({
@@ -108,6 +113,7 @@ function renderFootnotesHtml(footnotes: Array<Footnote>): string {
 export function renderMarkdown(
   markdown: string,
   brokenLinks?: Set<string>,
+  mentionTitles?: Map<string, string>,
 ): RenderResult {
   if (!markdown) {
     return { content: "", footnotes: "", headings: [] };
@@ -117,8 +123,12 @@ export function renderMarkdown(
   resetSlugCounter();
   resetHeadingsCollector();
 
-  const footnotes = extractFootnotes(markdown);
-  let contentWithoutFootnoteDefs = removeFootnoteDefinitions(markdown);
+  // 노션 방언(NFM) → 표준 마크다운/위키링크. 각주 추출보다 먼저 실행해야
+  // 이스케이프된 각주 마커가 정상 인식된다.
+  const normalized = preprocessNotion(markdown, mentionTitles);
+
+  const footnotes = extractFootnotes(normalized);
+  let contentWithoutFootnoteDefs = removeFootnoteDefinitions(normalized);
 
   if (footnotes.length > 0) {
     contentWithoutFootnoteDefs = replaceFootnoteReferences(

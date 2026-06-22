@@ -1,16 +1,14 @@
-export type LinkType = "tag" | "mention" | "prerequisite";
+export type LinkType = "tag" | "mention";
 
 export interface NoteNode {
   id: string;
+  type: "note" | "tag";
   title: string;
   url?: string;
-  content?: string;
+  contents?: string;
   tags?: Array<string>;
-  degree?: number;
-  prerequisites?: Array<string>;
-  related?: Array<string>;
-  dateCreated?: string;
-  dateUpdated?: string;
+  createdTime?: string;
+  lastEditedTime?: string;
 }
 
 export interface GraphLink {

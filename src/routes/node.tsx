@@ -20,54 +20,53 @@ export const nodeRoute = createRoute({
 function NodePage() {
   const { id } = useParams({ from: nodeRoute.id });
   const navigate = useNavigate();
+
   const baseData = sample as GraphData;
   const footnoteVisible = useStore(store, (state) => state.footnoteVisible);
-
   const { subgraph } = useNodeData(baseData, id);
 
-  // URL이 포함된 서브그래프 데이터
-  const repoBase = "https://github.com/i-nooo/note-vis/blob/main/notes/";
-  const withUrls = useMemo(
-    () => ({
-      ...subgraph,
-      nodes: subgraph.nodes.map((n) =>
-        n.id.startsWith("tag:") ? n : { ...n, url: `${repoBase}${n.id}.md` },
-      ),
-    }),
-    [subgraph],
-  );
-
-  const current = withUrls.nodes.find((n) => n.id === id);
+  const current = subgraph.nodes.find((n) => n.id === id);
   const goNode = (nid: string) =>
     navigate({ to: "/node/$id", params: { id: nid } });
 
+  // 노션 page mention(<mention-page url=.../p/ID/>)을 제목 있는 위키링크로
+  // 렌더링하기 위한 id→title 맵. 전체 그래프 기준으로 조회한다.
+  const mentionTitles = useMemo(
+    () => new Map(baseData.nodes.map((n) => [n.id, n.title])),
+    [baseData],
+  );
+
   const renderResult = useMemo(() => {
-    if (!current?.content) return null;
+    if (!current?.contents) return null;
     const brokenLinks = new Set(
-      withUrls.links
+      subgraph.links
         .filter((link) => link.broken && link.source === current.id)
         .map((link) => link.target),
     );
-    return renderMarkdown(current.content, brokenLinks);
-  }, [current, withUrls.links]);
+    return renderMarkdown(current.contents, brokenLinks, mentionTitles);
+  }, [current, subgraph.links, mentionTitles]);
 
   return (
     <div
       className={`min-h-screen bg-gray-50 ${!footnoteVisible ? "footnote-off" : ""}`}
     >
-      <div className={`mx-auto ${footnoteVisible ? "max-w-4xl" : "max-w-3xl"}`}>
+      {/* pb: 하단 고정 FloatingSidebar가 본문 맨 끝(참고 링크 등)을 덮어
+          클릭을 가로채지 않도록 스크롤 여유 공간을 확보한다. */}
+      <div
+        className={`mx-auto pb-112 ${footnoteVisible ? "max-w-4xl" : "max-w-3xl"}`}
+      >
         <NodeHeader />
 
         <NodeContent
           current={current}
-          subgraph={withUrls}
+          subgraph={subgraph}
           currentId={id}
           onNodeClick={goNode}
           renderResult={renderResult}
         />
 
         <FloatingSidebar
-          subgraph={withUrls}
+          subgraph={subgraph}
           headings={renderResult?.headings ?? []}
         />
       </div>

@@ -58,7 +58,7 @@ export default function NodeContent({
             {current.tags.map((tag) => (
               <span
                 key={tag}
-                className="inline-block bg-blue-50 text-blue-700 text-xs px-2 py-1 rounded-md border-[0.5px] border-blue-200"
+                className="inline-block bg-blue-50 text-blue-700 text-xs px-1 py-0.5 rounded-md border-[0.5px] border-blue-200"
               >
                 #{tag}
               </span>
@@ -67,16 +67,16 @@ export default function NodeContent({
         )}
 
         <div className="flex items-end gap-4">
-          {(current.dateCreated || current.dateUpdated) && (
+          {(current.createdTime || current.lastEditedTime) && (
             <div className="mt-1 bg-gray-50 rounded-lg text-xs text-gray-600">
-              {current.dateCreated && (
+              {current.createdTime && (
                 <div className="flex items-center gap-1">
-                  <span>생성일: {current.dateCreated}</span>
+                  <span>생성일: {current.createdTime}</span>
                 </div>
               )}
-              {current.dateUpdated && (
+              {current.lastEditedTime && (
                 <div className="flex items-center gap-1">
-                  <span>수정일: {current.dateUpdated}</span>
+                  <span>수정일: {current.lastEditedTime}</span>
                 </div>
               )}
             </div>

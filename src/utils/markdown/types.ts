@@ -10,6 +10,14 @@ export interface CalloutToken extends Tokens.Generic {
   tokens: Array<Tokens.Generic>
 }
 
+// 노션이 내보내는 <callout color="..."> 블록. GFM `> [!NOTE]` 콜아웃과 달리
+// 접기/펼치기나 제목 아이콘이 없는 단순 박스다.
+export interface NotionCalloutToken extends Tokens.Generic {
+  type: 'notionCallout'
+  color?: string
+  tokens: Array<Tokens.Generic>
+}
+
 export interface WikiLinkToken extends Tokens.Generic {
   type: 'wikilink'
   href: string

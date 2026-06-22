@@ -56,7 +56,7 @@ function IndexPage() {
     // 날짜 필터링
     if (dateFilter.start || dateFilter.end) {
       filteredNoteNodes = filteredNoteNodes.filter((node) => {
-        const nodeDate = node.dateUpdated || node.dateCreated;
+        const nodeDate = node.lastEditedTime || node.createdTime;
         if (!nodeDate) return false;
 
         const date = new Date(nodeDate);
@@ -117,7 +117,7 @@ function IndexPage() {
   const dateRange = useMemo(() => {
     const dates = data.nodes
       .filter((node) => !node.id.startsWith("tag:"))
-      .map((node) => node.dateUpdated || node.dateCreated)
+      .map((node) => node.lastEditedTime || node.createdTime)
       .filter((date): date is string => !!date)
       .sort();
 
@@ -132,11 +132,11 @@ function IndexPage() {
     const notesWithDates = data.nodes
       .filter(
         (node) =>
-          !node.id.startsWith("tag:") && (node.dateUpdated || node.dateCreated),
+          !node.id.startsWith("tag:") && (node.lastEditedTime || node.createdTime),
       )
       .map((node) => ({
         ...node,
-        sortDate: node.dateUpdated || node.dateCreated || "",
+        sortDate: node.lastEditedTime || node.createdTime || "",
       }))
       .sort(
         (a, b) =>

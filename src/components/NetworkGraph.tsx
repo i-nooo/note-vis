@@ -38,7 +38,7 @@ export default function NetworkGraph({
       n.id.toLowerCase().includes(q) ||
       n.title.toLowerCase().includes(q) ||
       (n.tags ?? []).some((t) => t.toLowerCase().includes(q)) ||
-      (n.content?.toLowerCase().includes(q) ?? false);
+      (n.contents?.toLowerCase().includes(q) ?? false);
     const keepIds = new Set<string>();
     data.nodes.forEach((n) => {
       if (match(n)) keepIds.add(n.id);
@@ -105,7 +105,7 @@ export default function NetworkGraph({
         n.id.toLowerCase().includes(q) ||
         n.title.toLowerCase().includes(q) ||
         (n.tags ?? []).some((t) => t.toLowerCase().includes(q)) ||
-        (n.content?.toLowerCase().includes(q) ?? false)
+        (n.contents?.toLowerCase().includes(q) ?? false)
       );
     };
 
@@ -291,7 +291,9 @@ export default function NetworkGraph({
       link.attr("opacity", 1);
     };
 
-    return () => simulation.stop();
+    return () => {
+      simulation.stop();
+    };
   }, [nodes, links, width, height, onNavigate, neighbors, navigate, routeMode]);
 
   return <svg ref={svgRef} className="w-full h-full" />;

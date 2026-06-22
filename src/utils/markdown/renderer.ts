@@ -1,4 +1,4 @@
-import { escapeHtml, formatCode, slugifyHeading } from './helpers'
+import { escapeHtml, slugifyHeading } from './helpers'
 import type { HeadingItem } from './types'
 
 let headingsCollector: Array<HeadingItem> = []
@@ -11,90 +11,20 @@ export function getCollectedHeadings(): Array<HeadingItem> {
   return headingsCollector
 }
 
-function highlightJavaScript(code: string): string {
-  let highlighted = escapeHtml(formatCode(code))
-  const placeholders = new Map<string, string>()
-  let placeholderIndex = 0
-
-  highlighted = highlighted.replace(/(["'`])([^"'`]*?)\1/g, (match) => {
-    const placeholder = `__STRING_${placeholderIndex++}__`
-    placeholders.set(
-      placeholder,
-      `<span class="token string">${match}</span>`,
-    )
-    return placeholder
-  })
-
-  highlighted = highlighted.replace(/\/\/.*$/gm, (match) => {
-    const placeholder = `__COMMENT_${placeholderIndex++}__`
-    placeholders.set(
-      placeholder,
-      `<span class="token comment">${match}</span>`,
-    )
-    return placeholder
-  })
-
-  highlighted = highlighted.replace(
-    /\b(const|let|var|function|import|export|from|default|createRouter|defineConfig)\b/g,
-    '<span class="token keyword">$1</span>',
-  )
-
-  highlighted = highlighted.replace(
-    /\b(\d+)\b/g,
-    '<span class="token number">$1</span>',
-  )
-
-  placeholders.forEach((replacement, placeholder) => {
-    highlighted = highlighted.replace(placeholder, replacement)
-  })
-
-  return highlighted
-}
-
-function highlightJSON(code: string): string {
-  let highlighted = escapeHtml(formatCode(code))
-
-  highlighted = highlighted
-    .replace(/"([^"]+)":/g, '<span class="token string">"$1"</span>:')
-    .replace(/:\s*"([^"]*)"/g, ': <span class="token string">"$1"</span>')
-    .replace(
-      /\b(true|false|null)\b/g,
-      '<span class="token keyword">$1</span>',
-    )
-
-  return highlighted
-}
-
-function isJavaScriptLike(code: string): boolean {
-  return (
-    code.includes('import') ||
-    code.includes('export') ||
-    code.includes('const') ||
-    code.includes('function') ||
-    code.includes('React') ||
-    code.includes('createRouter')
-  )
-}
-
-function isJSONLike(code: string): boolean {
-  return (
-    code.trim().startsWith('{') &&
-    code.includes('"') &&
-    (code.includes('rewrites') || code.includes('source'))
-  )
-}
-
 export function createRendererWithLinkPolicy() {
   const renderer = {
-    link({
-      href,
-      title,
-      text,
-    }: {
-      href: string
-      title?: string | null
-      text: string
-    }): string {
+    link(
+      this: { parser: { parseInline(tokens: Array<unknown>): string } },
+      token: {
+        href: string
+        title?: string | null
+        tokens: Array<unknown>
+      },
+    ): string {
+      const { href, title } = token
+      // token.text는 파싱 전 원문이라 [**굵게**](url) 같은 인라인 마크다운이
+      // 그대로 남는다. 내부 토큰을 파싱해야 <strong> 등이 올바로 렌더링된다.
+      const text = this.parser.parseInline(token.tokens)
       const cleanTitle = title ? ` title="${title}"` : ''
 
       if (!href) return `<a${cleanTitle}>${text}</a>`
@@ -107,19 +37,10 @@ export function createRendererWithLinkPolicy() {
       return `<a href="${href}"${cleanTitle}${target}>${text}</a>`
     },
 
+    // 코드는 원문 그대로(verbatim) 이스케이프만 해서 출력한다.
     code({ text: code, lang }: { text: string; lang?: string }) {
-      let highlighted: string
-
-      const jsLangs = ['ts', 'js', 'javascript', 'typescript', 'jsx', 'tsx']
-      if (isJavaScriptLike(code) || (lang && jsLangs.includes(lang))) {
-        highlighted = highlightJavaScript(code)
-      } else if (isJSONLike(code) || lang === 'json') {
-        highlighted = highlightJSON(code)
-      } else {
-        highlighted = escapeHtml(formatCode(code))
-      }
-
-      return `<pre><code class="${lang ? `language-${lang}` : ''}">${highlighted}</code></pre>`
+      const className = lang ? ` class="language-${lang}"` : ''
+      return `<pre><code${className}>${escapeHtml(code)}</code></pre>`
     },
 
     // 구분선 렌더러
